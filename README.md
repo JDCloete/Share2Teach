@@ -2,12 +2,23 @@
 
 ### Group Name: Triple Vision
 
-
-|Contributors    |          |
-|----------------|----------|
-| Danika Le Roux | 41049764 |
-| Jean-Luc Bégué | 40779173 |
-| Jacques Cloete | 44214987 |
+<table>
+  <tr>
+    <td>Contributors</td>
+  </tr>
+  <tr>
+    <td>Danika Le Roux</td>
+    <td>41049764</td>
+  </tr>
+  <tr>
+    <td>Jean-Luc Bégué</td>
+    <td>40779173</td>
+  </tr>
+  <tr>
+    <td>Jacques Cloete</td>
+    <td>44214987</td>
+  </tr>
+</table>
 
 
 ### Link to collaborators profiles.
