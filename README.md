@@ -16,9 +16,8 @@ Cloete
 
 ### Link to collaborators proiles.
 
-@DanniRoux
-[DanniRoux](https://github.com/DanniRoux)
-@AspectY
-[AspectY](https://github.com/AspectY)
-@JDCloete
-[JDCloete](https://github.com/JDCloete)
+@[DanniRoux](https://github.com/DanniRoux)
+&nbsp;&nbsp;&nbsp;&nbsp;
+@[AspectY](https://github.com/AspectY)
+&nbsp;&nbsp;&nbsp;&nbsp;
+@[JDCloete](https://github.com/JDCloete)
