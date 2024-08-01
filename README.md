@@ -5,6 +5,7 @@
 <table>
   <tr>
     <td>Contributors</td>
+    <td></td>
   </tr>
   <tr>
     <td>Danika Le Roux</td>
