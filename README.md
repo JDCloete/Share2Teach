@@ -4,7 +4,7 @@
 
 <table style="width: 100%; border-collapse: collapse;">
   <tr>
-    <td colspan="2" style="text-align: center;">Contributors</td>
+    <td colspan="2" style="text-align: center; padding: 10px;">Contributors</td>
   </tr>
   <tr>
     <td>Danika Le Roux</td>
@@ -19,6 +19,7 @@
     <td>44214987</td>
   </tr>
 </table>
+
 
 
 ### Link to collaborators profiles.
