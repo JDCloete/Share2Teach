@@ -2,8 +2,10 @@
 
 ### Group Name: Triple Vision
 
-|----------------|----------|
+
+|:-|:-|:-|
 | Danika Le Roux | 41049764 |
+|----------------|----------|
 | Jean-Luc Bégué | 40779173 |
 | Jacques Cloete | 44214987 |
 
