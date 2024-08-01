@@ -1,6 +1,6 @@
 # CMPG-323-Web-App
 
-## Group Name: Triple Vision
+### Group Name: Triple Vision
 
 Danika
 Le Roux, 
@@ -14,7 +14,8 @@ Jacques
 Cloete
 44214987
 
-## Link to collaborators proiles.
-[GitHub](https://github.com/AspectY)
-[GitHub](https://github.com/DanniRoux)
-[GitHub](https://github.com/JDCloete)
+### Link to collaborators proiles.
+
+[AspectY](https://github.com/AspectY)
+[GanniRoux](https://github.com/DanniRoux)
+[JDCloete](https://github.com/JDCloete)
