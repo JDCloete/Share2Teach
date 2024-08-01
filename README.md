@@ -2,9 +2,9 @@
 
 ### Group Name: Triple Vision
 
-<table>
+<table style="width: 100%; border-collapse: collapse;">
   <tr>
-    <td colspan="1" style="text-align: center;">Contributors</td>
+    <td colspan="2" style="text-align: center;">Contributors</td>
   </tr>
   <tr>
     <td>Danika Le Roux</td>
