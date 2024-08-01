@@ -3,7 +3,7 @@
 ### Group Name: Triple Vision
 
 
-|Contributors|
+|Contributors    |          |
 |----------------|----------|
 | Danika Le Roux | 41049764 |
 | Jean-Luc Bégué | 40779173 |
