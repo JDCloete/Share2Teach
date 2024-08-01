@@ -4,7 +4,7 @@
 
 <table>
   <tr>
-    <td colspan="2" style="text-align: center;">Contributors</td>
+    <td colspan="3" style="text-align: center;">Contributors</td>
   </tr>
   <tr>
     <td>Danika Le Roux</td>
