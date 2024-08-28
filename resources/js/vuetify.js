@@ -3,10 +3,9 @@ import * as directives from 'vuetify/directives';
 import {createVuetify} from 'vuetify';
 import {VTimePicker} from "vuetify/labs/components";
 
-// Verander font
+// Change font
 // Primary colours
 // Import Inertia
-// Commit die!
 
 export default createVuetify({
     components: {

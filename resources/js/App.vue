@@ -13,7 +13,7 @@
         </v-card-text>
         <v-card-actions>
             <v-btn>
-                Click Me ! :)
+                Click Me !
             </v-btn>
         </v-card-actions>
     </v-card>
