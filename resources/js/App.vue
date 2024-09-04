@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title>
-            Hello Triple Vision !!!!
+            Hello Triple Vision 
         </v-card-title>
         <v-card-subtitle>
             Hello
