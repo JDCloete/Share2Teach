@@ -47,6 +47,30 @@ class DocumentsTableSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'document_name' => 'User Guide',
+                'storage_path' => '/storage/documents/user_guide.pdf',
+                'user_id' => 3,
+                'moderator_id' => 2,
+                'is_reviewed' => true,
+                'document_rating_average' => 3.50,
+                'watermark_info' => 'Property of S2T_Triple_Vision',
+                'key' => 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'document_name' => 'User Guide',
+                'storage_path' => '/storage/documents/user_guide.pdf',
+                'user_id' => 3,
+                'moderator_id' => 2,
+                'is_reviewed' => true,
+                'document_rating_average' => 3.50,
+                'watermark_info' => 'Property of S2T_Triple_Vision',
+                'key' => 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }

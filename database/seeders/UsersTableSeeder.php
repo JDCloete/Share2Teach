@@ -43,7 +43,7 @@ class UsersTableSeeder extends Seeder
                 'email' => 'jacques14cloete@gmail.com',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make('Admin789'),
-                'role_id' => 1, // Admin role
+                'role_id' => 3, // Moderator role
                 'remember_token' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
