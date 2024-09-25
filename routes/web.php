@@ -9,3 +9,17 @@ Route::middleware(HandleInertiaRequests::class)->group(function(){
 
     //Route::get('/sign-up', [HomePageController::class, 'sign-up'])->name('pages.sign-up');
 });
+
+
+
+/** R web.php
+ *
+ *  <?php
+ *
+ * use App\Routes\PageRoutes;
+ *
+ * // Call to all page routes
+ * PageRoutes::get();
+ *
+ *
+ */
