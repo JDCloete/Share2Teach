@@ -75,31 +75,31 @@ class User extends Authenticatable
     // User stars many documents --> BelongsToMany
     public function stars(): BelongsToMany
     {
-        return $this->belongsToMany(Document::class, 'starred');
+        return $this->belongsToMany(Document::class, 'starred')->withPivot('is_favourite');
     }
 
     // User rates many documents --> BelongsToMany
     public function rates(): BelongsToMany
     {
-        return $this->belongsToMany(Document::class, 'ratings');
+        return $this->belongsToMany(Document::class, 'ratings')->withPivot('rating_value');
     }
 
     // User downloads many documents --> BelongsToMany
     public function downloads(): BelongsToMany
     {
-        return $this->belongsToMany(Document::class, 'downloads');
+        return $this->belongsToMany(Document::class, 'downloads')->withPivot('download_count');
     }
 
     // User reports many documents --> BelongsToMany
     public function reports(): BelongsToMany
     {
-        return $this->belongsToMany(Document::class, 'reports');
+        return $this->belongsToMany(Document::class, 'reports')->withPivot('report_reason');
     }
 
     // User shares many documents --> BelongsToMany
     public function shares(): BelongsToMany
     {
-        return $this->belongsToMany(Document::class, 'shares');
+        return $this->belongsToMany(Document::class, 'shares')->withPivot('recipient_email');
     }
 }
 
