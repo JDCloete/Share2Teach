@@ -1,24 +1,12 @@
 <template>
-    <v-card>
-        <v-card-title>
-            Hello HomePage
-        </v-card-title>
-    </v-card>
+    <div>
+        <h1>Welcome to the Home Page!</h1>
+        <p>This is the home page content.</p>
+    </div>
 </template>
-
 
 <script>
 export default {
     name: 'HomePage',
-    props: {},
-    data() {
-        return {};
-    },
-    methods: {},
-}
+};
 </script>
-
-<style scoped>
-/* Add styles here*/
-</style>
-

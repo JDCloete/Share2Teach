@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Starred extends Model
 {
     use HasFactory;
+    protected $table = 'starred';
 
     protected $fillable = [
         'user_id',

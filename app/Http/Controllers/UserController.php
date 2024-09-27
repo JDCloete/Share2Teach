@@ -2,138 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Document;
-use App\Models\Starred;
-use App\Models\Rating;
-use App\Models\Download;
-use App\Models\Report;
-use App\Models\Share;
+use App\Models\User;
+use App\Models\Role; // Import the Role model
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-
-
-/*
-
-Group Related Actions:
-
-Controllers can group related actions together. For example, a UserController might have methods for:
-
-index() to list users
-
-create - store(Request $request) to create a new user
-read   - show($id) to display a specific user
-update - update(Request $request, $id) to update an existing user
-delete - destroy($id) to delete a user
-
-*/
-
-
-    public function index()
+    public function readAll(Request $request)
     {
-        // Logic to retrieve and display users
+        return response()->json(['message'=>'users fetched successfully','users'=>User::all()], 200);
     }
 
-    /**
-     * Star a document.
-     */
-    public function star(Document $document)
+    public function readSingle(Request $request , User $user)
     {
-        $user = Auth::user();
+        return response()->json(['message'=>'user fetched successfully','user'=>$user], 200);
+    }
 
-        // Check if user already starred the document
-        if ($user->stars()->where('document_id', $document->id)->exists()) {
-            return response()->json(['message' => 'You have already starred this document.'], 400);
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'surname'=> 'required',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required',
+
+        ]);
+
+        $validatedData['password'] = Hash::make($validatedData['password']);
+        $validatedData['role_id'] = 1;
+        $validatedData['created_at'] = Carbon::now();
+
+        $user = User::create($validatedData);
+        return response()->json(['message'=>'user created successfully','users'=>$user], 201);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        try{
+         $validatedData = $request->validate([
+        'name' => 'required',
+        'surname' => 'required',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'required',
+         ]);
+
+        $validatedData['password'] = Hash::make($validatedData['password']);
+        $validatedData['role_id'] = 1;
+        $validatedData['created_at'] = Carbon::now();
+        $user->update($validatedData);
+        return response()->json(['message' => 'user updated successfully', 'user' => $user], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
 
-        // Star the document
-        $user->stars()->attach($document->id);
-        return response()->json(['message' => 'Document starred successfully.']);
     }
 
-    /**
-     * Rate a document.
-     */
-    public function rate(Request $request, Document $document)
+    public function deleteUser(Request $request, User $user)
     {
-        $request->validate([
-            'rating' => 'required|numeric|min:1|max:5',
-        ]);
-
-        $user = Auth::user();
-
-        // Check if user already rated the document
-        if ($user->ratedDocuments()->where('document_id', $document->id)->exists()) {
-            return response()->json(['message' => 'You have already rated this document.'], 400);
-        }
-
-        // Rate the document
-        $user->ratedDocuments()->attach($document->id, ['rating' => $request->rating]);
-        return response()->json(['message' => 'Document rated successfully.']);
+        $user->delete();
+        return response()->json(['message'=>'user deleted successfully'], 200);
     }
 
-    /**
-     * Download a document.
-     */
-    public function download(Document $document)
-    {
-        $user = Auth::user();
 
-        // Record the download
-        Download::create([
-            'user_id' => $user->id,
-            'document_id' => $document->id,
-        ]);
 
-        // Proceed with downloading the document
-        $path = $document->storage_path;
-        return Storage::download($path, $document->document_name);
-    }
 
-    /**
-     * Report a document.
-     */
-    public function report(Request $request, Document $document)
-    {
-        $request->validate([
-            'reason' => 'required|string|max:255',
-        ]);
-
-        $user = Auth::user();
-
-        // Check if the user has already reported the document
-        if ($user->reportedDocuments()->where('document_id', $document->id)->exists()) {
-            return response()->json(['message' => 'You have already reported this document.'], 400);
-        }
-
-        // Report the document
-        $user->reportedDocuments()->attach($document->id, ['reason' => $request->reason]);
-        return response()->json(['message' => 'Document reported successfully.']);
-    }
-
-    /**
-     * Share a document.
-     */
-    public function share(Request $request, Document $document)
-    {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
-        $user = Auth::user();
-
-        // Share the document by creating a record in the Share table
-        Share::create([
-            'user_id' => $user->id,
-            'document_id' => $document->id,
-            'recipient_email' => $request->email,
-        ]);
-
-        // Ideally, you would also send an email here to the recipient
-
-        return response()->json(['message' => 'Document shared successfully.']);
-    }
 }

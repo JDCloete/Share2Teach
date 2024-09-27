@@ -22,6 +22,8 @@ class Faq extends Model
 {
     use HasFactory;
 
+    protected $table = 'faq';
+
     protected $fillable = [
         'user_id',
         'faq_question',

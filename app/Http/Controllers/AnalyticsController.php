@@ -2,63 +2,74 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Report;
+use App\Models\Document;
+use App\Models\Download;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AnalyticsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    /*public function readAllUsers(Request $request)
     {
-        //
+        return response()->json(['message'=>'analytics fetched successfully','analytics'=>Analytics::all()], 200);
+    }*/
+
+    // Users
+    public function readAllUsers(Request $request)
+    {
+        // Get the total count of users
+        $totalUsers = User::count();
+
+        return response()->json([
+            'message' => 'user analytics fetched successfully',
+            'total_users' => $totalUsers,
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // Downloads
+    public function readAllDownloads(Request $request)
     {
-        //
+        // Get the total count of users
+        $totalDownloads = Download::count();
+
+        return response()->json([
+            'message' => 'download analytics fetched successfully',
+            'total_downloads' => $totalDownloads,
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // Documents
+    public function readAllDocuments(Request $request)
     {
-        //
+        // Get the total count of users
+        $totalDocuments = Document::count();
+
+        return response()->json([
+            'message' => 'document analytics fetched successfully',
+            'total_document' => $totalDocuments,
+        ], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Reported Documents
+    public function readAllReportedDocuments(Request $request)
     {
-        //
+        try {
+            // Get the total count of reported documents
+            $totalReportedDocuments = \DB::table('reports') // Start from the reports table
+            ->leftJoin('users', 'reports.user_id', '=', 'users.id') // Left join to ensure all reports are included
+            ->leftJoin('analytics', 'users.id', '=', 'analytics.user_id') // Left join Analytics to include all reports
+            ->count('reports.id'); // Count the id in Reports table, assuming the primary key is 'id'
+
+            return response()->json([
+                'message' => 'reported document analytics fetched successfully',
+                'total_reported_documents' => $totalReportedDocuments,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

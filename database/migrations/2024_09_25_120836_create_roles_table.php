@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->id();                                          // Primary key 'id'
 
-            $table->string('role_name')->unique();          // Role name like 'Educator', 'Admin', 'Moderator'
+            $table->string('role_name')->nullable();          // Role name like 'Educator', 'Admin', 'Moderator'
             $table->string('slug')->nullable();             // Optional slug for URL-friendly identifier, can be used if needed for routing
             $table->text('description')->nullable();        // Optional role description
 

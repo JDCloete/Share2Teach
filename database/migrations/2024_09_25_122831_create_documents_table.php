@@ -28,7 +28,7 @@ return new class extends Migration
             $table->boolean('is_reviewed')->default(false);
             $table->float('document_rating_average', 3)->default(0.00);
             $table->string('watermark_info')->nullable();
-            $table->string('key', 255);
+            $table->string('key', 255)->nullable();
 
             $table->timestamps();
         });

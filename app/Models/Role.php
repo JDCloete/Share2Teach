@@ -33,7 +33,7 @@ class Role extends Model
     protected function casts(): array
     {
         return [
-            'id' => 'integer',
+            //'id' => 'integer',
             'role_name' => 'string',
             'slug' => 'string',
             'description' => 'string',
