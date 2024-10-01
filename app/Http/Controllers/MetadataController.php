@@ -36,10 +36,7 @@ class MetadataController extends Controller
         return response()->json(['message'=>'metadata deleted successfully'], 200);
     }
 
-
-
-
-
+    
     // searchMetadata works
     public function searchMetadata(Request $request)
     {

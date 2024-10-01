@@ -11,6 +11,22 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\StarredController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Route;
+
+// Login Routes
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
+
+// Register Routes
+Route::post('/register', [RegisterController::class, 'register']);
+
+// Forgot Password Routes
+Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.forgot');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
+
 
 // Faq Routes
 Route::post('/faq', [FAQController::class, 'store']);

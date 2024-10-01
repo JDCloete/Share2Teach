@@ -37,10 +37,6 @@ Route::middleware(HandleInertiaRequests::class)->group(function() {
     Route::post('downloads', [DownloadsController::class, 'store'])->name('downloads.store');
     Route::get('downloads/{id}', [DownloadsController::class, 'show'])->name('downloads.show');
 
-
-
-
-
 });
 
 
