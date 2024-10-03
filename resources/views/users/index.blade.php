@@ -34,7 +34,7 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->role->role_name ?? 'N/A' }}</td> <!-- Role display -->
                 <td>
-                    <a href="{{ route('users.edit', $user->id) }}">Edit</a>
+                    <!-- <a href="{{ route('users.edit', $user->id) }}">Edit</a> -->
                     <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')

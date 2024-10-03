@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use Inertia\Response;
 
 class HomePageController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
-        return Inertia::render('App'); // Ensure this matches your component's name
+        return Inertia::render('HomePage'); // Ensure this matches your component's name
     }
 }
 

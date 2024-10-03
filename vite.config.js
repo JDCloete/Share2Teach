@@ -17,4 +17,19 @@ export default defineConfig({
             },
         }),
     ],
+    build: {
+        // Increase the chunk size warning limit (optional)
+        chunkSizeWarningLimit: 1000,
+
+        // Manual chunking to split large dependencies into separate chunks
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vue: ['vue'],
+                    vuetify: ['vuetify'],
+                    inertia: ['@inertiajs/vue3'],
+                },
+            },
+        },
+    },
 });
