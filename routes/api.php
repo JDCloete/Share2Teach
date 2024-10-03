@@ -14,14 +14,13 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
-<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Route;
 
-=======
+
 
 
 // Using Laravel Sanctum for API Authentication
->>>>>>> Stashed changes
+
 // Login Routes
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
@@ -32,10 +31,7 @@ Route::post('/register', [RegisterController::class, 'register']);
 // Forgot Password Routes
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.forgot');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 
 // Faq Routes
 Route::post('/faq', [FAQController::class, 'store']);

@@ -10,13 +10,12 @@ Route::get('/', [HomePageController::class, 'index'])->name('pages.homepage');
 
 Route::get('/contributors', [ContributorsController::class, 'index'])->name('contributors.page');
 
-//Route::get('/contributors', function () {
-//    return Inertia::render('ContributorsPage'); // Assuming this is the path to your Vue component
-//})->name('contributors.page'); // Make sure the name matches what you use in the `router.push`
 
-<<<<<<< Updated upstream
-});
-=======
+//Login Page routes // Extra
+Route::get('/login', function () {
+    return Inertia::render('Auth/Login');
+})->name('login');
+
 
 
 /*Route::middleware('auth:sanctum')->group(function () {
@@ -29,7 +28,7 @@ Route::get('/contributors', [ContributorsController::class, 'index'])->name('con
     Route::get('/login', function () {
         return inertia('HomePage'); // Inertia/Vue component
     });
->>>>>>> Stashed changes
+
 
     //Register Page route
     Route::get('/register', function () {
