@@ -3,29 +3,30 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ForgotPasswordController extends Controller
 {
-    /**
-     * Show the form for requesting a password reset link.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function index()
+
+    public function index(): Response
     {
-        return view('auth.forgot-password'); // Create this view as needed
+        return Inertia::render('ResetPasswordPage'); // Ensure this matches your Vue component name
     }
 
     /**
      * Send a password reset link to the given email address.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
+     * @throws ValidationException
      */
-    public function sendResetLink(Request $request)
+    public function sendResetLink(Request $request): JsonResponse
     {
         // Validate the request
         $request->validate([

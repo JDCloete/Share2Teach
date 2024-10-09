@@ -4,41 +4,42 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class RegisterController extends Controller
 {
-    /**
-     * Handle an incoming registration request.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function register(Request $request)
+
+    public function showRegistrationForm(): Response
     {
-        // Validate the incoming request
-        $request->validate([
+        return Inertia::render('RegisterPage'); // Ensure this matches your Vue component name
+    }
+
+    // Return type declaration for the store method
+    public function store(Request $request): RedirectResponse
+    {
+        // Validate the form data
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => 'required|string|min:8|confirmed',
+            'role_id' => 'required|exists:roles,id'
         ]);
 
-        // Create a new user instance
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        // Create a new user (ensure the User model uses the MassAssignable trait)
+        User::create([
+            'name' => $validatedData['name'],
+            'surname' => $validatedData['surname'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+            'role_id' => $validatedData['role_id'], // Assuming the 'role' field exists
         ]);
 
-        // Generate a token for the newly registered user
-        $token = $user->createToken('YourAppName')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Registration successful',
-            'token' => $token,
-            'user' => $user,
-        ], 201);
+        // Redirect after successful registration
+        return redirect()->route('login'); // Adjust the route as needed
     }
 }

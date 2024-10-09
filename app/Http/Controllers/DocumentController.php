@@ -4,12 +4,20 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Document;
+use App\Models\Metadata;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\Writer\PDF\DomPDF;
 
 
 class DocumentController extends Controller
 {
+
+
+
+
     public function readAll(Request $request)
     {
         return response()->json(['message'=>'documents fetched successfully','documents'=>Document::all()], 200);
@@ -52,7 +60,79 @@ class DocumentController extends Controller
         return response()->json(['message'=>'document deleted successfully'], 200);
     }
 
+    public function uploadAndConvert(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate([
+            'file' => 'required|file|mimes:docx,txt,png,jpg,pdf|max:5120', // Accept various file types
+        ]);
 
+        // Get the uploaded file
+        $file = $request->file('file');
+        $originalName = $file->getClientOriginalName();
+        $fileType = $file->getClientOriginalExtension();
+
+        // Define a unique filename for the converted PDF
+        $pdfFileName = pathinfo($originalName, PATHINFO_FILENAME) . '-' . time() . '.pdf';
+
+        // Check file type and convert if needed
+        if ($fileType == 'docx') {
+            $pdfFilePath = $this->convertDocxToPdf($file, $pdfFileName);
+        } elseif (in_array($fileType, ['png', 'jpg'])) {
+            $pdfFilePath = $this->convertImageToPdf($file, $pdfFileName);
+        } else {
+            // If it's already a PDF or another supported format, just move it
+            $pdfFilePath = $file->storeAs('documents', $pdfFileName, 'public');
+        }
+
+        // Save document info in the database (Document and Metadata tables)
+        $document = new Document();
+        $document->title = $originalName;
+        $document->file_path = $pdfFilePath;
+        $document->save();
+
+        // Add metadata (for example, upload date and file type)
+        $metadata = new Metadata();
+        $metadata->document_id = $document->id;
+        $metadata->module_code = 'DOC'; // Example static field
+        $metadata->category = $fileType;
+        $metadata->academic_year = Carbon::now()->year;
+        $metadata->lecturer_name = 'John Doe'; // Example static field
+        $metadata->upload_date = Carbon::now();
+        $metadata->type = $fileType;
+        $metadata->size = $file->getSize();
+        $metadata->save();
+
+        return response()->json(['message' => 'File uploaded and converted to PDF successfully']);
+    }
+
+    // Convert .docx to PDF
+    protected function convertDocxToPdf($file, $pdfFileName)
+    {
+        $phpWord = IOFactory::load($file->getPathName());
+
+        $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
+        $pdfFilePath = 'documents/' . $pdfFileName;
+        Storage::put('public/' . $pdfFilePath, $pdfWriter->save());
+
+        return $pdfFilePath;
+    }
+
+    // Convert an image to PDF
+    protected function convertImageToPdf($file, $pdfFileName)
+    {
+        $dompdf = new Dompdf();
+        $imgPath = $file->getPathName();
+
+        $html = '<img src="' . $imgPath . '" style="width: 100%">';
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+
+        $pdfFilePath = 'documents/' . $pdfFileName;
+        Storage::put('public/' . $pdfFilePath, $dompdf->output());
+
+        return $pdfFilePath;
+    }
 }
 
 

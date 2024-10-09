@@ -8,9 +8,18 @@ use App\Models\Download;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AnalyticsController extends Controller
 {
+
+    public function index(): Response
+    {
+        return Inertia::render('AnalyticsPage'); // Ensure this matches your Vue component name
+    }
+
+
     /*public function readAllUsers(Request $request)
     {
         return response()->json(['message'=>'analytics fetched successfully','analytics'=>Analytics::all()], 200);

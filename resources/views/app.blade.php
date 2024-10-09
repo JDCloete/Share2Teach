@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="app:name" content="{{ config('app.name') }}">
+    <meta name="app:subtitle" content="{{ config('app.subtitle') }}">
+    <meta name="app:logo" content="{{ config('app.logo') }}">
+    <meta name="app:menu_logo" content="{{ config('app.menu_logo') }}">
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
 
     <!-- Scripts -->
     @routes
@@ -18,4 +22,7 @@
 <body class="font-sans antialiased">
 @inertia
 </body>
+<script>
+    window.sessionData = @json(session('user_info'));
+</script>
 </html>

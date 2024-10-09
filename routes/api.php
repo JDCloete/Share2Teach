@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DownloadsController;
-use App\Http\Controllers\FAQController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\MetadataController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ReportController;
@@ -17,10 +17,7 @@ use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
 
-
-
 // Using Laravel Sanctum for API Authentication
-
 // Login Routes
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
@@ -34,11 +31,11 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink
 
 
 // Faq Routes
-Route::post('/faq', [FAQController::class, 'store']);
-Route::get('/faq/{faq}', [FAQController::class, 'readSingle']);
-Route::get('/faq', [FAQController::class, 'readAll']);
-Route::patch('/faq/{faq}', [FAQController::class, 'update']);
-Route::delete('/faq/{faq}', [FAQController::class, 'deleteFaq']);
+Route::post('/faq', [FaqController::class, 'store']);
+Route::get('/faq/{faq}', [FaqController::class, 'readSingle']);
+Route::get('/faq', [FaqController::class, 'readAll']);
+Route::patch('/faq/{faq}', [FaqController::class, 'update']);
+Route::delete('/faq/{faq}', [FaqController::class, 'deleteFaq']);
 
 //Roles Routes
 Route::post('/roles', [RoleController::class, 'store']);

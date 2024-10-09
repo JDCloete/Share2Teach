@@ -2,14 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Faq;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
 
-class FAQController extends Controller
+class FaqController extends Controller
 {
-    public function store(Request $request)
+    public function index(): Response
+    {
+        return Inertia::render('FaqPage'); // Ensure this matches your Vue component name
+    }
+
+    public function store(Request $request): JsonResponse
     {
         $validatedData = $request->validate([
             'faq_question' => 'required',
