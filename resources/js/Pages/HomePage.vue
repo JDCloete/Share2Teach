@@ -20,13 +20,16 @@
                  alt=""/>
             </div>
 
-            <h1 class="mt-4">Welcome to Share2Teach</h1>
+            <h1 class="mt-4">Welcome to Share2Teach </h1>
 
 
-            <v-btn @click="navigateToExplorePage">
+            <v-btn prepend-icon="$vuetify" @click="navigateToExplorePage">
                 Explore
             </v-btn>
 
+            <v-btn prepend-icon="$vuetify" @click="goBack">
+                Back
+            </v-btn>
             <!-- Centered Card -->
 <!--            <v-card width="200" class="mt-4">-->
 <!--                <v-card-text class="d-flex justify-center align-center">-->

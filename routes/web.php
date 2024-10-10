@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ContributeFilesController;
 use App\Http\Controllers\ContributorsController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\ModerationController;
@@ -45,8 +46,8 @@ Route::post('/contribute-files', [ContributeFilesController::class, 'store'])->n
 
 
 // Display the Explore Page
-//Route::get('/explore', [::class, 'index'])->name('explore.files');
-//Route::post('/explore', [::class, 'store'])->name('explore.files.store');
+Route::get('/explore', [DocumentController::class, 'index'])->name('explore.files');
+Route::post('/explore', [DocumentController::class, 'store'])->name('explore.files.store');
 
 
 // Display the Faq Page
