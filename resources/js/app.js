@@ -5,6 +5,7 @@ import '../css/app.css';
 // Vue
 import { createApp, h } from 'vue';
 import AppFrameworkPlugin from 'inertia-app-framework-vuetify';
+import '@mdi/font/css/materialdesignicons.css';
 
 // Inertia
 import { createInertiaApp } from '@inertiajs/vue3';

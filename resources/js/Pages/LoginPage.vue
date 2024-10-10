@@ -14,7 +14,9 @@
         >
             <div class="text-subtitle-1 text-medium-emphasis">Account</div>
 
+            <!-- Email Field -->
             <v-text-field
+                v-model="email"
                 density="compact"
                 placeholder="Email address"
                 prepend-inner-icon="mdi-email-outline"
@@ -23,17 +25,19 @@
 
             <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
                 Password
-
                 <a
                     class="text-caption text-decoration-none text-blue"
                     href="#"
                     rel="noopener noreferrer"
                     target="_blank"
                 >
-                    Forgot login password?</a>
+                    Forgot login password?
+                </a>
             </div>
 
+            <!-- Password Field -->
             <v-text-field
+                v-model="password"
                 :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="visible ? 'text' : 'password'"
                 density="compact"
@@ -43,22 +47,16 @@
                 @click:append-inner="visible = !visible"
             ></v-text-field>
 
-            <v-card
-                class="mb-12"
-                color="surface-variant"
-                variant="tonal"
-            >
-                <v-card-text class="text-medium-emphasis text-caption">
-                    Warning: After 3 consecutive failed login attempts, you account will be temporarily locked for three hours. If you must login now, you can also click "Forgot login password?" below to reset the login password.
-                </v-card-text>
-            </v-card>
 
+            <!-- Log In Button -->
             <v-btn
                 class="mb-8"
                 color="blue"
                 size="large"
                 variant="tonal"
                 block
+                :disabled="!isValid"
+                @click="checkCredentials"
             >
                 Log In
             </v-btn>
@@ -66,9 +64,8 @@
             <v-card-text class="text-center">
                 <a
                     class="text-blue text-decoration-none"
-                    href="#"
+                    href="/register"
                     rel="noopener noreferrer"
-                    target="_blank"
                 >
                     Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
                 </a>
@@ -76,11 +73,54 @@
         </v-card>
     </div>
 </template>
+
 <script>
+import { Inertia } from '@inertiajs/inertia'; // Import Inertia for navigation
+import axios from 'axios'; // Import axios for API requests
+
 export default {
     name: 'LoginPage',
     data: () => ({
-        visible: false,
+        email: '', // Bind the email input
+        password: '', // Bind the password input
+        visible: false, // Password visibility toggle
+        isValid: false, // Initially, the Log In button is disabled
     }),
-}
+    watch: {
+        // Watch for changes in email and password and trigger validation
+        email() {
+            this.validateForm();
+        },
+        password() {
+            this.validateForm();
+        },
+    },
+    methods: {
+        // Validate the form by checking if both email and password are filled
+        validateForm() {
+            this.isValid = this.email !== '' && this.password !== '';
+        },
+        // Check if the credentials are valid using an API call
+        async checkCredentials() {
+            try {
+                const response = await axios.post('/api/login', {
+                    email: this.email,
+                    password: this.password,
+                });
+
+                if (response.data.success) {
+                    this.navigateToExplorePage(); // Redirect to the explore page if credentials are correct
+                } else {
+                    alert('Invalid credentials, please try again.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('An error occurred during login. Please try again.');
+            }
+        },
+        navigateToExplorePage() {
+            Inertia.visit('/explore'); // Redirect to the explore page
+        },
+    },
+};
 </script>

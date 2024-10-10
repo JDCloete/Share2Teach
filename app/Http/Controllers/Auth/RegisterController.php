@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
@@ -19,7 +19,7 @@ class RegisterController extends Controller
     }
 
     // Return type declaration for the store method
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): JsonResponse
     {
         // Validate the form data
         $validatedData = $request->validate([
@@ -30,16 +30,16 @@ class RegisterController extends Controller
             'role_id' => 'required|exists:roles,id'
         ]);
 
-        // Create a new user (ensure the User model uses the MassAssignable trait)
-        User::create([
+        // Create a new user
+        $user = User::create([
             'name' => $validatedData['name'],
             'surname' => $validatedData['surname'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
-            'role_id' => $validatedData['role_id'], // Assuming the 'role' field exists
+            'role_id' => $validatedData['role_id'],
         ]);
 
-        // Redirect after successful registration
-        return redirect()->route('login'); // Adjust the route as needed
+        // Return a success response
+        return response()->json(['message' => 'Registration successful!', 'user' => $user], 201);
     }
 }
