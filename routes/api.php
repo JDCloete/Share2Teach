@@ -25,7 +25,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
 
 // Register Routes
-Route::post('/register', [RegisterController::class, 'store']);
+Route::post('/register', [UserController::class, 'store']);
 
 // Forgot Password Routes
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.forgot');

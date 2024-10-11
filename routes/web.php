@@ -11,6 +11,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\ModerationController;
 use App\Http\Controllers\OERController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -24,6 +25,7 @@ Route::get('/contributors', [ContributorsController::class, 'index'])->name('con
 
 // Show the register page (Inertia)
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [UserController::class, 'store']); // Make sure this route is present
 
 
 // Show the login page (Inertia)

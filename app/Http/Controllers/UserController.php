@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role; // Import the Role model
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Inertia;
+
 
 class UserController extends Controller
 {
@@ -20,23 +23,48 @@ class UserController extends Controller
         return response()->json(['message'=>'user fetched successfully','user'=>$user], 200);
     }
 
+
+
+// ...
+
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required',
-            'surname'=> 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required',
+        try {
+            // Validate the incoming request data
+            $validatedData = $request->validate([
+                'name' => 'required',
+                'surname' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:8',
+            ]);
 
-        ]);
+            // Hash the password and set additional attributes
+            $validatedData['password'] = Hash::make($validatedData['password']);
+            $validatedData['role_id'] = 1;
+            $validatedData['created_at'] = Carbon::now();
 
-        $validatedData['password'] = Hash::make($validatedData['password']);
-        $validatedData['role_id'] = 1;
-        $validatedData['created_at'] = Carbon::now();
+            // Create the user
+            $user = User::create($validatedData);
 
-        $user = User::create($validatedData);
-        return response()->json(['message'=>'user created successfully','users'=>$user], 201);
+            // Redirect using Inertia with a success message
+            return Inertia::location(route('login'))->with('success', 'User created successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Instead of returning a plain JSON response, redirect back with errors
+            return back()->withErrors($e->errors())->withInput();
+        }
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function update(Request $request, User $user)
     {

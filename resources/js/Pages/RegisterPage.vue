@@ -6,12 +6,12 @@
             </v-card-title>
 
             <v-card-text>
-                <!-- Form Start -->
-                <v-form v-model="valid">
+                <v-form ref="form" v-model="valid" @submit.prevent="submit">
                     <!-- Name Field -->
                     <v-text-field
                         v-model="form.name"
                         label="Name"
+                        :error-messages="errors.name"
                         :rules="[rules.required]"
                         required
                     ></v-text-field>
@@ -20,6 +20,7 @@
                     <v-text-field
                         v-model="form.surname"
                         label="Surname"
+                        :error-messages="errors.surname"
                         :rules="[rules.required]"
                         required
                     ></v-text-field>
@@ -29,6 +30,7 @@
                         v-model="form.email"
                         label="Email"
                         type="email"
+                        :error-messages="errors.email"
                         :rules="[rules.required, rules.email]"
                         required
                     ></v-text-field>
@@ -38,6 +40,7 @@
                         v-model="form.password"
                         label="Password"
                         type="password"
+                        :error-messages="errors.password"
                         :rules="[rules.required, rules.minLength(8)]"
                         required
                     ></v-text-field>
@@ -51,15 +54,6 @@
                         required
                     ></v-text-field>
 
-                    <!-- Role ComboBox -->
-                    <v-combobox
-                        v-model="form.role_id"
-                        :items="roles"
-                        label="Select Role"
-                        :rules="[rules.required]"
-                        required
-                    ></v-combobox>
-
                     <!-- Submit Button -->
                     <v-btn
                         :disabled="!valid"
@@ -70,46 +64,56 @@
                         Register
                     </v-btn>
                 </v-form>
-                <!-- Form End -->
             </v-card-text>
         </v-card>
     </v-container>
 </template>
 
 <script>
-import axios from 'axios';
+import { useForm } from '@inertiajs/inertia-vue3';
 
 export default {
     data() {
         return {
-            valid: false,  // Tracks form validity
-            form: {
+            valid: false,
+            form: useForm({
                 name: '',
                 surname: '',
                 email: '',
                 password: '',
                 confirmPassword: '',
-                role_id: ''  // Role selection
-            },
-            roles: ['Educator', 'Admin', 'Moderator'],  // Example roles
+            }),
             rules: {
                 required: value => !!value || 'This field is required.',
                 email: value => /.+@.+\..+/.test(value) || 'E-mail must be valid.',
-                minLength: v => v.length >= 8 || 'Password must be at least 8 characters long',  // Ensure password length is checked
+                minLength: length => value => value.length >= length || `Password must be at least ${length} characters.`,
             }
         };
     },
+    computed: {
+        errors() {
+            return this.form.errors; // Capture errors from the Inertia form
+        }
+    },
     methods: {
-        async submit() {
-            if (!this.valid) return;  // Prevent submission if form is invalid
-
-            try {
-                const response = await axios.post('/api/register', this.form);
-                console.log(response.data);
-                this.$router.push('/login');  // Redirect to login page on success
-            } catch (error) {
-                console.error('An error occurred:', error.response || error.message);
-            }
+        submit() {
+            this.form.post('/register', {
+                onSuccess: () => {
+                    // Reset the form on successful registration
+                    this.$refs.form.reset();
+                },
+                onError: (errors) => {
+                    // Check for validation errors
+                    if (errors.email && errors.email[0]) {
+                        // Display the backend error for the email field
+                        this.form.errors.email = errors.email[0];
+                    } else if (errors.password) {
+                        this.form.errors.password = errors.password[0];
+                    } else {
+                        this.errorMessage = 'An unexpected error occurred.';
+                    }
+                }
+            });
         },
         passwordMatch(value) {
             return value === this.form.password || 'Passwords do not match.';
