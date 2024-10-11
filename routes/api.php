@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 // Using Laravel Sanctum for API Authentication
 // Login Routes
 Route::post('/login', [LoginController::class, 'login']);
+
+
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
 
 // Register Routes

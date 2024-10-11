@@ -47,7 +47,6 @@
                 @click:append-inner="visible = !visible"
             ></v-text-field>
 
-
             <!-- Log In Button -->
             <v-btn
                 class="mb-8"
@@ -71,6 +70,13 @@
                 </a>
             </v-card-text>
         </v-card>
+
+        <!-- Error Message -->
+        <v-snackbar v-model="snackbar" color="red" timeout="3000">
+            {{ errorMessage }}
+            <v-btn color="white" text="" @click="snackbar = false">Close</v-btn>
+        </v-snackbar>
+
     </div>
 </template>
 
@@ -85,6 +91,8 @@ export default {
         password: '', // Bind the password input
         visible: false, // Password visibility toggle
         isValid: false, // Initially, the Log In button is disabled
+        snackbar: false, // Controls the visibility of the snackbar
+        errorMessage: '', // To store error messages
     }),
     watch: {
         // Watch for changes in email and password and trigger validation
@@ -108,19 +116,27 @@ export default {
                     password: this.password,
                 });
 
-                if (response.data.success) {
+                if (response.data.user) {
                     this.navigateToExplorePage(); // Redirect to the explore page if credentials are correct
                 } else {
-                    alert('Invalid credentials, please try again.');
+                    this.showError('Invalid credentials, please try again.'); // Show error message
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                alert('An error occurred during login. Please try again.');
+                this.showError('An error occurred during login. Please try again.');
             }
         },
         navigateToExplorePage() {
             Inertia.visit('/explore'); // Redirect to the explore page
         },
+        showError(message) {
+            this.errorMessage = message; // Set the error message
+            this.snackbar = true; // Show the snackbar
+        },
     },
 };
 </script>
+
+<style scoped>
+
+</style>

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,35 +21,24 @@ class LoginController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws ValidationException
      */
-    public function login(Request $request)
+    // Login method
+    public function login(Request $request): JsonResponse
     {
-        $credentials = $request->only('email', 'password');
-
-        // Validate the credentials
-        $request->validate([
-            'email' => 'required|email',
+        // Validate the login data
+        $validatedData = $request->validate([
+            'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
         // Attempt to log the user in
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            // Generate a token for the authenticated user
-            $token = $user->createToken('YourAppName')->plainTextToken;
-
-            return response()->json([
-                'message' => 'Login successful',
-                'token' => $token,
-                'user' => $user,
-            ]);
+        if (Auth::attempt($validatedData)) {
+            // Authentication passed
+            return response()->json(['message' => 'Login successful!', 'user' => Auth::user()], 200);
         }
 
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
-        ]);
+        // Authentication failed
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
     /**

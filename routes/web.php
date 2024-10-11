@@ -24,12 +24,11 @@ Route::get('/contributors', [ContributorsController::class, 'index'])->name('con
 
 // Show the register page (Inertia)
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'store']);
 
 
 // Show the login page (Inertia)
 Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'store']);
+
 
 
 // Display the AboutUs Page
