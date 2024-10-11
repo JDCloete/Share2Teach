@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -11,9 +12,16 @@ class ModerationController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index(): Response
     {
-        return Inertia::render('ModerationPage'); // Ensure this matches your component's name
+        return Inertia::render('ModerationPage');
+    }
+
+    public function getDocuments()
+    {
+        $documents = Document::all();
+        return response()->json($documents);
     }
 
     /**

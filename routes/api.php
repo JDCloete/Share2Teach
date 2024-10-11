@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
 // Using Laravel Sanctum for API Authentication
@@ -24,8 +25,18 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
 
+
+// Define the logout route
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+
 // Register Routes
 Route::post('/register', [RegisterController::class, 'store']);
+
+
+Route::get('/documents', [DocumentController::class, 'getDocuments']);
+
+
+
 
 // Forgot Password Routes
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.forgot');

@@ -4,26 +4,25 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Document;
-use App\Models\Metadata;
-use App\Models\Starred;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-use PhpOffice\PhpWord\IOFactory;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 class DocumentController extends Controller
 {
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        return Inertia::render('ExplorePage'); // Ensure this matches your Vue component name
+        return Inertia::render('ExplorePage', [
+            'role_id' => (int) $request->query('role_id'), // Cast to integer
+        ]);
     }
+
+
 
     public function readAll(): JsonResponse
     {
@@ -65,6 +64,18 @@ class DocumentController extends Controller
     {
         $document->delete();
         return response()->json(['message'=>'document deleted successfully'], 200);
+    }
+
+    public function download($id): BinaryFileResponse|JsonResponse
+    {
+        $document = Document::find($id);
+        $filePath = storage_path('app/public/documents/' . $document->filename); // Adjust path
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            return response()->json(['message' => 'File not found'], 404);
+        }
     }
 
 

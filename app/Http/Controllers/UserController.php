@@ -49,7 +49,7 @@ class UserController extends Controller
          ]);
 
         $validatedData['password'] = Hash::make($validatedData['password']);
-        $validatedData['role_id'] = 1;
+        $validatedData['role_id'] = 2;
         $validatedData['created_at'] = Carbon::now();
         $user->update($validatedData);
         return response()->json(['message' => 'user updated successfully', 'user' => $user], 200);

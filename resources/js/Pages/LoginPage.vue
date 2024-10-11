@@ -116,8 +116,9 @@ export default {
                     password: this.password,
                 });
 
-                if (response.data.user) {
-                    this.navigateToExplorePage(); // Redirect to the explore page if credentials are correct
+                if (response.data.success) {
+                    const userRoleId = response.data.user.role_id; // Get role_id from response
+                    this.navigateToExplorePage(userRoleId); // Pass role_id to navigate
                 } else {
                     this.showError('Invalid credentials, please try again.'); // Show error message
                 }
@@ -126,8 +127,9 @@ export default {
                 this.showError('An error occurred during login. Please try again.');
             }
         },
-        navigateToExplorePage() {
-            Inertia.visit('/explore'); // Redirect to the explore page
+        navigateToExplorePage(roleId) {
+            // Navigate to the explore page with the role_id as a query parameter
+            Inertia.visit(`/explore?role_id=${roleId}`);
         },
         showError(message) {
             this.errorMessage = message; // Set the error message

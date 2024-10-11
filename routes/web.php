@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Auth\LoginController;
@@ -29,6 +30,16 @@ Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->na
 // Show the login page (Inertia)
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 
+// THE LOGOUT ROUTE IS ALSO IN api.php
+Route::middleware(['web'])->group(function () {
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+});
+
+// Display the Faq Page
+Route::get('/moderation', [ModerationController::class, 'index'])->name('pages.moderation');
+
+Route::get('/documents/download/{id}', [DocumentController::class, 'download']);
+
 
 
 // Display the AboutUs Page
@@ -48,13 +59,9 @@ Route::post('/contribute-files', [ContributeFilesController::class, 'store'])->n
 Route::get('/explore', [DocumentController::class, 'index'])->name('explore.files');
 Route::post('/explore', [DocumentController::class, 'store'])->name('explore.files.store');
 
-
 // Display the Faq Page
 Route::get('/faq', [FaqController::class, 'index'])->name('pages.faq');
 
-
-// Display the Faq Page
-Route::get('/moderation', [ModerationController::class, 'index'])->name('pages.moderation');
 
 
 // Display the Faq Page
