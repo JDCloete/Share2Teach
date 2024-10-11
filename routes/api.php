@@ -53,9 +53,10 @@ Route::get('/analytics', [AnalyticsController::class, 'readAllReportedDocuments'
 //Documents Routes
 Route::get('/documents', [DocumentController::class, 'readAll']);
 Route::get('/documents/{document}', [DocumentController::class, 'readSingle']);
-Route::post('/documents', [DocumentController::class, 'store']);
+//Route::post('/documents', [DocumentController::class, 'store']);
 Route::patch('/documents/{document}', [DocumentController::class, 'update']);
 Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocument']);
+Route::post('/documents', [DocumentController::class, 'upload']);
 
 //User Routes
 Route::get('/users', [UserController::class, 'readAll']);
