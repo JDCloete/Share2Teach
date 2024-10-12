@@ -58,6 +58,7 @@ Route::get('/about-us', [AboutUsController::class, 'index'])->name('pages.about-
 Route::get('/analytics', [AnalyticsController::class, 'index'])->name('pages.analytics');
 
 
+
 // Display the ContributeFiles Page
 Route::get('/contribute-files', [ContributeFilesController::class, 'index'])->name('contribute.files');
 Route::post('/contribute-files', [ContributeFilesController::class, 'store'])->name('contribute.files.store');

@@ -117,13 +117,13 @@ export default {
         this.pollUsers(); // Continuously poll for updates
     },
     computed: {
-        filteredAdmins() {
+        filteredEducators() {
             return this.filteredUsersByRole(1); // Filter by role_id for Admin
         },
-        filteredModerators() {
+        filteredAdmins() {
             return this.filteredUsersByRole(2); // Filter by role_id for Moderator
         },
-        filteredEducators() {
+        filteredModerators() {
             return this.filteredUsersByRole(3); // Filter by role_id for Educator
         },
         // Filter users based on search and role

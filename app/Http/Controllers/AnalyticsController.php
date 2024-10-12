@@ -6,29 +6,60 @@ use App\Models\Report;
 use App\Models\Document;
 use App\Models\Download;
 use App\Models\User;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log; // Import the Log facade
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AnalyticsController extends Controller
 {
-
     public function index(): Response
     {
         return Inertia::render('AnalyticsPage'); // Ensure this matches your Vue component name
     }
 
-
-    /*public function readAllUsers(Request $request)
+    public function getAllAnalyticsData(Request $request): JsonResponse
     {
-        return response()->json(['message'=>'analytics fetched successfully','analytics'=>Analytics::all()], 200);
-    }*/
+        try {
+            // Retrieve counts using existing methods
+            $usersCount = $this->readAllUsers()->original['total_users'];
+            $downloadsCount = $this->readAllDownloads()->original['total_downloads'];
+            $documentsCount = $this->readAllDocuments()->original['total_document'];
+            $reportedDocumentsCount = $this->readAllReportedDocuments()->original['total_reported_documents'];
+            $newUsersToday = $this->readAllNewUsersFromToday(); // Returns count directly
 
-    // Users
-    public function readAllUsers(Request $request)
+            // Calculate new users in the last week and month using Carbon
+            $newUsersLastWeek = User::whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()])->count();
+            $newUsersLastMonth = User::whereBetween('created_at', [Carbon::now()->subMonth(), Carbon::now()])->count();
+
+            // Return combined data in JSON response
+            return response()->json([
+                'users' => $usersCount,
+                'downloads' => $downloadsCount,
+                'documents' => $documentsCount,
+                'reported_documents' => $reportedDocumentsCount,
+                'new_users_today' => $newUsersToday,
+                'new_users_last_week' => $newUsersLastWeek, // Add this
+                'new_users_last_month' => $newUsersLastMonth, // Add this
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage()); // Log the error message
+            return response()->json(['error' => 'An error occurred while fetching analytics data.'], 500);
+        }
+    }
+
+
+    public function readAllNewUsersFromToday()
     {
-        // Get the total count of users
+        return User::whereDate('created_at', Carbon::today())->count();
+    }
+
+    public function readAllUsers(): JsonResponse
+    {
         $totalUsers = User::count();
 
         return response()->json([
@@ -37,10 +68,8 @@ class AnalyticsController extends Controller
         ], 200);
     }
 
-    // Downloads
-    public function readAllDownloads(Request $request)
+    public function readAllDownloads(): JsonResponse
     {
-        // Get the total count of users
         $totalDownloads = Download::count();
 
         return response()->json([
@@ -49,10 +78,8 @@ class AnalyticsController extends Controller
         ], 200);
     }
 
-    // Documents
-    public function readAllDocuments(Request $request)
+    public function readAllDocuments(): JsonResponse
     {
-        // Get the total count of users
         $totalDocuments = Document::count();
 
         return response()->json([
@@ -61,24 +88,13 @@ class AnalyticsController extends Controller
         ], 200);
     }
 
-    // Reported Documents
-    public function readAllReportedDocuments(Request $request)
+    public function readAllReportedDocuments(): JsonResponse
     {
-        try {
-            // Get the total count of reported documents
-            $totalReportedDocuments = \DB::table('reports') // Start from the reports table
-            ->leftJoin('users', 'reports.user_id', '=', 'users.id') // Left join to ensure all reports are included
-            ->leftJoin('analytics', 'users.id', '=', 'analytics.user_id') // Left join Analytics to include all reports
-            ->count('reports.id'); // Count the id in Reports table, assuming the primary key is 'id'
+        $totalReportedDocuments = Report::count(); // Ensure this gets the count correctly
 
-            return response()->json([
-                'message' => 'reported document analytics fetched successfully',
-                'total_reported_documents' => $totalReportedDocuments,
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        return response()->json([
+            'message' => 'reported document analytics fetched successfully',
+            'total_reported_documents' => $totalReportedDocuments,
+        ], 200);
     }
-
-
 }

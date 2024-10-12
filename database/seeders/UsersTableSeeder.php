@@ -21,7 +21,7 @@ class UsersTableSeeder extends Seeder
                 'email' => 'danikaleroux111@gmail.com',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make('Admin123'),
-                'role_id' => 1, // Admin role
+                'role_id' => 2, // Admin role
                 'remember_token' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -32,7 +32,7 @@ class UsersTableSeeder extends Seeder
                 'email' => 'jlbegue36@gmail.com',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make('Admin456'),
-                'role_id' => 2, // Educator role
+                'role_id' => 2, // Admin role
                 'remember_token' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -43,7 +43,7 @@ class UsersTableSeeder extends Seeder
                 'email' => 'jacques14cloete@gmail.com',
                 'email_verified_at' => Carbon::now(),
                 'password' => Hash::make('Admin789'),
-                'role_id' => 3, // Moderator role
+                'role_id' => 2, // Admin role
                 'remember_token' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

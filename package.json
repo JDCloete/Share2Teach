@@ -25,6 +25,7 @@
         "@inertiajs/vue3": "^1.2.0",
         "@watermarkify/vue-watermark": "^0.0.7",
         "autoprefixer": "^10.4.20",
+        "chart.js": "^4.4.4",
         "inertia-app-framework-vuetify": "^3.0.1",
         "mitt": "^3.0.1",
         "postcss": "^8.4.47",

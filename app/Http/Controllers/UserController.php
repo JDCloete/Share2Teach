@@ -6,8 +6,10 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 
@@ -22,7 +24,7 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    public function readSingle(Request $request , User $user)
+    public function readSingle(Request $request , User $user): JsonResponse
     {
         return response()->json(['message'=>'user fetched successfully','user'=>$user], 200);
     }
@@ -34,7 +36,7 @@ class UserController extends Controller
 
 // ...
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         try {
             // Validate the incoming request data
@@ -56,7 +58,7 @@ class UserController extends Controller
 
             // Redirect using Inertia with a success message
             return redirect()->route('login')->with('success', 'User created successfully!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             // Redirect back with validation errors and old input data
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
@@ -65,7 +67,7 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user): JsonResponse
     {
         try{
          $validatedData = $request->validate([
@@ -86,7 +88,7 @@ class UserController extends Controller
 
     }
 
-    public function deleteUser(Request $request, User $user)
+    public function deleteUser(Request $request, User $user): JsonResponse
     {
         $user->delete();
         return response()->json(['message'=>'user deleted successfully'], 200);

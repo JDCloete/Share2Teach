@@ -63,14 +63,21 @@ Route::post('/roles', [RoleController::class, 'store']);
 Route::delete('/roles/{role}', [RoleController::class, 'deleteRole']);
 Route::get('/roles', [RoleController::class, 'readAll']);
 
+
+// Analytics Routes
+Route::get('/analytics', [AnalyticsController::class, 'getAllAnalyticsData']);
+
 //Analytics Routes
-Route::get('/analytics', [AnalyticsController::class, 'readAllUsers']);
-Route::get('/analytics', [AnalyticsController::class, 'readAllDownloads']);
-Route::get('/analytics', [AnalyticsController::class, 'readAllDocuments']);
-Route::get('/analytics', [AnalyticsController::class, 'readAllReportedDocuments']);
+Route::get('/analytics/users', [AnalyticsController::class, 'readAllUsers']);
+Route::get('/analytics/downloads', [AnalyticsController::class, 'readAllDownloads']);
+Route::get('/analytics/documents', [AnalyticsController::class, 'readAllDocuments']);
+Route::get('/analytics/reported-documents', [AnalyticsController::class, 'readAllReportedDocuments']);
+Route::get('/analytics/new-users-today', [AnalyticsController::class, 'readAllNewUsersFromToday']);
+
+
 
 //Documents Routes
-
+// Not working currently
 
 Route::get('/documents', function () {
     $documents = Document::with(['users', 'metadata'])
