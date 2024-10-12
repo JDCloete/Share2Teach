@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ContributeFilesController;
@@ -61,6 +62,10 @@ Route::get('/moderation', [ModerationController::class, 'index'])->name('pages.m
 
 // Display the Faq Page
 Route::get('/oer', [OERController::class, 'index'])->name('oer');
+
+
+// Display the Reset Password Page
+Route::get('/reset-password', [ForgotPasswordController::class, 'showResetPasswordPage'])->name('reset.password');
 
 
 

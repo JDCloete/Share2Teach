@@ -1,76 +1,123 @@
 <template>
-    <v-container class="d-flex justify-center align-center fill-height">
-        <v-card width="400px" style="height: 600px;">
-            <v-card-title class="text-h5 d-flex justify-center align-center">
-                Register
-            </v-card-title>
+    <v-app class="background-image">
+        <v-toolbar color="primary" dark>
+            <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
+                alt="Logo"
+                class="mr-2 rounded-image"
+                width="30"
+                height="30"
+                style="object-fit: cover; margin-left: 15px;"
+            />
 
-            <v-card-text>
-                <v-form ref="form" v-model="valid" @submit.prevent="submit">
-                    <!-- Name Field -->
-                    <v-text-field
-                        v-model="form.name"
-                        label="Name"
-                        :error-messages="errors.name"
-                        :rules="[rules.required]"
-                        required
-                    ></v-text-field>
+            <v-toolbar-title class="d-flex">Register for Share2Teach</v-toolbar-title>
 
-                    <!-- Surname Field -->
-                    <v-text-field
-                        v-model="form.surname"
-                        label="Surname"
-                        :error-messages="errors.surname"
-                        :rules="[rules.required]"
-                        required
-                    ></v-text-field>
+            <v-spacer></v-spacer>
 
-                    <!-- Email Field -->
-                    <v-text-field
-                        v-model="form.email"
-                        label="Email"
-                        type="email"
-                        :error-messages="errors.email"
-                        :rules="[rules.required, rules.email]"
-                        @input="handleEmailInput"
-                        required
-                    ></v-text-field>
+            <v-btn text="" @click="navigateToLoginPage">
+                <v-icon left class="mr-2">mdi-key</v-icon>
+                Login
+            </v-btn>
+        </v-toolbar>
 
-                    <!-- Password Field -->
-                    <v-text-field
-                        v-model="form.password"
-                        label="Password"
-                        type="password"
-                        :error-messages="errors.password"
-                        :rules="[rules.required, rules.minLength(8)]"
-                        required
-                    ></v-text-field>
+        <v-container class="main-container d-flex justify-center align-center">
+            <v-card width="450px" class="custom-card py-8 px-6 elevation-12">
+                <v-card-title class="text-h5 d-flex justify-center align-center mb-4">
+                    <v-icon left large class="mr-3">mdi-account</v-icon>
+                    Create Your Account
+                </v-card-title>
 
-                    <!-- Confirm Password Field -->
-                    <v-text-field
-                        v-model="form.confirmPassword"
-                        label="Confirm Password"
-                        type="password"
-                        :rules="[rules.required, passwordMatch]"
-                        required
-                    ></v-text-field>
+                <v-divider class="mb-4"></v-divider>
 
-                    <!-- Submit Button -->
-                    <v-btn
-                        :disabled="!valid || !!errors.email || !!errors.password || !!errors.name || !!errors.surname"
-                        color="primary"
-                        class="mt-4"
-                        @click="submit"
-                    >
-                        Register
-                    </v-btn>
-                </v-form>
-            </v-card-text>
-        </v-card>
-    </v-container>
+                <v-card-text>
+                    <v-form ref="form" v-model="valid" @submit.prevent="submit">
+                        <!-- Name Field -->
+                        <v-text-field
+                            v-model="form.name"
+                            label="Name"
+                            :error-messages="errors.name"
+                            :rules="[rules.required]"
+                            prepend-inner-icon="mdi-account-circle"
+                            outlined
+                            dense
+                            required
+                            class="mb-3"
+                        ></v-text-field>
+
+                        <!-- Surname Field -->
+                        <v-text-field
+                            v-model="form.surname"
+                            label="Surname"
+                            :error-messages="errors.surname"
+                            :rules="[rules.required]"
+                            prepend-inner-icon="mdi-account-outline"
+                            outlined
+                            dense
+                            required
+                            class="mb-3"
+                        ></v-text-field>
+
+                        <!-- Email Field -->
+                        <v-text-field
+                            v-model="form.email"
+                            label="Email"
+                            type="email"
+                            :error-messages="errors.email"
+                            :rules="[rules.required, rules.email]"
+                            prepend-inner-icon="mdi-email-outline"
+                            outlined
+                            dense
+                            required
+                            @input="handleEmailInput"
+                            class="mb-3"
+                        ></v-text-field>
+
+                        <!-- Password Field -->
+                        <v-text-field
+                            v-model="form.password"
+                            label="Password"
+                            type="password"
+                            :error-messages="errors.password"
+                            :rules="[rules.required, rules.minLength(8)]"
+                            prepend-inner-icon="mdi-lock-outline"
+                            outlined
+                            dense
+                            required
+                            class="mb-3"
+                        ></v-text-field>
+
+                        <!-- Confirm Password Field -->
+                        <v-text-field
+                            v-model="form.confirmPassword"
+                            label="Confirm Password"
+                            type="password"
+                            :rules="[rules.required, passwordMatch]"
+                            prepend-inner-icon="mdi-lock-check-outline"
+                            outlined
+                            dense
+                            required
+                            class="mb-5"
+                        ></v-text-field>
+
+                        <!-- Submit Button -->
+                        <v-btn
+                            :disabled="!valid || !!errors.email || !!errors.password || !!errors.name || !!errors.surname"
+                            color="primary"
+                            block
+                            large
+                            @click="submit"
+                        >
+                            Register
+                        </v-btn>
+                    </v-form>
+                </v-card-text>
+            </v-card>
+        </v-container>
+    </v-app>
 </template>
 
 <script>
+import { Inertia } from '@inertiajs/inertia';
 import { useForm } from '@inertiajs/inertia-vue3';
 
 export default {
@@ -96,42 +143,57 @@ export default {
         submit() {
             this.form.post('/register', {
                 onError: (errors) => {
-                    console.error('Form errors:', errors); // Debugging statement
-                    this.errors = errors; // Assign backend errors to the local errors object
+                    this.errors = errors;
                 },
-                onSuccess: (response) => {
-                    console.log('User registered successfully'); // Debugging statement for success
-                    // If successful, the response should redirect to the login page
-                    window.location.href = '/login'; // Redirect to login page
+                onSuccess: () => {
+                    window.location.href = '/login'; // Redirect to login page on success
                 }
             });
         },
         handleEmailInput() {
-            // Clear the email error when the user types in the email field
             if (this.errors.email) {
-                console.log('Clearing email error'); // Debugging statement
-                this.errors.email = ''; // Clear email error
+                this.errors.email = ''; // Clear email error when the user types
             }
         },
         passwordMatch(value) {
             return value === this.form.password || 'Passwords do not match.';
+        },
+        navigateToLoginPage() {
+            Inertia.visit('/login');
         }
     },
     mounted() {
-        // Ensure form values persist if the page reloads with errors
         this.form.name = this.$page.props.form?.name || '';
         this.form.surname = this.$page.props.form?.surname || '';
         this.form.email = this.$page.props.form?.email || '';
-        this.errors = this.$page.props.errors || {}; // Initialize errors from props
-
-        // Debugging statement to check if mounted data is correct
-        console.log('Mounted with props:', this.$page.props);
+        this.errors = this.$page.props.errors || {};
     }
 };
 </script>
 
 <style scoped>
-.fill-height {
+.background-image {
+    background-image: url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     min-height: 100vh;
+}
+.main-container {
+    height: calc(100vh - 64px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.rounded-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.custom-card {
+    border: 2px solid #3f51b5;
+    border-radius: 8px;
+    background-color: #ffffff;
 }
 </style>
