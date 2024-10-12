@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Document;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -14,13 +15,20 @@ use Inertia\Response;
 use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Str;
 use setasign\Fpdi\Fpdi; // For FPDI
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 
 class DocumentController extends Controller
 {
-    public function index(): Response
+
+    public function index(Request $request): Response
     {
-        return Inertia::render('ExplorePage'); // Ensure this matches your Vue component name
+        return Inertia::render('ExplorePage', [
+            'role_id' => (int) $request->query('role_id'), // Cast to integer
+        ]);
     }
+
+
 
     public function readAll(): JsonResponse
     {
@@ -65,6 +73,18 @@ class DocumentController extends Controller
         return response()->json(['message' => 'document deleted successfully'], 200);
     }
 
+    public function download($id): BinaryFileResponse|JsonResponse
+    {
+        $document = Document::find($id);
+        $filePath = storage_path('app/public/documents/' . $document->filename); // Adjust path
+
+        if (file_exists($filePath)) {
+            return response()->download($filePath);
+        } else {
+            return response()->json(['message' => 'File not found'], 404);
+        }
+    }
+
     public function upload(Request $request)
     {
         $validatedData = $request->validate([
@@ -97,8 +117,6 @@ class DocumentController extends Controller
 
         return response()->json(['message' => 'File uploaded and processed successfully!'], 200);
     }
-
-}
 
 
 
@@ -239,77 +257,111 @@ class DocumentController extends Controller
 //
 //        return $pdfFilePath;
 //    }
-
-
-/*
-public function index()
-{
-    $documents = Document::all(); // Fetch all documents
-    return view('documents.index', compact('documents')); // Return view with documents
 }
 
 
-public function create()
-{
-    return view('documents.create'); // Return the view with the upload form
-}
-
-public function store(Request $request)
-{
-    $request->validate([
-        'document_name' => 'required|string|max:255',
-        'file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:2048',
-    ]);
-
-    // Store the file and create a document record
-    $path = $request->file('file')->store('documents');
-
-    Document::create([
-        'document_name' => $request->document_name, // Use the correct property name
-        'file_path' => $path,
-    ]);
-
-    return redirect()->route('documents.index')->with('success', 'Document uploaded successfully!');
-}
 
 
-public function edit($id)
-{
-    $document = Document::findOrFail($id); // Find the document by ID
-    return view('documents.edit', compact('document')); // Return the edit view with the document
-}
 
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'document_name' => 'required|string|max:255',
-        'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png|max:2048',
-    ]);
 
-    $document = Document::findOrFail($id); // Find the document by ID
-    $document->document_name = $request->document_name; // Update the document name
 
-    // Check if a new file is uploaded
-    if ($request->hasFile('file')) {
-        $path = $request->file('file')->store('documents'); // Store the new file
-        $document->file_path = $path; // Update the file path
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+    public function index()
+    {
+        $documents = Document::all(); // Fetch all documents
+        return view('documents.index', compact('documents')); // Return view with documents
     }
 
-    $document->save(); // Save the changes
-    return redirect()->route('documents.index')->with('success', 'Document updated successfully!');
-}
 
-public function destroy($id)
-{
-    $document = Document::findOrFail($id); // Find the document by ID
-    $document->delete(); // Delete the document
+    public function create()
+    {
+        return view('documents.create'); // Return the view with the upload form
+    }
 
-    return redirect()->route('documents.index')->with('success', 'Document deleted successfully!');
-}
+    public function store(Request $request)
+    {
+        $request->validate([
+            'document_name' => 'required|string|max:255',
+            'file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:2048',
+        ]);
+
+        // Store the file and create a document record
+        $path = $request->file('file')->store('documents');
+
+        Document::create([
+            'document_name' => $request->document_name, // Use the correct property name
+            'file_path' => $path,
+        ]);
+
+        return redirect()->route('documents.index')->with('success', 'Document uploaded successfully!');
+    }
+
+
+    public function edit($id)
+    {
+        $document = Document::findOrFail($id); // Find the document by ID
+        return view('documents.edit', compact('document')); // Return the edit view with the document
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'document_name' => 'required|string|max:255',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png|max:2048',
+        ]);
+
+        $document = Document::findOrFail($id); // Find the document by ID
+        $document->document_name = $request->document_name; // Update the document name
+
+        // Check if a new file is uploaded
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('documents'); // Store the new file
+            $document->file_path = $path; // Update the file path
+        }
+
+        $document->save(); // Save the changes
+        return redirect()->route('documents.index')->with('success', 'Document updated successfully!');
+    }
+
+    public function destroy($id)
+    {
+        $document = Document::findOrFail($id); // Find the document by ID
+        $document->delete(); // Delete the document
+
+        return redirect()->route('documents.index')->with('success', 'Document deleted successfully!');
+    }
 }
 */
-
-
-
-
-

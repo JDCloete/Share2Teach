@@ -14,7 +14,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Models\Document;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
 // Using Laravel Sanctum for API Authentication
@@ -24,20 +27,36 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
 
+
+// Define the logout route
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+
 // Register Routes
 Route::post('/register', [UserController::class, 'store']);
+
+
+//Route::get('/documents', [DocumentController::class, 'getDocuments']);
+
+
+
 
 // Forgot Password Routes
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.forgot');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
 
 
-// Faq Routes
+// Inside api.php
+Route::get('/faq', [FaqController::class, 'readAll']);
+
+
+
 Route::post('/faq', [FaqController::class, 'store']);
 Route::get('/faq/{faq}', [FaqController::class, 'readSingle']);
-Route::get('/faq', [FaqController::class, 'readAll']);
 Route::patch('/faq/{faq}', [FaqController::class, 'update']);
 Route::delete('/faq/{faq}', [FaqController::class, 'deleteFaq']);
+
+
+
 
 //Roles Routes
 Route::post('/roles', [RoleController::class, 'store']);
@@ -51,7 +70,30 @@ Route::get('/analytics', [AnalyticsController::class, 'readAllDocuments']);
 Route::get('/analytics', [AnalyticsController::class, 'readAllReportedDocuments']);
 
 //Documents Routes
-Route::get('/documents', [DocumentController::class, 'readAll']);
+
+
+Route::get('/documents', function () {
+    $documents = Document::with(['users', 'metadata'])
+        ->get()
+        ->map(function ($document) {
+            return [
+                'document_name' => $document->document_name,
+                'uploaded_by' => $document->user ? $document->user->name : 'Unknown', // Check for null
+                'upload_date' => $document->metadata ? $document->metadata->upload_date : 'Unknown',
+                'type' => $document->metadata ? $document->metadata->type : 'Unknown',
+                'size' => $document->metadata ? $document->metadata->size : 'Unknown',
+            ];
+        });
+
+    return response()->json(['documents' => $documents]);
+});
+
+
+
+
+//Route::get('/documents', [DocumentController::class, 'readAll']);
+
+
 Route::get('/documents/{document}', [DocumentController::class, 'readSingle']);
 //Route::post('/documents', [DocumentController::class, 'store']);
 Route::patch('/documents/{document}', [DocumentController::class, 'update']);
@@ -59,7 +101,7 @@ Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocume
 Route::post('/documents', [DocumentController::class, 'upload']);
 
 //User Routes
-Route::get('/users', [UserController::class, 'readAll']);
+Route::get('/users', [UserController::class, 'getUsers']);
 Route::get('/users/{user}', [UserController::class, 'readSingle']);
 Route::post('/users', [UserController::class, 'store']);
 Route::patch('/users/{user}', [UserController::class, 'update']);

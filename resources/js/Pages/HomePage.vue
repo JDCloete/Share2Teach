@@ -75,7 +75,7 @@ export default {
 <style scoped>
 .background-image {
     background-image: url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg'); /* Replace with your image URL */
-    /* background-image: url('https://lh4.googleusercontent.com/ySrY2iqkZd_57_JpSOz84tx69Lbr4ydtwCv6CTJ_uM1vktNbJCcCPGlYKi_QHLfiTRAPonOMxXyQgRAMdkKzkUI=w16383'); /* Replace with your image URL */
+    /*background-image: url('https://lh4.googleusercontent.com/ySrY2iqkZd_57_JpSOz84tx69Lbr4ydtwCv6CTJ_uM1vktNbJCcCPGlYKi_QHLfiTRAPonOMxXyQgRAMdkKzkUI=w16383'); /* Replace with your image URL */
     background-size: cover; /* Cover the entire page */
     background-position: center; /* Center the background image */
     background-repeat: no-repeat; /* Prevent repeating the background image */
@@ -103,6 +103,6 @@ export default {
 }
 .animated-button:hover {
     transform: scale(1.12); /* Increase scale for more impact */
-    background-color: rgba(23, 83, 197, 0.43); /* Change background color on hover */
+    background-color: rgba(218, 189, 117, 0.43); /* Change background color on hover */
 }
 </style>

@@ -25,20 +25,17 @@ class LoginController extends Controller
     // Login method
     public function login(Request $request): JsonResponse
     {
-        // Validate the login data
-        $validatedData = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        // Attempt to log the user in
-        if (Auth::attempt($validatedData)) {
-            // Authentication passed
-            return response()->json(['message' => 'Login successful!', 'user' => Auth::user()], 200);
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+            return response()->json([
+                'success' => true,
+                'user' => $user, // Return user data including role_id
+            ]);
         }
 
-        // Authentication failed
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return response()->json(['success' => false], 401);
     }
 
     /**

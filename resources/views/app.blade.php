@@ -7,6 +7,7 @@
         <meta name="app:subtitle" content="{{ config('app.subtitle') }}">
         <meta name="app:logo" content="{{ config('app.logo') }}">
         <meta name="app:menu_logo" content="{{ config('app.menu_logo') }}">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 

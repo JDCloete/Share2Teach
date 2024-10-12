@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Faq;
+use App\Models\FAQ;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,6 +15,20 @@ class FaqController extends Controller
     {
         return Inertia::render('FaqPage'); // Ensure this matches your Vue component name
     }
+
+    public function readAll(Request $request): JsonResponse
+    {
+        // Select only the required fields
+        $faqs = FAQ::select('faq_question', 'faq_answer')->get();
+        return response()->json([
+            'success' => true,
+            'message' => 'FAQs fetched successfully',
+            'faqs' => $faqs,
+            'total' => $faqs->count() // Optional: Include total count
+        ], 200);
+    }
+
+
 
     public function store(Request $request): JsonResponse
     {
@@ -36,10 +50,7 @@ class FaqController extends Controller
         return response()->json(['message'=>'faq fetched successfully','faq'=>$faq], 200);
     }
 
-    public function readAll(Request $request)
-    {
-        return response()->json(['message'=>'faqs fetched successfully','faqs'=>FAQ::all()], 200);
-    }
+
 
     public function update(Request $request, FAQ $faq)
     {

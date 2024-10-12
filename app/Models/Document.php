@@ -55,14 +55,15 @@ class Document extends Model
     }
 
     // A Document BelongsTo Metadata
-    public function has_metadata(): HasOne
+    public function metadata(): HasOne
     {
-        return $this->hasOne(Metadata::class);
+        return $this->hasOne(Metadata::class, 'document_id');
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id', 'users');
+        return $this->belongsTo(User::class, 'user_id');
+        //return $this->belongsTo(User::class, 'user_id', 'user_id', 'users');
     }
 
     public function moderator(): BelongsTo

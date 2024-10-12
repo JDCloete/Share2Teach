@@ -3,19 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Role; // Import the Role model
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 
+// Import the Role model
+
 class UserController extends Controller
 {
-    public function readAll(Request $request)
+
+    public function getUsers(): JsonResponse
     {
-        return response()->json(['message'=>'users fetched successfully','users'=>User::all()], 200);
+        $users = User::select('name', 'surname', 'role_id')->get(); // Fetch only needed fields
+        return response()->json($users);
     }
 
     public function readSingle(Request $request , User $user)
@@ -45,7 +49,7 @@ class UserController extends Controller
             $validatedData['password'] = Hash::make($validatedData['password']);
             $validatedData['role_id'] = 1;
             $validatedData['created_at'] = Carbon::now();
-            
+
 
             // Create the user
             $user = User::create($validatedData);
@@ -60,20 +64,6 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Something went wrong!')->withInput();
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public function update(Request $request, User $user)
     {

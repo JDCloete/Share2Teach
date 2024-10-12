@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -24,6 +25,11 @@ Route::get('/', [HomePageController::class, 'index'])->name('pages.homepage');
 Route::get('/contributors', [ContributorsController::class, 'index'])->name('contributors.page');
 
 
+// Display the Faq Page
+Route::get('/faq', [FaqController::class, 'index'])->name('pages.faq');
+
+
+
 // Show the register page (Inertia)
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [UserController::class, 'store'])->name('register'); // Make sure this route is present
@@ -31,6 +37,16 @@ Route::post('/register', [UserController::class, 'store'])->name('register'); //
 
 // Show the login page (Inertia)
 Route::get('/login', [LoginController::class, 'index'])->name('login');
+
+// THE LOGOUT ROUTE IS ALSO IN api.php
+Route::middleware(['web'])->group(function () {
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+});
+
+// Display the Faq Page
+Route::get('/moderation', [ModerationController::class, 'index'])->name('pages.moderation');
+
+Route::get('/documents/download/{id}', [DocumentController::class, 'download']);
 
 
 
@@ -52,12 +68,7 @@ Route::get('/explore', [DocumentController::class, 'index'])->name('explore.file
 Route::post('/explore', [DocumentController::class, 'store'])->name('explore.files.store');
 
 
-// Display the Faq Page
-Route::get('/faq', [FaqController::class, 'index'])->name('pages.faq');
 
-
-// Display the Faq Page
-Route::get('/moderation', [ModerationController::class, 'index'])->name('pages.moderation');
 
 
 // Display the Faq Page
