@@ -25,6 +25,9 @@ class UserController extends Controller
 
 
 
+
+
+
 // ...
 
     public function store(Request $request)
@@ -42,17 +45,23 @@ class UserController extends Controller
             $validatedData['password'] = Hash::make($validatedData['password']);
             $validatedData['role_id'] = 1;
             $validatedData['created_at'] = Carbon::now();
+            
 
             // Create the user
             $user = User::create($validatedData);
 
             // Redirect using Inertia with a success message
-            return Inertia::location(route('login'))->with('success', 'User created successfully!');
+            return redirect()->route('login')->with('success', 'User created successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Instead of returning a plain JSON response, redirect back with errors
-            return back()->withErrors($e->errors())->withInput();
+            // Redirect back with validation errors and old input data
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            // Handle any other exceptions
+            return redirect()->back()->with('error', 'Something went wrong!')->withInput();
         }
     }
+
+
 
 
 

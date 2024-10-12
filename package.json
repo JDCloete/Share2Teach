@@ -32,7 +32,7 @@
         "vite-plugin-vuetify": "^2.0.4",
         "vue": "^3.5.10",
         "vue-router": "^4.4.5",
-        "vuetify": "^3.7.2",
+        "vuetify": "^3.7.0-beta.1",
         "ziggy-js": "^2.3.0"
     },
     "name": "full-stack-web-app-triple-vision",

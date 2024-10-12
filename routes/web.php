@@ -25,7 +25,7 @@ Route::get('/contributors', [ContributorsController::class, 'index'])->name('con
 
 // Show the register page (Inertia)
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [UserController::class, 'store']); // Make sure this route is present
+Route::post('/register', [UserController::class, 'store'])->name('register'); // Make sure this route is present
 
 
 // Show the login page (Inertia)
