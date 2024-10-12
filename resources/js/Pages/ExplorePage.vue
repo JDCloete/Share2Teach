@@ -39,15 +39,39 @@
             </template>
 
             <v-list color="transparent">
-                <v-list-item
-                    class="centered-list-item outlined-item"
-                    v-if="roleId === null || roleId === 1 || roleId === 2 || roleId === 3"
-                    @click="goToFAQ"
-                >
-                    <v-list-item-content>
-                        <v-list-item-title class="text-center">FAQ</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                <!-- Tooltip for FAQ -->
+                <v-tooltip text="Frequently Asked Questions">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item
+                            class="centered-list-item outlined-item"
+                            v-if="roleId === null || roleId === 1 || roleId === 2 || roleId === 3"
+                            @click="goToFAQ"
+                            v-bind="props"
+                        >
+                            <v-list-item-content>
+                                <v-list-item-title class="text-center">FAQ</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                </v-tooltip>
+
+                <!-- Tooltip for OER -->
+                <v-tooltip text="Open Educational Resources">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item
+                            class="centered-list-item outlined-item"
+                            v-if="roleId === null || roleId === 1 || roleId === 2 || roleId === 3"
+                            @click="goToOER"
+                            v-bind="props"
+                        >
+                            <v-list-item-content>
+                                <v-list-item-title class="text-center">Useful OER's</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                </v-tooltip>
+
+
 
                 <v-list-item
                     class="centered-list-item outlined-item"
@@ -132,6 +156,9 @@ export default {
         },
         goToFAQ() {
             this.$inertia.visit('/faq');
+        },
+        goToOER() {
+            this.$inertia.visit('/oer');
         },
         goToContributors() {
             this.$inertia.visit('/contributors');

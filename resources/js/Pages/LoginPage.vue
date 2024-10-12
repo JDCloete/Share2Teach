@@ -2,6 +2,7 @@
     <v-app class="background-image">
         <v-toolbar color="primary" dark>
             <img
+                @click="goToHomepage"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
                 alt="Logo"
                 class="mr-2 rounded-image"
@@ -142,6 +143,9 @@ export default {
         navigateToResetPasswordPage() {
             Inertia.visit('/reset-password'); // Adjust the route if needed
         },
+        goToHomepage() {
+            Inertia.visit('/');
+        },
     },
 };
 </script>
@@ -164,5 +168,11 @@ export default {
     border: 2px solid #3F51B5; /* Set the border color to match the theme */
     border-radius: 8px;
     padding: 20px;
+}
+.rounded-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 </style>

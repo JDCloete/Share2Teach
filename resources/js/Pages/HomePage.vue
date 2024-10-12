@@ -65,9 +65,6 @@ export default {
         navigateToLoginPage() {
             Inertia.visit('/login');
         },
-        goBack() {
-            window.history.back();
-        },
     },
 };
 </script>

@@ -2,6 +2,7 @@
     <v-app class="background-image">
         <v-toolbar color="primary" dark>
             <img
+                @click="goBack"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
                 alt="Logo"
                 class="mr-2 rounded-image"
@@ -160,6 +161,9 @@ export default {
             // Retain success message and upload progress
             this.uploadProgress = 0; // Reset upload progress
         },
+        goBack() {
+            window.history.back();
+        },
     },
 };
 </script>
@@ -195,6 +199,12 @@ export default {
 
 .v-btn {
     margin: 0 10px;
+}
+.rounded-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .d-flex {

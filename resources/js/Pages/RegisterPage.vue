@@ -2,6 +2,7 @@
     <v-app class="background-image">
         <v-toolbar color="primary" dark>
             <img
+                @click="goToHomepage"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
                 alt="Logo"
                 class="mr-2 rounded-image"
@@ -160,7 +161,10 @@ export default {
         },
         navigateToLoginPage() {
             Inertia.visit('/login');
-        }
+        },
+        goToHomepage() {
+            Inertia.visit('/');
+        },
     },
     mounted() {
         this.form.name = this.$page.props.form?.name || '';
