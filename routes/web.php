@@ -23,6 +23,11 @@ Route::get('/', [HomePageController::class, 'index'])->name('pages.homepage');
 Route::get('/contributors', [ContributorsController::class, 'index'])->name('contributors.page');
 
 
+// Display the Faq Page
+Route::get('/faq', [FaqController::class, 'index'])->name('pages.faq');
+
+
+
 // Show the register page (Inertia)
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 
@@ -59,8 +64,7 @@ Route::post('/contribute-files', [ContributeFilesController::class, 'store'])->n
 Route::get('/explore', [DocumentController::class, 'index'])->name('explore.files');
 Route::post('/explore', [DocumentController::class, 'store'])->name('explore.files.store');
 
-// Display the Faq Page
-Route::get('/faq', [FaqController::class, 'index'])->name('pages.faq');
+
 
 
 
