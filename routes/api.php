@@ -32,7 +32,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:san
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
 // Register Routes
-Route::post('/register', [RegisterController::class, 'store']);
+Route::post('/register', [UserController::class, 'store']);
 
 
 //Route::get('/documents', [DocumentController::class, 'getDocuments']);
@@ -98,6 +98,7 @@ Route::get('/documents/{document}', [DocumentController::class, 'readSingle']);
 //Route::post('/documents', [DocumentController::class, 'store']);
 Route::patch('/documents/{document}', [DocumentController::class, 'update']);
 Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocument']);
+Route::post('/documents', [DocumentController::class, 'upload']);
 
 //User Routes
 Route::get('/users', [UserController::class, 'getUsers']);
