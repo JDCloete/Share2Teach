@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role; // Import the Role model
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function readAll(Request $request)
+
+    public function getUsers(): JsonResponse
     {
-        return response()->json(['message'=>'users fetched successfully','users'=>User::all()], 200);
+        $users = User::select('name', 'surname', 'role_id')->get(); // Fetch only needed fields
+        return response()->json($users);
     }
 
     public function readSingle(Request $request , User $user)

@@ -33,7 +33,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 Route::post('/register', [RegisterController::class, 'store']);
 
 
-Route::get('/documents', [DocumentController::class, 'getDocuments']);
+//Route::get('/documents', [DocumentController::class, 'getDocuments']);
 
 
 
@@ -69,7 +69,7 @@ Route::patch('/documents/{document}', [DocumentController::class, 'update']);
 Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocument']);
 
 //User Routes
-Route::get('/users', [UserController::class, 'readAll']);
+Route::get('/users', [UserController::class, 'getUsers']);
 Route::get('/users/{user}', [UserController::class, 'readSingle']);
 Route::post('/users', [UserController::class, 'store']);
 Route::patch('/users/{user}', [UserController::class, 'update']);
