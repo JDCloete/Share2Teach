@@ -118,8 +118,6 @@ class DocumentController extends Controller
         return response()->json(['message' => 'File uploaded and processed successfully!'], 200);
     }
 
-}
-
 
 
 
