@@ -20,7 +20,6 @@ use Illuminate\Support\Str;
 use setasign\Fpdi\Fpdi; // For FPDI
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-
 class DocumentController extends Controller
 {
 
@@ -88,6 +87,7 @@ class DocumentController extends Controller
         }
     }
 
+
     public function upload(Request $request): JsonResponse
     {
         // Validate the uploaded file and metadata
@@ -112,7 +112,6 @@ class DocumentController extends Controller
             ->first();
 
         if ($existingDocument) {
-            // Clear processing message before returning the error response
             return response()->json(['message' => 'This document already exists in the database.'], 409);
         }
 
@@ -125,16 +124,58 @@ class DocumentController extends Controller
         $customPath = 'Documents/' . $moduleCode . '/' . $category;
         $fileName = $originalName . '.' . $extension;
 
-        // Store the file in the custom path using the public disk
-        $filePath = $file->storeAs($customPath, $fileName, 'public');
+        // Store the uploaded file temporarily
+        $uploadedFilePath = $file->storeAs('temp', $fileName);
+
+        // Define the path to the existing document to prepend (e.g., a cover page)
+        $existingDocumentPath = storage_path('app/public/cover.pdf'); // Adjust this path as needed
+
+        if ($extension === 'pdf') {
+            $pdf = new Fpdi();
+
+            // Prepend the existing document (cover page) to the uploaded document
+            $existingPageCount = $pdf->setSourceFile($existingDocumentPath);
+            for ($pageNo = 1; $pageNo <= $existingPageCount; $pageNo++) {
+                $pdf->AddPage();
+                $templateId = $pdf->importPage($pageNo);
+
+                // Adjust position (x, y) and width to move the page left and up
+                $pdf->useTemplate($templateId, 0, 0, 210); // Adjust the width if necessary
+            }
+
+
+            // Add the pages from the uploaded document
+            $uploadedPageCount = $pdf->setSourceFile(Storage::path($uploadedFilePath));
+            for ($pageNo = 1; $pageNo <= $uploadedPageCount; $pageNo++) {
+                $pdf->AddPage();
+                $templateId = $pdf->importPage($pageNo);
+                $pdf->useTemplate($templateId, 10, 10, 200);
+
+                // Add the watermark on each page
+                $pdf->SetFont('Helvetica', 'B', 10);
+                $pdf->SetTextColor(255, 0, 0); // Red color
+                $pdf->SetXY(10, 275); // Position for the watermark
+                $pdf->Cell(0, 0, 'Property of S2T_Triple_Vision', 0, 0, 'C');
+            }
+
+            // Save the merged and watermarked PDF to storage
+            $mergedFilePath = $customPath . '/' . $fileName;
+            Storage::disk('public')->put($mergedFilePath, $pdf->Output('S'));
+
+            // Delete the original temporary uploaded file
+            Storage::delete($uploadedFilePath);
+        } else {
+            // For non-PDF files, store without merging or watermarking
+            $mergedFilePath = $file->storeAs($customPath, $fileName, 'public');
+        }
 
         // Use a transaction to insert into the database
         try {
-            DB::transaction(function () use ($validatedData, $filePath, $fileSize, $moduleCode) {
+            DB::transaction(function () use ($validatedData, $mergedFilePath, $fileSize, $moduleCode) {
                 // Save document information
                 $document = Document::create([
                     'document_name' => $validatedData['document_name'],
-                    'storage_path' => $filePath,
+                    'storage_path' => $mergedFilePath,
                     'user_id' => Auth::id(),
                     'document_date_created' => Carbon::now(),
                     'category' => $validatedData['category'],
@@ -156,8 +197,10 @@ class DocumentController extends Controller
             return response()->json(['message' => 'Error inserting document metadata: ' . $e->getMessage()], 500);
         }
 
-        return response()->json(['message' => 'File uploaded and processed successfully!'], 200);
+        return response()->json(['message' => 'File uploaded, merged with existing document, watermarked, and processed successfully!'], 200);
     }
+
+
 
 
 

@@ -87,8 +87,8 @@ Route::get('/analytics/new-reports-today', [AnalyticsController::class, 'readAll
 
 
 //Documents Upload Routes
-//Route::post('/upload-documents', [DocumentController::class, 'upload']);
-Route::middleware('auth:sanctum')->post('/upload-documents', [DocumentController::class, 'upload']);
+Route::post('/upload-documents', [DocumentController::class, 'upload']);
+//Route::middleware('auth:sanctum')->post('/upload-documents', [DocumentController::class, 'upload']);
 
 // Not working currently
 Route::get('/documents', function () {
