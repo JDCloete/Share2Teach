@@ -25,7 +25,7 @@ class MetadataController extends Controller
 
         $validatedData['document_id'] = 1;
         $validatedData['upload_date'] = Carbon::now();
-        $validatedData['size'] = 1000;
+        $validatedData['size'] = 3000;
        return response()->json(['message'=>'metadata created successfully','metadata'=>Metadata::create($validatedData)], 201);
 
     }
@@ -36,7 +36,7 @@ class MetadataController extends Controller
         return response()->json(['message'=>'metadata deleted successfully'], 200);
     }
 
-    
+
     // searchMetadata works
     public function searchMetadata(Request $request)
     {

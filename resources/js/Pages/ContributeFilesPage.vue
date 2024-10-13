@@ -15,7 +15,7 @@
 
         <v-container class="d-flex justify-center align-center fill-height">
             <!-- Section 1: Upload -->
-            <v-card class="upload-section mx-4" outlined max-width="500">
+            <v-card class="upload-section mx-4" outlined max-width="500" style="min-height: 200px;">
                 <v-card-title>Upload</v-card-title>
                 <v-card-text>
                     <v-file-input
@@ -36,19 +36,19 @@
                     <v-text-field label="Document Name" v-model="documentName" required></v-text-field>
                     <v-select
                         label="Module Code"
-                        :items="['MTH101', 'CS201', 'PHY301']"
+                        :items="['Mathematics', 'Business Studies', 'History', 'Geography', 'Life Science', 'Natural Science', 'English', 'Technology', 'Afrikaans', 'Life Skills', 'Computer Science']"
                         v-model="moduleCode"
                         required
                     ></v-select>
                     <v-select
                         label="Category"
-                        :items="['Lecture Notes', 'Assignments', 'Summaries', 'Memos']"
+                        :items="['Lecture Notes', 'Assignments', 'Summaries', 'Memos', 'Quiz Questions']"
                         v-model="category"
                         required
                     ></v-select>
                     <v-select
                         label="Relevant Academic Year"
-                        :items="['2019', '2020', '2021', '2022', '2023', '2024']"
+                        :items="['2018','2019', '2020', '2021', '2022', '2023', '2024']"
                         v-model="academicYear"
                         required
                     ></v-select>
@@ -57,7 +57,7 @@
             </v-card>
 
             <!-- Section 3: Processing -->
-            <v-card class="processing-section mx-4" outlined max-width="500">
+            <v-card class="upload-section mx-4" outlined max-width="500" style="min-height: 200px;">
                 <v-card-title>Processing</v-card-title>
                 <v-card-text>
                     <v-progress-linear
@@ -73,7 +73,7 @@
         </v-container>
 
         <v-container class="d-flex justify-center mt-4">
-            <v-btn color="primary" @click="submitForm">Submit</v-btn>
+            <v-btn color="primary" @click="uploadAndSubmitFile">Submit</v-btn>
             <v-btn color="secondary" @click="resetForm">Reset</v-btn>
         </v-container>
     </v-app>
@@ -108,16 +108,18 @@ export default {
                 this.documentName = selectedFile.name.split('.').slice(0, -1).join('.'); // Set the document name to the file name without the extension
             }
         },
-        submitForm() {
+        uploadAndSubmitFile() {
+            this.processingMessage = 'Uploading file...'; // Set the processing message
+            this.uploadProgress = 0; // Reset upload progress
+            this.errorMessage = ''; // Clear any previous error messages
+
+            // Validate required fields
             if (!this.file || !this.documentName || !this.moduleCode || !this.category || !this.academicYear || !this.lecturerName) {
-                this.errorMessage = 'Please fill in all required fields';
+                this.errorMessage = 'Please fill in all required fields.';
                 return;
             }
 
-            this.uploading = true;
-            this.uploadProgress = 0;
-            this.processingMessage = 'Uploading file...';
-
+            // Create a FormData object to send the file and metadata
             const formData = new FormData();
             formData.append('file', this.file);
             formData.append('document_name', this.documentName);
@@ -126,7 +128,8 @@ export default {
             formData.append('academic_year', this.academicYear);
             formData.append('lecturer_name', this.lecturerName);
 
-            axios.post('/api/documents', formData, {
+            // Make the API call to upload the file
+            axios.post('/api/upload-documents', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -135,20 +138,26 @@ export default {
                 },
             })
                 .then(response => {
-                    this.processingMessage = ''; // Clear processing message
-                    this.successMessage = 'File uploaded successfully!'; // Set success message
-
-                    // Clear all fields after successful upload
-                    this.resetForm();
+                    this.successMessage = response.data.message; // Display success message
+                    this.resetForm(); // Reset the form after success
                 })
                 .catch(error => {
-                    this.errorMessage = 'An error occurred: ' + (error.response?.data?.message || 'Server error');
+                    this.processingMessage = ''; // Clear the processing message on error
+
+                    if (error.response) {
+                        if (error.response.status === 409) {
+                            this.errorMessage = 'An error occurred: This document already exists in the database.';
+                        } else {
+                            this.errorMessage = error.response.data.message || 'An error occurred. Please try again.';
+                        }
+                    } else {
+                        this.errorMessage = 'An error occurred. Please check your connection.';
+                    }
                 })
                 .finally(() => {
                     this.uploading = false; // Stop uploading state
                 });
         },
-
         resetForm() {
             this.file = null;
             this.documentName = '';
@@ -158,8 +167,12 @@ export default {
             this.lecturerName = '';
             this.errorMessage = '';
             this.processingMessage = '';
-            // Retain success message and upload progress
             this.uploadProgress = 0; // Reset upload progress
+
+            // Clear the success message after 3 seconds
+            setTimeout(() => {
+                this.successMessage = '';
+            }, 3000); // 3000 milliseconds = 3 seconds
         },
         goBack() {
             window.history.back();
@@ -167,10 +180,6 @@ export default {
     },
 };
 </script>
-
-
-
-
 
 <style scoped>
 .background-image {
@@ -191,12 +200,10 @@ export default {
 .fill-height {
     height: calc(100vh - 64px); /* Ensure it fills most of the screen */
 }
-
 .v-card {
     min-height: 350px; /* Adjust to balance the sections */
     width: 100%; /* Allow the card to take the full width within the column */
 }
-
 .v-btn {
     margin: 0 10px;
 }

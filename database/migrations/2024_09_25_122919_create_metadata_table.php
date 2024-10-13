@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('document_id');
             $table->foreign('document_id')->references('id')->on('documents')->onDelete('cascade');
 
-            $table->string('module_code', 7);
+            $table->string('module_code', 50);
             $table->string('category', 255);
             $table->year('academic_year');
             $table->string('lecturer_name', 255);

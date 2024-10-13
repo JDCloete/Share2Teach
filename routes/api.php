@@ -86,9 +86,11 @@ Route::get('/analytics/new-reports-today', [AnalyticsController::class, 'readAll
 
 
 
-//Documents Routes
-// Not working currently
+//Documents Upload Routes
+Route::post('/upload-documents', [DocumentController::class, 'upload']);
+Route::middleware('auth:sanctum')->post('/upload-documents', [DocumentController::class, 'upload']);
 
+// Not working currently
 Route::get('/documents', function () {
     $documents = Document::with(['users', 'metadata'])
         ->get()
@@ -115,7 +117,7 @@ Route::get('/documents/{document}', [DocumentController::class, 'readSingle']);
 //Route::post('/documents', [DocumentController::class, 'store']);
 Route::patch('/documents/{document}', [DocumentController::class, 'update']);
 Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocument']);
-Route::post('/documents', [DocumentController::class, 'upload']);
+
 
 //User Routes
 Route::get('/users', [UserController::class, 'getUsers']);

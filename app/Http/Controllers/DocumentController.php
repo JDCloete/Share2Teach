@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Document;
+use App\Models\Metadata;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log; // Log facade
 use Inertia\Inertia;
@@ -85,38 +88,90 @@ class DocumentController extends Controller
         }
     }
 
-    public function upload(Request $request)
+    public function upload(Request $request): JsonResponse
     {
+        // Validate the uploaded file and metadata
         $validatedData = $request->validate([
             'file' => 'required|mimes:pdf,doc,docx|max:2048',
             'document_name' => 'required|string|max:255',
-            'module_code' => 'required|string|max:255',
+            'module_code' => 'required|string|max:100',
             'category' => 'required|string|max:255',
             'academic_year' => 'required|integer',
             'lecturer_name' => 'required|string|max:255',
         ]);
 
-        $file = $request->file('file');
         $originalName = $request->document_name;
+        $moduleCode = $request->input('module_code');
+        $category = $request->input('category');
+
+        // Check for existing documents with the same criteria
+        $existingDocument = Document::where('document_name', $originalName)
+            ->join('metadata', 'documents.id', '=', 'metadata.document_id')
+            ->where('metadata.module_code', $moduleCode)
+            ->where('metadata.category', $category)
+            ->first();
+
+        if ($existingDocument) {
+            // Clear processing message before returning the error response
+            return response()->json(['message' => 'This document already exists in the database.'], 409);
+        }
+
+        // Proceed with the file upload since no duplicate was found
+        $file = $request->file('file');
         $extension = $file->getClientOriginalExtension();
+        $fileSize = $file->getSize();
 
-        // Path where the file will be stored
-        $storagePath = storage_path("app/public/");
-        $pdfName = $originalName . '.' . $extension;
+        // Custom path for file storage
+        $customPath = 'Documents/' . $moduleCode . '/' . $category;
+        $fileName = $originalName . '.' . $extension;
 
-        // Move the file to storage
-        $file->move($storagePath, $pdfName);
+        // Store the file in the custom path using the public disk
+        $filePath = $file->storeAs($customPath, $fileName, 'public');
 
-        // Save the document information to the database
-        $document = Document::create([
-            'document_name' => $originalName,
-            'storage_path' => $pdfName,
-            'user_id' => Auth::id(),
-            'document_date_created' => Carbon::now(),
-        ]);
+        // Use a transaction to insert into the database
+        try {
+            DB::transaction(function () use ($validatedData, $filePath, $fileSize, $moduleCode) {
+                // Save document information
+                $document = Document::create([
+                    'document_name' => $validatedData['document_name'],
+                    'storage_path' => $filePath,
+                    'user_id' => Auth::id(),
+                    'document_date_created' => Carbon::now(),
+                    'category' => $validatedData['category'],
+                    'academic_year' => $validatedData['academic_year'],
+                    'lecturer_name' => $validatedData['lecturer_name'],
+                ]);
+
+                // Create corresponding metadata entry
+                Metadata::create([
+                    'document_id' => $document->id,
+                    'module_code' => $moduleCode,
+                    'category' => $validatedData['category'],
+                    'academic_year' => $validatedData['academic_year'],
+                    'lecturer_name' => $validatedData['lecturer_name'],
+                    'size' => $fileSize,
+                ]);
+            });
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error inserting document metadata: ' . $e->getMessage()], 500);
+        }
 
         return response()->json(['message' => 'File uploaded and processed successfully!'], 200);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
