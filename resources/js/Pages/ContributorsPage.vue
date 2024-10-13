@@ -3,7 +3,7 @@
 
         <v-toolbar color="primary" dark style="margin-bottom: 20px">
             <img
-                @click="goToHomepage"
+                @click="goBack"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
                 alt="Go to Homepage"
                 class="mr-2 rounded-image"
@@ -152,8 +152,8 @@ export default {
                 this.fetchUsers();
             }, 5000); // Adjust interval as needed
         },
-        goToHomepage() {
-            this.$inertia.visit('/');
+        goBack() {
+            window.history.back();
         },
         navigateToRegisterPage() {
             this.$inertia.visit('/register');

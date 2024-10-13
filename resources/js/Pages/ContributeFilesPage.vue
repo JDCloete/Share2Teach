@@ -42,13 +42,13 @@
                     ></v-select>
                     <v-select
                         label="Category"
-                        :items="['Lecture Notes', 'Assignments', 'Summaries']"
+                        :items="['Lecture Notes', 'Assignments', 'Summaries', 'Memos']"
                         v-model="category"
                         required
                     ></v-select>
                     <v-select
                         label="Relevant Academic Year"
-                        :items="['2022', '2023', '2024']"
+                        :items="['2019', '2020', '2021', '2022', '2023', '2024']"
                         v-model="academicYear"
                         required
                     ></v-select>

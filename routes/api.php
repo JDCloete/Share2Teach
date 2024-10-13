@@ -69,10 +69,20 @@ Route::get('/analytics', [AnalyticsController::class, 'getAllAnalyticsData']);
 
 //Analytics Routes
 Route::get('/analytics/users', [AnalyticsController::class, 'readAllUsers']);
-Route::get('/analytics/downloads', [AnalyticsController::class, 'readAllDownloads']);
-Route::get('/analytics/documents', [AnalyticsController::class, 'readAllDocuments']);
-Route::get('/analytics/reported-documents', [AnalyticsController::class, 'readAllReportedDocuments']);
 Route::get('/analytics/new-users-today', [AnalyticsController::class, 'readAllNewUsersFromToday']);
+
+
+Route::get('/analytics/downloads', [AnalyticsController::class, 'readAllDownloads']);
+Route::get('/analytics/new-downloads-today', [AnalyticsController::class, 'readAllNewDownloadsFromToday']);
+
+
+Route::get('/analytics/documents', [AnalyticsController::class, 'readAllDocuments']);
+Route::get('/analytics/new-documents-today', [AnalyticsController::class, 'readAllNewDocumentsFromToday']);
+
+
+Route::get('/analytics/reported-documents', [AnalyticsController::class, 'readAllReportedDocuments']);
+Route::get('/analytics/new-reports-today', [AnalyticsController::class, 'readAllNewReportsFromToday']);
+
 
 
 

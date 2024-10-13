@@ -3,7 +3,7 @@
 
         <v-toolbar color="primary" dark>
             <img
-                @click="goToHomepage"
+                @click="goBack"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
                 alt="Logo"
                 class="mr-2 rounded-image"
@@ -11,7 +11,7 @@
                 height="30"
                 style="object-fit: cover; margin-left: 15px; cursor: pointer;"
             />
-            <v-toolbar-title class="d-flex">Welcome To Share2Teach</v-toolbar-title>
+            <v-toolbar-title class="d-flex">Open Educational Resources</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn text="" @click="navigateToRegisterPage">
                 <v-icon left class="mr-2">mdi-account-plus-outline</v-icon>
@@ -202,8 +202,8 @@ export default {
             // Add the past papers website link here
             window.open("https://collections.nwu.ac.za/dbtw-wpd/textbases/exam-papers/exams-2021-2025.html", "_blank");
         },
-        goToHomepage() {
-            this.$inertia.visit('/');
+        goBack() {
+            window.history.back();
         },
         navigateToRegisterPage() {
             this.$inertia.visit('/register');
