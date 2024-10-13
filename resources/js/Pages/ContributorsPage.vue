@@ -20,7 +20,6 @@
                     v-model="search"
                     label="Search Contributors"
                     prepend-inner-icon="mdi-magnify"
-                    clearable
                     hide-details
                     solo-inverted
                     flat
@@ -52,12 +51,12 @@
                         :key="user.id"
                         class="list-item"
                     >
-                    <v-list-item-content>
-                        <v-list-item-title class="user-item">
-                            <span class="custom-bullet"></span>
-                            {{ user.name }} {{ user.surname }}
-                        </v-list-item-title>
-                    </v-list-item-content>
+                        <v-list-item-content>
+                            <v-list-item-title class="user-item">
+                                <span class="custom-bullet"></span>
+                                {{ user.name }} {{ user.surname }}
+                            </v-list-item-title>
+                        </v-list-item-content>
                     </v-list-item>
                 </v-list>
             </v-col>
@@ -146,11 +145,11 @@ export default {
                 console.error('Error fetching users:', error);
             }
         },
-        // Polling function to fetch users every 5 seconds
+        // Polling function to fetch users every 20 seconds
         pollUsers() {
             setInterval(() => {
                 this.fetchUsers();
-            }, 5000); // Adjust interval as needed
+            }, 20000); // Adjust interval as needed
         },
         goBack() {
             window.history.back();
