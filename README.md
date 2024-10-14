@@ -2,6 +2,21 @@
 
 This README provides a comprehensive guide for setting up and running the Laravel + Vue.js + Vuetify project from the GitHub repository: CMPG-323-Full-Stack-Web-App-Triple-Vision.
 
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Installation Steps](#installation-steps)
+3. [Database Setup](#database-setup)
+4. [Environment Configuration](#environment-configuration)
+5. [Running the Application](#running-the-application)
+6. [Accessing the Application](#accessing-the-application)
+7. [API Testing](#api-testing)
+8. [Docker Setup (Optional)](#docker-setup-optional)
+9. [Troubleshooting](#troubleshooting)
+10. [Contributing](#contributing)
+11. [License](#license)
+12. [Contact](#contact)
+
 ## Prerequisites
 
 Ensure you have the following software installed on your local machine:
@@ -41,7 +56,7 @@ npm install
 yarn install
 ```
 
-### 3. Database Setup
+## Database Setup
 
 1. Create a new database (e.g., `s2t_triple_vision_db`).
 2. Copy `.env.example` to `.env`:
@@ -54,7 +69,7 @@ yarn install
    php artisan migrate:fresh --seed
    ```
 
-### 4. Environment Configuration
+## Environment Configuration
 
 Generate application key:
 ```bash
@@ -66,7 +81,7 @@ Update `APP_URL` in `.env`:
 APP_URL=http://127.0.0.1:8000
 ```
 
-### 5. Running the Application
+## Running the Application
 
 Start the Laravel backend server:
 ```bash
@@ -85,7 +100,7 @@ Watch for changes (optional):
 npm run watch
 ```
 
-### 6. Accessing the Application
+## Accessing the Application
 
 Visit `http://127.0.0.1:8000` in your web browser.
 
@@ -118,4 +133,33 @@ Use Postman or Insomnia to test API routes:
   npm install
   ```
 
-For more detailed information or if you encounter any issues, please refer to the project documentation or create an issue in the GitHub repository.
+## Contributing
+
+We welcome contributions to improve this project. Please follow these steps to contribute:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+Please ensure your code adheres to our coding standards and include tests for new features.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Contact
+
+Project Link: [https://github.com/JDCloete/CMPG-323-Full-Stack-Web-App-Triple-Vision](https://github.com/JDCloete/CMPG-323-Full-Stack-Web-App-Triple-Vision)
+
+If you have any questions or issues, please open an issue in the GitHub repository.
+
+## Acknowledgements
+
+- [Laravel](https://laravel.com)
+- [Vue.js](https://vuejs.org)
+- [Vuetify](https://vuetifyjs.com)
+- [Docker](https://www.docker.com)
+
+Thank you for using our Laravel + Vue.js + Vuetify project! We hope this README helps you get started quickly and easily.
