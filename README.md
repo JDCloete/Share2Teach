@@ -145,9 +145,9 @@ We welcome contributions to improve this project. Please follow these steps to c
 
 Please ensure your code adheres to our coding standards and include tests for new features.
 
-## License
+## Licence
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICECSE.md](LICENCE.md) file for details.
 
 ## Contact
 
