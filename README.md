@@ -1,66 +1,165 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel + Vue.js + Vuetify Project Setup Guide
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This README provides a comprehensive guide for setting up and running the Laravel + Vue.js + Vuetify project from the GitHub repository: CMPG-323-Full-Stack-Web-App-Triple-Vision.
 
-## About Laravel
+## Table of Contents
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. [Prerequisites](#prerequisites)
+2. [Installation Steps](#installation-steps)
+3. [Database Setup](#database-setup)
+4. [Environment Configuration](#environment-configuration)
+5. [Running the Application](#running-the-application)
+6. [Accessing the Application](#accessing-the-application)
+7. [API Testing](#api-testing)
+8. [Docker Setup (Optional)](#docker-setup-optional)
+9. [Troubleshooting](#troubleshooting)
+10. [Contributing](#contributing)
+11. [License](#license)
+12. [Contact](#contact)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Ensure you have the following software installed on your local machine:
 
-## Learning Laravel
+- PHP (version 8.x or later)
+- Composer (Dependency Manager for PHP)
+- Node.js (LTS version recommended)
+- npm (comes with Node.js) or Yarn
+- MySQL (or another compatible database)
+- MySQL Workbench (optional, for database management)
+- XAMPP or Laragon (optional, for local server management)
+- Git
+- Docker Desktop (for containerized environments)
+- PHPStorm or Visual Studio Code (recommended IDE)
+- SourceTree (optional, for visual Git management)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Installation Steps
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Clone the Repository
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+git clone https://github.com/JDCloete/CMPG-323-Full-Stack-Web-App-Triple-Vision.git
+cd CMPG-323-Full-Stack-Web-App-Triple-Vision
+```
 
-## Laravel Sponsors
+### 2. Install Dependencies
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Install PHP dependencies:
+```bash
+composer install
+```
 
-### Premium Partners
+Install JavaScript dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Database Setup
+
+1. Create a new database (e.g., `s2t_triple_vision_db`).
+2. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+3. Update the `.env` file with your database credentials.
+4. Run migrations and seeders:
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+
+## Environment Configuration
+
+Generate application key:
+```bash
+php artisan key:generate
+```
+
+Update `APP_URL` in `.env`:
+```
+APP_URL=http://127.0.0.1:8000
+```
+
+## Running the Application
+
+Start the Laravel backend server:
+```bash
+php artisan serve
+```
+
+Compile frontend assets:
+```bash
+npm run dev
+# or for production
+npm run build
+```
+
+Watch for changes (optional):
+```bash
+npm run watch
+```
+
+## Accessing the Application
+
+Visit `http://127.0.0.1:8000` in your web browser.
+
+## API Testing
+
+Use Postman or Insomnia to test API routes:
+
+- Login: `POST http://127.0.0.1:8000/api/login`
+- Get User: `GET http://127.0.0.1:8000/api/user` (with Bearer token)
+
+## Docker Setup (Optional)
+
+1. Install Docker and Docker Compose.
+2. Run:
+   ```bash
+   ./vendor/bin/sail up
+   ```
+3. Run migrations and seeders:
+   ```bash
+   ./vendor/bin/sail artisan migrate:fresh --seed
+   ```
+
+## Troubleshooting
+
+- PHP Error: Ensure correct PHP version (8.x or later).
+- Database Connection Error: Verify `.env` credentials.
+- Frontend Build Issues: Try deleting `node_modules` and reinstalling:
+  ```bash
+  rm -rf node_modules
+  npm install
+  ```
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+We welcome contributions to improve this project. Please follow these steps to contribute:
 
-## Code of Conduct
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Please ensure your code adheres to our coding standards and include tests for new features.
 
-## Security Vulnerabilities
+## Licence
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+This project is licensed under the MIT License - see the [LICECSE.md](LICENCE.md) file for details.
 
-## License
+## Contact
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Project Link: [https://github.com/JDCloete/CMPG-323-Full-Stack-Web-App-Triple-Vision](https://github.com/JDCloete/CMPG-323-Full-Stack-Web-App-Triple-Vision)
+
+If you have any questions or issues, please open an issue in the GitHub repository.
+
+## Acknowledgements
+
+- [Laravel](https://laravel.com)
+- [Vue.js](https://vuejs.org)
+- [Vuetify](https://vuetifyjs.com)
+- [Docker](https://www.docker.com)
+
+Thank you for using our Laravel + Vue.js + Vuetify project! We hope this README helps you get started quickly and easily.
