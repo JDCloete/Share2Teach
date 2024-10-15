@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DownloadsController;
 use App\Http\Controllers\FaqController;
@@ -7,43 +10,19 @@ use App\Http\Controllers\MetadataController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\StarredController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Models\Document;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Using Laravel Sanctum for API Authentication
 // Login Routes
-//Route::post('/login', [LoginController::class, 'login']);
-//
-//Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/login', [LoginController::class, 'login']);
 
 
-// Define the logout route
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+//Route::post('/logout', [LoginController::class, 'logout']);
+
 
 // Register Routes
 Route::post('/register', [UserController::class, 'store']);
@@ -97,39 +76,26 @@ Route::get('/analytics/reported-documents', [AnalyticsController::class, 'readAl
 Route::get('/analytics/new-reports-today', [AnalyticsController::class, 'readAllNewReportsFromToday']);
 
 
-
-
 //Documents Upload Routes
 Route::post('/upload-documents', [DocumentController::class, 'upload']);
-//Route::middleware('auth:sanctum')->post('/upload-documents', [DocumentController::class, 'upload']);
-
-// Not working currently
-Route::get('/documents', function () {
-    $documents = Document::with(['users', 'metadata'])
-        ->get()
-        ->map(function ($document) {
-            return [
-                'document_name' => $document->document_name,
-                'uploaded_by' => $document->user ? $document->user->name : 'Unknown', // Check for null
-                'upload_date' => $document->metadata ? $document->metadata->upload_date : 'Unknown',
-                'type' => $document->metadata ? $document->metadata->type : 'Unknown',
-                'size' => $document->metadata ? $document->metadata->size : 'Unknown',
-            ];
-        });
-
-    return response()->json(['documents' => $documents]);
-});
-
-
 
 
 //Route::get('/documents', [DocumentController::class, 'readAll']);
 
 
 Route::get('/documents/{document}', [DocumentController::class, 'readSingle']);
-//Route::post('/documents', [DocumentController::class, 'store']);
 Route::patch('/documents/{document}', [DocumentController::class, 'update']);
 Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocument']);
+
+
+// ALLES TOT HIER WERK
+
+
+//Rating Route
+Route::get('/ratings', [RatingController::class, 'readAll']);
+Route::post('/ratings', [RatingController::class, 'store']);
+Route::delete('/ratings/{rating}', [RatingController::class, 'delete']);
+Route::patch('/ratings/{rating}', [RatingController::class, 'update']);
 
 
 //User Routes
@@ -159,11 +125,6 @@ Route::delete('/reports/{id}', [ReportController::class, 'deleteReport']);
 // Retrieves all reports submitted by a specific user.
 Route::get('/users/{userId}/reports', [ReportController::class, 'readReportsByUser']);
 
-//Rating Route
-Route::get('/ratings', [RatingController::class, 'readAll']);
-Route::post('/ratings', [RatingController::class, 'store']);
-Route::delete('/ratings/{rating}', [RatingController::class, 'delete']);
-Route::patch('/ratings/{rating}', [RatingController::class, 'update']);
 
 //Downloads Route
 Route::get('/downloads', [DownloadsController::class, 'readAll']);

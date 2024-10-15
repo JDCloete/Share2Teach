@@ -83,15 +83,17 @@
                     </v-list-item-content>
                 </v-list-item>
 
+
                 <v-list-item
                     class="centered-list-item outlined-item"
-                    v-if="roleId === 1 || roleId === 2 || roleId === 3"
-                    @click="showFavourites"
+                    v-if="roleId === null || roleId === 1 || roleId === 2 || roleId === 3"
+                    @click="goToAboutUs"
                 >
                     <v-list-item-content>
-                        <v-list-item-title class="text-center">Favourites</v-list-item-title>
+                        <v-list-item-title class="text-center">About Us</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+
 
                 <v-list-item
                     class="centered-list-item outlined-item"
@@ -100,6 +102,16 @@
                 >
                     <v-list-item-content>
                         <v-list-item-title class="text-center">Moderate Documents</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+                <v-list-item
+                    class="centered-list-item outlined-item"
+                    v-if="roleId === 2 || roleId === 3"
+                    @click="goToModerateUsers"
+                >
+                    <v-list-item-content>
+                        <v-list-item-title class="text-center">Moderate Users</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
 
@@ -163,11 +175,14 @@ export default {
         goToContributors() {
             this.$inertia.visit('/contributors');
         },
+        goToAboutUs() {
+            this.$inertia.visit('/about-us');
+        },
         goToModerateDocuments() {
             this.$inertia.visit('/moderation');
         },
-        showFavourites() {
-            this.$inertia.visit('/login');// Should not show a page but a list of users favourite documents
+        goToModerateUsers() {
+            this.$inertia.visit('/moderate-users');// Should not show a page but a list of users favourite documents
         },
         goToAnalytics() {
             this.$inertia.visit('/analytics');
@@ -176,12 +191,7 @@ export default {
             this.$inertia.visit('/contribute-files');
         },
         logout() {
-            this.$inertia.post('/logout', null, {
-                onFinish: () => {
-                    // Perform any additional actions after successful logout
-                    this.$inertia.visit('/login'); // Redirect user to login page after logout
-                }
-            });
+            this.$inertia.visit('/login'); // Redirect user to login page after logout
         }
     },
 };

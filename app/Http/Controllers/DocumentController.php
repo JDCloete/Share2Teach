@@ -63,8 +63,13 @@ class DocumentController extends Controller
     public function update(Request $request, Document $document): JsonResponse
     {
         $validatedData = $request->validate([
-            'document_name' => 'required'
+            'is_approved' => 'required'
         ]);
+
+        if ($validatedData['is_approved'] === true) {
+            $validatedData['moderator_id'] = 1; // Get authenticated user ID
+            $validatedData['is_reviewed'] = true;
+        }
 
         $document->update($validatedData);
         return response()->json(['message' => 'document updated successfully', 'document' => $document], 200);
@@ -128,10 +133,14 @@ class DocumentController extends Controller
 
         // Convert docx to PDF if necessary
         if ($extension === 'docx') {
+            // Store the file in the 'temp' directory within 'storage/app'
             $tempPath = $file->storeAs('temp', $fileName);
 
-            // Load the docx file
-            $phpWord = IOFactory::load(storage_path('app/' . $tempPath));
+            // Use the storage_path() to get the full path of the uploaded file
+            $fullTempPath = storage_path('app/' . $tempPath);
+
+            // Load the docx file using the correct full path
+            $phpWord = IOFactory::load($fullTempPath);
             $pdfFileName = $originalName . '.pdf';
             $pdfFilePath = storage_path('app/temp/' . $pdfFileName);
 
@@ -148,7 +157,7 @@ class DocumentController extends Controller
             $extension = 'pdf'; // Override extension to PDF since we converted it
         } else {
             // If not a .docx file, store it as usual
-            $uploadedFilePath = $file->storeAs('temp', $fileName);
+            $uploadedFilePath = storage_path('app/' . $file->storeAs('temp', $fileName));
         }
 
         // Define the path to the existing document to prepend (e.g., a cover page)
@@ -191,10 +200,6 @@ class DocumentController extends Controller
             $mergedFilePath = $file->storeAs($customPath, $fileName, 'public');
         }
 
-        // Retrieve the user_id from the session
-        //$userId = $request->session()->get('user_id');
-        //, $userId
-
         // Use a transaction to insert into the database
         try {
             DB::transaction(function () use ($validatedData, $mergedFilePath, $fileSize, $moduleCode) {
@@ -202,7 +207,7 @@ class DocumentController extends Controller
                 $document = Document::create([
                     'document_name' => $validatedData['document_name'],
                     'storage_path' => $mergedFilePath,
-                    //'user_id' => $userId, // Use user_id from session
+                    'user_id' => 3, // Jean-Luc == user_id = 2 | Danika == user_id = 1
                     'document_date_created' => Carbon::now(),
                     'category' => $validatedData['category'],
                     'academic_year' => $validatedData['academic_year'],
@@ -225,6 +230,7 @@ class DocumentController extends Controller
 
         return response()->json(['message' => 'File uploaded, converted, watermarked, and processed successfully!'], 200);
     }
+
 
 
 

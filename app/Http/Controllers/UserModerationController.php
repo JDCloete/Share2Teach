@@ -7,26 +7,15 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ModerationController extends Controller
+class UserModerationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
 
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        // Load documents along with the associated user
-        $documents = Document::with('user', 'metadata')->get();
-
-        //filter documents to only ones that are not reviewed
-        $documents = $documents->filter(function ($document) {
-            return !$document->is_reviewed;
-        });
-
-        // Render the view and pass the documents along with their user data
-        return Inertia::render('ModerationPage', [
-            'filteredDocuments' => $documents
-        ]);
+        return Inertia::render('ModerateUserPage');
     }
 
     /**

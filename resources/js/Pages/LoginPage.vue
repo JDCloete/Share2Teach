@@ -19,7 +19,7 @@
         </v-toolbar>
 
         <v-container class="main-container d-flex justify-center align-center">
-            <v-card class="mx-2 custom-card" max-width="400" elevation="12">
+            <v-card class="mx-2 custom-card wide-card"  elevation="12">
                 <v-card-title class="d-flex justify-center">Login</v-card-title>
                 <v-card-text>
                     <v-form ref="form" @submit.prevent="checkCredentials">
@@ -174,5 +174,8 @@ export default {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
+}
+.wide-card {
+    width: 420px; /* Adjust width as needed */
 }
 </style>

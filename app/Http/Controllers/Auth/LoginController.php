@@ -41,14 +41,15 @@ class LoginController extends Controller
     /**
      * Log the user out (Invalidate the token).
      *
-     * @return JsonResponse
+     * @return Response
      */
-    public function logout(): JsonResponse
+    public function logout(): Response
     {
-        Auth::logout();
+        //Auth::logout();
+        //return response()->json(['message' => 'Successfully logged out']);
 
-        return response()->json(['message' => 'Successfully logged out']);
+        // Redirect the user to the login page
+        return Inertia::render('LoginPage');
+
     }
-
-
 }

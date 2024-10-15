@@ -1,6 +1,6 @@
 <template>
     <v-app class="background-image">
-        <v-toolbar color="primary" dark  style="margin-bottom: 30px">
+        <v-toolbar color="primary" dark style="margin-bottom: 30px">
             <img
                 @click="goBack"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
@@ -40,7 +40,7 @@
                             <v-text-field label="Document Name" v-model="documentName" required></v-text-field>
                             <v-select
                                 label="Module Code"
-                                :items="['Mathematics', 'Business Studies', 'History', 'Geography', 'Life Science', 'Natural Science', 'English', 'Technology', 'Afrikaans', 'Life Skills', 'Computer Science']"
+                                :items="moduleCodes"
                                 v-model="moduleCode"
                                 required
                             ></v-select>
@@ -83,9 +83,8 @@
                     </v-card>
                 </v-col>
             </v-row>
-
-
         </v-container>
+
         <v-container class="fill-height">
             <v-row class="d-flex justify-center align-center">
                 <v-btn color="primary" @click="uploadAndSubmitFile" style="margin-right: 20px">Submit</v-btn>
@@ -130,24 +129,22 @@ export default {
     },
     methods: {
         uploadFile(event) {
-            const selectedFile = event.target.files[0]; // Get the selected file
+            const selectedFile = event.target.files[0];
             if (selectedFile) {
-                this.file = selectedFile; // Set the file data
-                this.documentName = selectedFile.name.split('.').slice(0, -1).join('.'); // Set the document name to the file name without the extension
+                this.file = selectedFile;
+                this.documentName = selectedFile.name.split('.').slice(0, -1).join('.');
             }
         },
         uploadAndSubmitFile() {
-            this.processingMessage = 'Uploading file...'; // Set the processing message
-            this.uploadProgress = 0; // Reset upload progress
-            this.errorMessage = ''; // Clear any previous error messages
+            this.processingMessage = 'Uploading file...';
+            this.uploadProgress = 0;
+            this.errorMessage = '';
 
-            // Validate required fields
             if (!this.file || !this.documentName || !this.moduleCode || !this.category || !this.academicYear || !this.lecturerName) {
                 this.errorMessage = 'Please fill in all required fields.';
                 return;
             }
 
-            // Create a FormData object to send the file and metadata
             const formData = new FormData();
             formData.append('file', this.file);
             formData.append('document_name', this.documentName);
@@ -156,7 +153,6 @@ export default {
             formData.append('academic_year', this.academicYear);
             formData.append('lecturer_name', this.lecturerName);
 
-            // Make the API call to upload the file
             axios.post('/api/upload-documents', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -166,12 +162,11 @@ export default {
                 },
             })
                 .then(response => {
-                    this.successMessage = response.data.message; // Display success message
-                    this.resetForm(); // Reset the form after success
+                    this.successMessage = response.data.message;
+                    this.resetForm();
                 })
                 .catch(error => {
-                    this.processingMessage = ''; // Clear the processing message on error
-
+                    this.processingMessage = '';
                     if (error.response) {
                         if (error.response.status === 409) {
                             this.errorMessage = 'An error occurred: This document already exists in the database.';
@@ -183,7 +178,7 @@ export default {
                     }
                 })
                 .finally(() => {
-                    this.uploading = false; // Stop uploading state
+                    this.uploading = false;
                 });
         },
         resetForm() {
@@ -195,12 +190,11 @@ export default {
             this.lecturerName = '';
             this.errorMessage = '';
             this.processingMessage = '';
-            this.uploadProgress = 0; // Reset upload progress
+            this.uploadProgress = 0;
 
-            // Clear the success message after 3 seconds
             setTimeout(() => {
                 this.successMessage = '';
-            }, 6000); // 6000 milliseconds = 6 seconds
+            }, 5000);
         },
         goBack() {
             window.history.back();
@@ -225,7 +219,7 @@ export default {
 }
 
 .fill-height {
-    height: calc(100vh - 64px); /* Ensure it fills most of the screen */
+    height: calc(100vh - 64px);
 }
 
 .rounded-image {
@@ -233,9 +227,5 @@ export default {
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-}
-
-.d-flex {
-    display: flex;
 }
 </style>

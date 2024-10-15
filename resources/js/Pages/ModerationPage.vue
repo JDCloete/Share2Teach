@@ -1,6 +1,6 @@
 <template>
-    <v-toolbar color="primary" dark style="margin-bottom: 20px">
-        <img
+    <v-toolbar color="primary" dark>
+    <img
             @click="goBack"
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
             alt="Go to Homepage"
@@ -10,62 +10,68 @@
             style="object-fit: cover; margin-left: 15px; cursor: pointer;"
         />
         <v-toolbar-title class="d-flex">Moderation Process</v-toolbar-title>
-        <v-spacer></v-spacer>
-
-        <!-- Search Bar -->
-        <v-layout row align-center justify-center>
-            <v-text-field
-                v-model="search"
-                label="Search for Documents"
-                prepend-inner-icon="mdi-magnify"
-                clearable
-                hide-details
-                solo-inverted
-                flat
-                style="max-width: 450px; height: 60px; font-size: 5px; margin-left: -300px;"
-                @input="filterDocuments"
-            ></v-text-field>
-        </v-layout>
     </v-toolbar>
 
-    <v-container>
-        <v-data-table
-            :headers="headers"
-            :items="filteredDocuments"
-            class="elevation-1"
-            item-key="document_name"
-        >
-            <template v-slot:items="props">
-                <tr>
-                    <td>{{ props.item.document_name }}</td>
-                    <td>{{ props.item.uploaded_by }}</td>
-                    <td>{{ formatDate(props.item.upload_date) }}</td>
-                    <td>{{ props.item.type }}</td>
-                    <td>{{ props.item.size }} MB</td>
-                    <td>
-                        <v-btn icon @click="editDocument(props.item)">
-                            <v-icon>mdi-pencil</v-icon>
-                        </v-btn>
-                        <v-btn icon @click="deleteDocument(props.item)">
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </td>
-                </tr>
+    <v-container style="padding: 50px">
+        <data-table-explorer-baseline :action-button="false" :search-enabled="true">
+
+            <!--Title-->
+            <template v-slot:toolbar-title>Newly Uploaded Documents</template>
+
+            <!--Data-->
+            <template v-slot:library-items>
+                <v-table>
+                    <thead>
+                    <tr>
+                        <th>Document Name</th>
+                        <th>Uploaded By</th>
+                        <th>Uploaded Date</th>
+                        <th>Type</th>
+                        <th>Size (MB)</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="document in filteredDocuments" :key="document.id">
+                        <td>{{ document.document_name }}</td>
+                        <td>{{ document.user.name + ' ' + document.user.surname }}</td>
+                        <td>{{ formatDate(document.created_at) }}</td>
+                        <td>{{ document.metadata.type }}</td>
+                        <td>{{ document.metadata.size/1000000 }}</td>
+                        <td>
+                            <v-btn type="icon" variant="flat" size="small" elevation="0" @click="editDocument(document)">
+                                <v-icon>mdi-check</v-icon>
+                            </v-btn>
+                            <v-btn type="icon" variant="flat" size="small" elevation="0" @click="deleteDocument(document)">
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                        </td>
+                    </tr>
+                    </tbody>
+                </v-table>
             </template>
-        </v-data-table>
+        </data-table-explorer-baseline>
+
     </v-container>
 </template>
 
 <script>
 import axios from 'axios';
+import DataTableExplorerBaseline from '../Components/BaselineDataTable.vue';
+
 
 export default {
     name: 'ModerationPage',
+    components: {DataTableExplorerBaseline},
+    props: {
+        filteredDocuments: {
+          required: true,
+      }
+    },
     data() {
         return {
             documents: [],
             search: '',
-            filteredDocuments: [],
             headers: [
                 { text: 'Document Name', value: 'document_name' },
                 { text: 'Uploaded By', value: 'uploaded_by' },
@@ -77,26 +83,26 @@ export default {
         };
     },
     created() {
-        this.fetchDocuments();
+        // this.fetchDocuments();
     },
     methods: {
         async fetchDocuments() {
             try {
                 const response = await axios.get('/api/documents');
-                this.documents = response.data.documents.map(document => ({
-                    document_name: document.document_name,
-                    uploaded_by: `${document.name} ${document.surname}`, // Combine name and surname
-                    upload_date: document.upload_date,
-                    type: document.type,
-                    size: document.size,
-                }));
+                console.log(response.data); // Log the response data for debugging
+
+                // Update documents array with the response data
+                this.documents = response.data.documents;
+
+                // Initialize filteredDocuments with all documents
                 this.filteredDocuments = this.documents;
             } catch (error) {
                 console.error('Error fetching documents:', error);
             }
         },
         formatDate(date) {
-            return new Date(date).toLocaleDateString();
+            if (!date) return 'Unknown'; // Fallback for missing dates
+            return new Date(date).toISOString().split('T')[0]; // Format date as YYYY-MM-DD
         },
         filterDocuments() {
             const searchTerm = this.search.toLowerCase();
@@ -106,11 +112,34 @@ export default {
                 document.type.toLowerCase().includes(searchTerm)
             );
         },
-        editDocument(document) {
-            // Logic for editing a document
+        async editDocument(document) {
+            try {
+                // Make an Axios PATCH request to update the document
+                const response = await axios.patch(`api/documents/${document.id}`, {
+                    is_approved: true,
+                });
+
+                // Handle the successful response (e.g., show a success message or refresh the document list)
+                console.log('Document updated successfully:', response.data);
+            } catch (error) {
+                // Handle any errors (e.g., show an error message)
+                console.error('Error updating the document:', error.response?.data || error.message);
+            }
         },
-        deleteDocument(document) {
+        async deleteDocument(document) {
             // Logic for deleting a document
+            console.log('Deleting document:', document);
+
+            try {
+                // Make an Axios PATCH request to update the document
+                const response = await axios.delete(`api/documents/${document.id}`);
+
+                // Handle the successful response (e.g., show a success message or refresh the document list)
+                console.log('Document updated successfully:', response.data);
+            } catch (error) {
+                // Handle any errors (e.g., show an error message)
+                console.error('Error updating the document:', error.response?.data || error.message);
+            }
         },
         goBack() {
             window.history.back();

@@ -1,48 +1,40 @@
 <template>
     <div>
-        <!-- Toolbar with Logo, Title, Search Bar, and Register/Login buttons -->
         <v-toolbar color="primary" dark style="margin-bottom: 20px">
-            <v-row align="center" justify="center" style="width: 100%;">
-                <!-- Left Section: Logo and Title -->
-                <v-col cols="12" md="3" class="d-flex align-center">
-                    <img
-                        @click="goBack"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
-                        alt="Go to Homepage"
-                        class="mr-2 rounded-image"
-                        width="30"
-                        height="30"
-                        style="object-fit: cover; cursor: pointer;"
-                    />
-                    <v-toolbar-title>Frequently asked questions</v-toolbar-title>
-                </v-col>
+            <img
+                @click="goBack"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
+                alt="Go to Homepage"
+                class="mr-2 rounded-image"
+                width="30"
+                height="30"
+                style="object-fit: cover; margin-left: 15px; cursor: pointer;"
+            />
+            <v-toolbar-title class="d-flex">Frequently Asked Questions</v-toolbar-title>
+            <v-spacer></v-spacer>
 
-                <!-- Center Section: Search Bar -->
-                <v-col cols="12" md="6">
-                    <v-text-field
-                        v-model="search"
-                        label="Search for Questions"
-                        prepend-inner-icon="mdi-magnify"
-                        clearable
-                        hide-details
-                        solo-inverted
-                        flat
-                        class="faq-search-bar"
-                    ></v-text-field>
-                </v-col>
+            <!-- Search Bar -->
+            <v-layout row align-center justify-center>
+                <v-text-field
+                    v-model="search"
+                    label="Search for Questions"
+                    prepend-inner-icon="mdi-magnify"
+                    clearable
+                    hide-details
+                    solo-inverted
+                    flat
+                    style="max-width: 450px; height: 60px; font-size: 5px; margin-left: -300px;"
+                ></v-text-field>
+            </v-layout>
 
-                <!-- Right Section: Register/Login Buttons -->
-                <v-col cols="12" md="3" class="d-flex justify-end">
-                    <v-btn text="" @click="navigateToRegisterPage">
-                        <v-icon left class="mr-2 custom-icon">mdi-account-plus-outline</v-icon>
-                        Register
-                    </v-btn>
-                    <v-btn text="" @click="navigateToLoginPage">
-                        <v-icon left class="mr-2 custom-icon">mdi-key</v-icon>
-                        Login
-                    </v-btn>
-                </v-col>
-            </v-row>
+            <v-btn text="" @click="navigateToRegisterPage">
+                <v-icon left class="mr-2 custom-icon">mdi-account-plus-outline</v-icon>
+                Register
+            </v-btn>
+            <v-btn text="" @click="navigateToLoginPage">
+                <v-icon left class="mr-2 custom-icon">mdi-key</v-icon>
+                Login
+            </v-btn>
         </v-toolbar>
 
         <!-- FAQs List -->

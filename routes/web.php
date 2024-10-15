@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -14,6 +13,7 @@ use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\ModerationController;
 use App\Http\Controllers\OERController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserModerationController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -23,6 +23,8 @@ Route::get('/', [HomePageController::class, 'index'])->name('pages.homepage');
 
 // Display contributors page
 Route::get('/contributors', [ContributorsController::class, 'index'])->name('contributors.page');
+
+Route::get('/about-us', [ContributorsController::class, 'index'])->name('contributors.page');
 
 
 // Display the Faq Page
@@ -38,13 +40,17 @@ Route::post('/register', [UserController::class, 'store'])->name('register'); //
 // Show the login page (Inertia)
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 
-// THE LOGOUT ROUTE IS ALSO IN api.php
-Route::middleware(['web'])->group(function () {
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
-});
 
-// Display the Faq Page
+
+// Display the Document Moderation Page
 Route::get('/moderation', [ModerationController::class, 'index'])->name('pages.moderation');
+
+// Display the User Moderation Page
+Route::get('/moderate-users', [UserModerationController::class, 'index'])->name('pages.moderation');
+
+
+
+
 
 Route::get('/documents/download/{id}', [DocumentController::class, 'download']);
 
