@@ -24,16 +24,17 @@ class Kernel extends HttpKernel
             'throttle:api',
             EnsureFrontendRequestsAreStateful::class,
             SubstituteBindings::class,
+            StartSession::class, // Add this line
         ],
 
         'web' => [
             // Other middleware
             HandleInertiaRequests::class,
             EncryptCookies::class,
-            AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
             SubstituteBindings::class,
+            AddQueuedCookiesToResponse::class
         ],
     ];
 }

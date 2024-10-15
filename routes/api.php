@@ -20,12 +20,26 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Using Laravel Sanctum for API Authentication
 // Login Routes
-Route::post('/login', [LoginController::class, 'login']);
-
-
-Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
+//Route::post('/login', [LoginController::class, 'login']);
+//
+//Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum');
 
 
 // Define the logout route
@@ -35,9 +49,8 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 Route::post('/register', [UserController::class, 'store']);
 
 
-//Route::get('/documents', [DocumentController::class, 'getDocuments']);
-
-
+// Populating the moderation page with documents
+Route::get('/documents', [DocumentController::class, 'getDocumentsWithMetadata']);
 
 
 // Forgot Password Routes

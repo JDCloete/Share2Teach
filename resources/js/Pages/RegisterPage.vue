@@ -21,98 +21,104 @@
             </v-btn>
         </v-toolbar>
 
-        <v-container class="main-container d-flex justify-center align-center">
-            <v-card width="450px" class="custom-card py-8 px-6 elevation-12">
-                <v-card-title class="text-h5 d-flex justify-center align-center mb-4">
-                    <v-icon left large class="mr-3">mdi-account</v-icon>
-                    Create Your Account
-                </v-card-title>
+        <v-container class="fill-height">
+            <v-row class="d-flex justify-center align-center">
+                <v-col cols="12" md="4">
+                    <v-card class="upload-section details-section" outlined>
 
-                <v-divider class="mb-4"></v-divider>
+                        <v-card-title>
+                            <v-icon left large class="mr-3">mdi-account</v-icon>
+                            Create Your Account
+                        </v-card-title>
 
-                <v-card-text>
-                    <v-form ref="form" v-model="valid" @submit.prevent="submit">
-                        <!-- Name Field -->
-                        <v-text-field
-                            v-model="form.name"
-                            label="Name"
-                            :error-messages="errors.name"
-                            :rules="[rules.required]"
-                            prepend-inner-icon="mdi-account-circle"
-                            outlined
-                            dense
-                            required
-                            class="mb-3"
-                        ></v-text-field>
+                        <v-divider class="mb-4"></v-divider>
 
-                        <!-- Surname Field -->
-                        <v-text-field
-                            v-model="form.surname"
-                            label="Surname"
-                            :error-messages="errors.surname"
-                            :rules="[rules.required]"
-                            prepend-inner-icon="mdi-account-outline"
-                            outlined
-                            dense
-                            required
-                            class="mb-3"
-                        ></v-text-field>
+                        <v-card-text>
+                            <v-form ref="form" v-model="valid" @submit.prevent="submit">
+                                <!-- Name Field -->
+                                <v-text-field
+                                    v-model="form.name"
+                                    label="Name"
+                                    :error-messages="errors.name"
+                                    :rules="[rules.required]"
+                                    prepend-inner-icon="mdi-account-circle"
+                                    outlined
+                                    dense
+                                    required
+                                    class="mb-3"
+                                ></v-text-field>
 
-                        <!-- Email Field -->
-                        <v-text-field
-                            v-model="form.email"
-                            label="Email"
-                            type="email"
-                            :error-messages="errors.email"
-                            :rules="[rules.required, rules.email]"
-                            prepend-inner-icon="mdi-email-outline"
-                            outlined
-                            dense
-                            required
-                            @input="handleEmailInput"
-                            class="mb-3"
-                        ></v-text-field>
+                                <!-- Surname Field -->
+                                <v-text-field
+                                    v-model="form.surname"
+                                    label="Surname"
+                                    :error-messages="errors.surname"
+                                    :rules="[rules.required]"
+                                    prepend-inner-icon="mdi-account-outline"
+                                    outlined
+                                    dense
+                                    required
+                                    class="mb-3"
+                                ></v-text-field>
 
-                        <!-- Password Field -->
-                        <v-text-field
-                            v-model="form.password"
-                            label="Password"
-                            type="password"
-                            :error-messages="errors.password"
-                            :rules="[rules.required, rules.minLength(8)]"
-                            prepend-inner-icon="mdi-lock-outline"
-                            outlined
-                            dense
-                            required
-                            class="mb-3"
-                        ></v-text-field>
+                                <!-- Email Field -->
+                                <v-text-field
+                                    v-model="form.email"
+                                    label="Email"
+                                    type="email"
+                                    :error-messages="errors.email"
+                                    :rules="[rules.required, rules.email]"
+                                    prepend-inner-icon="mdi-email-outline"
+                                    outlined
+                                    dense
+                                    required
+                                    @input="handleEmailInput"
+                                    class="mb-3"
+                                ></v-text-field>
 
-                        <!-- Confirm Password Field -->
-                        <v-text-field
-                            v-model="form.confirmPassword"
-                            label="Confirm Password"
-                            type="password"
-                            :rules="[rules.required, passwordMatch]"
-                            prepend-inner-icon="mdi-lock-check-outline"
-                            outlined
-                            dense
-                            required
-                            class="mb-5"
-                        ></v-text-field>
+                                <!-- Password Field -->
+                                <v-text-field
+                                    v-model="form.password"
+                                    label="Password"
+                                    type="password"
+                                    :error-messages="errors.password"
+                                    :rules="[rules.required, rules.minLength(8)]"
+                                    prepend-inner-icon="mdi-lock-outline"
+                                    outlined
+                                    dense
+                                    required
+                                    class="mb-3"
+                                ></v-text-field>
 
-                        <!-- Submit Button -->
-                        <v-btn
-                            :disabled="!valid || !!errors.email || !!errors.password || !!errors.name || !!errors.surname"
-                            color="primary"
-                            block
-                            large
-                            @click="submit"
-                        >
-                            Register
-                        </v-btn>
-                    </v-form>
-                </v-card-text>
-            </v-card>
+                                <!-- Confirm Password Field -->
+                                <v-text-field
+                                    v-model="form.confirmPassword"
+                                    label="Confirm Password"
+                                    type="password"
+                                    :rules="[rules.required, passwordMatch]"
+                                    prepend-inner-icon="mdi-lock-check-outline"
+                                    outlined
+                                    dense
+                                    required
+                                    class="mb-5"
+                                ></v-text-field>
+
+                                <!-- Submit Button -->
+                                <v-btn
+                                    :disabled="!valid || !!errors.email || !!errors.password || !!errors.name || !!errors.surname"
+                                    color="primary"
+                                    block
+                                    large
+                                    @click="submit"
+                                >
+                                    Register
+                                </v-btn>
+                            </v-form>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+
         </v-container>
     </v-app>
 </template>
@@ -183,11 +189,8 @@ export default {
     background-repeat: no-repeat;
     min-height: 100vh;
 }
-.main-container {
-    height: calc(100vh - 64px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.fill-height {
+    height: calc(100vh - 64px); /* Ensure it fills most of the screen */
 }
 .rounded-image {
     width: 40px;
@@ -195,9 +198,9 @@ export default {
     border-radius: 50%;
     object-fit: cover;
 }
-.custom-card {
-    border: 2px solid #3f51b5;
+.upload-section, .details-section {
+    border: 2px solid #000;
     border-radius: 8px;
-    background-color: #ffffff;
+    padding: 20px;
 }
 </style>

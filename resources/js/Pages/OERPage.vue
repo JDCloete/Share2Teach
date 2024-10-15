@@ -1,5 +1,5 @@
 <template>
-    <v-card class="custom-background">
+    <v-card class="background-image">
 
         <v-toolbar color="primary" dark>
             <img
@@ -26,28 +26,29 @@
 
         <!-- Useful Links Section -->
         <v-card-text>
-            <v-container>
+            <v-container class="main-container" :style="{ backgroundColor: 'transparent' }">
                 <v-row>
                     <v-col cols="12">
                         <h3 style="margin-bottom: 10px"><u>Useful Resources for Students</u></h3>
-                        <v-list dense>
+                        <v-list dense :style="{ backgroundColor: 'transparent' }">
                             <v-list-item
                                 v-for="(resource, index) in resources"
                                 :key="index"
                                 @click="goToResource(resource.link)"
                             >
                                 <!-- Wrap the image and content in a flex container -->
-                                <div style="display: flex; align-items: center;">
+                                <div style="display: flex; align-items: center;" >
                                     <!-- Add Image of the Website to the Left -->
                                     <v-img
                                         :src="resource.image"
+                                        loading="lazy"
                                         :alt="resource.name"
                                         max-width="50"
                                         class="mr-3"
                                     ></v-img>
 
                                     <!-- Resource Name and Description -->
-                                    <v-list-item-content>
+                                    <v-list-item-content :style="{ backgroundColor: 'transparent' }">
                                         <v-list-item-title>{{ resource.name }}</v-list-item-title>
                                         <v-list-item-subtitle>{{ resource.description }}</v-list-item-subtitle>
                                     </v-list-item-content>
@@ -183,12 +184,12 @@ export default {
             sponsors: [
                 {
                     name: "Sponsor 1",
-                    image: "https://sagea.org.za/wp-content/uploads/2020/12/SAGEA_affiliate-logos28-862x465.png",
+                    image: "nwu.png",
                     link: "https://www.nwu.ac.za/"
                 },
                 {
                     name: "Sponsor 2",
-                    image: "https://seekvectorlogo.com/wp-content/uploads/2022/02/unesco-united-nations-educational-scientific-and-cultural-organization-vector-logo-2022.png",
+                    image: "unesco.png",
                     link: "https://www.unesco.org"
                 }
             ],
@@ -222,7 +223,20 @@ export default {
     object-fit: cover; /* Maintain aspect ratio */
     overflow: hidden; /* Hide overflow */
 }
+.background-image {
+    background-image: url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
 .custom-background {
-    background-color: rgba(248, 248, 248, 0.44);
+    background-color: rgba(239, 237, 112, 0.44);
+}
+.main-container {
+    height: calc(100vh - 64px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

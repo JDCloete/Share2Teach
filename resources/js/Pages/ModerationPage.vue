@@ -60,11 +60,12 @@
 import axios from 'axios';
 
 export default {
+    name: 'ModerationPage',
     data() {
         return {
             documents: [],
-            search: '', // Search input value
-            filteredDocuments: [], // Filtered documents based on search
+            search: '',
+            filteredDocuments: [],
             headers: [
                 { text: 'Document Name', value: 'document_name' },
                 { text: 'Uploaded By', value: 'uploaded_by' },
@@ -76,23 +77,28 @@ export default {
         };
     },
     created() {
-        this.fetchDocuments(); // Fetch documents on component creation
+        this.fetchDocuments();
     },
     methods: {
         async fetchDocuments() {
             try {
                 const response = await axios.get('/api/documents');
-                this.documents = response.data.documents; // Populate documents
-                this.filteredDocuments = this.documents; // Set initial filtered data
+                this.documents = response.data.documents.map(document => ({
+                    document_name: document.document_name,
+                    uploaded_by: `${document.name} ${document.surname}`, // Combine name and surname
+                    upload_date: document.upload_date,
+                    type: document.type,
+                    size: document.size,
+                }));
+                this.filteredDocuments = this.documents;
             } catch (error) {
                 console.error('Error fetching documents:', error);
             }
         },
         formatDate(date) {
-            return new Date(date).toLocaleDateString(); // Format date as needed
+            return new Date(date).toLocaleDateString();
         },
         filterDocuments() {
-            // Filter documents based on search term
             const searchTerm = this.search.toLowerCase();
             this.filteredDocuments = this.documents.filter(document =>
                 document.document_name.toLowerCase().includes(searchTerm) ||

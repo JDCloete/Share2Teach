@@ -1,41 +1,43 @@
 <template>
+    <v-app class="custom-background">
+        <v-toolbar color="primary" dark>
+            <img
+                @click="goBack"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
+                alt="Logo"
+                class="mr-2 rounded-image"
+                width="30"
+                height="30"
+                style="object-fit: cover; margin-left: 15px;"
+            />
 
-    <v-toolbar color="primary" dark>
-        <img
-            @click="goBack"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
-            alt="Logo"
-            class="mr-2 rounded-image"
-            width="30"
-            height="30"
-            style="object-fit: cover; margin-left: 15px;"
-        />
+            <v-toolbar-title class="d-flex">Analytics Dashboard</v-toolbar-title>
 
-        <v-toolbar-title class="d-flex">Analytics Dashboard</v-toolbar-title>
+            <v-spacer></v-spacer>
 
-        <v-spacer></v-spacer>
+        </v-toolbar>
 
-    </v-toolbar>
+        <div>
 
-    <div>
-
-        <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
-        <canvas id="combinedUserChart" width="1200" height="600"></canvas>
+            <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
+                <canvas id="combinedUserChart" width="1200" height="600"></canvas>
+            </div>
+            <hr style="border-top: 1px solid #000; margin: 20px 0;">
+            <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
+                <canvas id="combinedDownloadsChart" width="1200" height="600"></canvas>
+            </div>
+            <hr style="border-top: 1px solid #000; margin: 20px 0;">
+            <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
+                <canvas id="combinedDocumentsChart" width="1200" height="600"></canvas>
+            </div>
+            <hr style="border-top: 1px solid #000; margin: 20px 0;">
+            <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
+                <canvas id="reportedDocumentsChart" width="1200" height="600"></canvas>
+            </div>
+            <hr style="border-top: 1px solid #000; margin: 20px 0;">
         </div>
-        <hr style="border-top: 1px solid #000; margin: 20px 0;">
-        <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
-        <canvas id="combinedDownloadsChart" width="1200" height="600"></canvas>
-        </div>
-        <hr style="border-top: 1px solid #000; margin: 20px 0;">
-        <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
-        <canvas id="combinedDocumentsChart" width="1200" height="600"></canvas>
-        </div>
-        <hr style="border-top: 1px solid #000; margin: 20px 0;">
-        <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
-        <canvas id="reportedDocumentsChart" width="1200" height="600"></canvas>
-        </div>
-        <hr style="border-top: 1px solid #000; margin: 20px 0;">
-    </div>
+    </v-app>
+
 </template>
 
 <script>
@@ -74,6 +76,12 @@ export default {
             });
 
             const ctx = document.getElementById('combinedUserChart').getContext('2d');
+
+            // Check if the chart already exists, and if so, destroy it
+            if (charts.combinedChart) {
+                charts.combinedChart.destroy();
+            }
+
             charts.combinedChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -119,7 +127,11 @@ export default {
                                 stepSize: 1 // Set the increment to 1
                             },
                             // Adding max to ensure it shows full range with the increment
-                            suggestedMax: Math.max(analyticsData.value.users, analyticsData.value.new_users_today, analyticsData.value.new_users_last_week, analyticsData.value.new_users_last_month) + 2 // Adjust as needed
+                            suggestedMax: Math.max(
+                                analyticsData.value.users,
+                                analyticsData.value.new_users_today,
+                                analyticsData.value.new_users_last_week,
+                                analyticsData.value.new_users_last_month) + 2 // Adjust as needed
                         }
                     },
                     plugins: {
@@ -131,6 +143,18 @@ export default {
                             }
                         }
                     },
+                    title: {
+                        display: true,
+                        text: 'User Registration Overview', // Title text
+                        font: {
+                            size: 18, // Font size for the title
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 30
+                        }
+                    },
                     layout: {
                         padding: {
                             left: 40,  // Add padding to the left to avoid cutting off the legend text
@@ -140,13 +164,19 @@ export default {
                         }
                     }
                 }
-            });
+        });
 
 
 
 
             // Chart for Downloads
             const downloadsCtx = document.getElementById('combinedDownloadsChart').getContext('2d');
+
+            // Check if the chart already exists, and if so, destroy it
+            if (charts.downloadsChart) {
+                charts.downloadsChart.destroy();
+            }
+
             charts.downloadsChart = new Chart(downloadsCtx, {
                 type: 'bar',
                 data: {
@@ -192,7 +222,11 @@ export default {
                                 stepSize: 1 // Set the increment to 1
                             },
                             // Adding max to ensure it shows full range with the increment
-                            suggestedMax: Math.max(analyticsData.value.downloads, analyticsData.value.new_downloads_today, analyticsData.value.new_downloads_last_week, analyticsData.value.new_downloads_last_month) + 2 // Adjust as needed
+                            suggestedMax: Math.max(
+                                analyticsData.value.downloads,
+                                analyticsData.value.new_downloads_today,
+                                analyticsData.value.new_downloads_last_week,
+                                analyticsData.value.new_downloads_last_month) + 2 // Adjust as needed
                         }
                     },
                     plugins: {
@@ -202,6 +236,18 @@ export default {
                                 boxWidth: 20, // Adjust the box size
                                 padding: 20, // Space between label items
                             }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'User Registration Overview', // Title text
+                        font: {
+                            size: 18, // Font size for the title
+                            weight: 'bold'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 30
                         }
                     },
                     layout: {
@@ -217,6 +263,12 @@ export default {
 
             // Chart for Documents
             const documentsCtx = document.getElementById('combinedDocumentsChart').getContext('2d');
+
+            // Check if the chart already exists, and if so, destroy it
+            if (charts.documentsChart) {
+                charts.documentsChart.destroy();
+            }
+
             charts.documentsChart = new Chart(documentsCtx, {
                 type: 'bar',
                 data: {
@@ -263,7 +315,11 @@ export default {
                                 stepSize: 1 // Set the increment to 1
                             },
                             // Adding max to ensure it shows full range with the increment
-                            suggestedMax: Math.max(analyticsData.value.documents, analyticsData.value.new_documents_today, analyticsData.value.new_documents_last_week, analyticsData.value.new_documents_last_month) + 2 // Adjust as needed
+                            suggestedMax: Math.max(
+                                analyticsData.value.documents,
+                                analyticsData.value.new_documents_today,
+                                analyticsData.value.new_documents_last_week,
+                                analyticsData.value.new_documents_last_month) + 2 // Adjust as needed
                         }
                     },
                     plugins: {
@@ -291,6 +347,12 @@ export default {
 
             // Chart for Reported Documents
             const reportedDocumentsCtx = document.getElementById('reportedDocumentsChart').getContext('2d');
+
+            // Check if the chart already exists, and if so, destroy it
+            if (charts.reportedDocumentsChart) {
+                charts.reportedDocumentsChart.destroy();
+            }
+
             charts.reportedDocumentsChart = new Chart(reportedDocumentsCtx, {
                 type: 'bar',
                 data: {
@@ -337,7 +399,11 @@ export default {
                                 stepSize: 1 // Set the increment to 1
                             },
                             // Adding max to ensure it shows full range with the increment
-                            suggestedMax: Math.max(analyticsData.value.reports, analyticsData.value.new_reports_today, analyticsData.value.new_reports_last_week, analyticsData.value.new_reports_last_month) + 2 // Adjust as needed
+                            suggestedMax: Math.max(
+                                analyticsData.value.reports,
+                                analyticsData.value.new_reports_today,
+                                analyticsData.value.new_reports_last_week,
+                                analyticsData.value.new_reports_last_month) + 2 // Adjust as needed
                         }
                     },
                     plugins: {
@@ -395,5 +461,8 @@ canvas {
     border-radius: 50%; /* Make the image round */
     object-fit: cover; /* Maintain aspect ratio */
     overflow: hidden; /* Hide overflow */
+}
+.custom-background {
+    background-color: rgba(141, 145, 141, 0.25);
 }
 </style>

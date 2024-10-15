@@ -1,6 +1,6 @@
 <template>
     <v-app class="background-image">
-        <v-toolbar color="primary" dark>
+        <v-toolbar color="primary" dark  style="margin-bottom: 30px">
             <img
                 @click="goBack"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
@@ -13,73 +13,82 @@
             <v-toolbar-title class="d-flex">Contribute Files</v-toolbar-title>
         </v-toolbar>
 
-        <v-container class="d-flex justify-center align-center fill-height">
-            <!-- Section 1: Upload -->
-            <v-card class="upload-section mx-4" outlined max-width="500" style="min-height: 200px;">
-                <v-card-title>Upload</v-card-title>
-                <v-card-text>
-                    <v-file-input
-                        label="Drag & Drop files"
-                        v-model="file"
-                        accept=".pdf,.doc,.docx"
-                        show-size
-                        @change="uploadFile"
-                    ></v-file-input>
-                    <v-alert v-if="errorMessage" type="error">{{ errorMessage }}</v-alert>
-                </v-card-text>
-            </v-card>
+        <v-container class="fill-height">
+            <v-row class="d-flex justify-center align-center">
+                <!-- Section 1: Upload -->
+                <v-col cols="12" md="4">
+                    <v-card class="upload-section" outlined>
+                        <v-card-title>Upload</v-card-title>
+                        <v-card-text>
+                            <v-file-input
+                                label="Drag & Drop files"
+                                v-model="file"
+                                accept=".pdf,.doc,.docx"
+                                show-size
+                                @change="uploadFile"
+                            ></v-file-input>
+                            <v-alert v-if="errorMessage" type="error">{{ errorMessage }}</v-alert>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
 
-            <!-- Section 2: Details -->
-            <v-card class="details-section mx-4" outlined max-width="500">
-                <v-card-title>Details</v-card-title>
-                <v-card-text>
-                    <v-text-field label="Document Name" v-model="documentName" required></v-text-field>
-                    <v-select
-                        label="Module Code"
-                        :items="['Mathematics', 'Business Studies', 'History', 'Geography', 'Life Science', 'Natural Science', 'English', 'Technology', 'Afrikaans', 'Life Skills', 'Computer Science']"
-                        v-model="moduleCode"
-                        required
-                    ></v-select>
-                    <v-select
-                        label="Category"
-                        :items="['Lecture Notes', 'Assignments', 'Summaries', 'Memos', 'Quiz Questions']"
-                        v-model="category"
-                        required
-                    ></v-select>
-                    <v-select
-                        label="Relevant Academic Year"
-                        :items="['2018','2019', '2020', '2021', '2022', '2023', '2024']"
-                        v-model="academicYear"
-                        required
-                    ></v-select>
-                    <v-text-field label="Lecturer Name" v-model="lecturerName" required></v-text-field>
-                </v-card-text>
-            </v-card>
+                <!-- Section 2: Details -->
+                <v-col cols="12" md="4">
+                    <v-card class="details-section" outlined>
+                        <v-card-title>Details</v-card-title>
+                        <v-card-text>
+                            <v-text-field label="Document Name" v-model="documentName" required></v-text-field>
+                            <v-select
+                                label="Module Code"
+                                :items="['Mathematics', 'Business Studies', 'History', 'Geography', 'Life Science', 'Natural Science', 'English', 'Technology', 'Afrikaans', 'Life Skills', 'Computer Science']"
+                                v-model="moduleCode"
+                                required
+                            ></v-select>
+                            <v-select
+                                label="Category"
+                                :items="['Lecture Notes', 'Assignments', 'Summaries', 'Memos', 'Quiz Questions']"
+                                v-model="category"
+                                required
+                            ></v-select>
+                            <v-select
+                                label="Relevant Academic Year"
+                                :items="['2018','2019', '2020', '2021', '2022', '2023', '2024']"
+                                v-model="academicYear"
+                                required
+                            ></v-select>
+                            <v-text-field label="Lecturer Name" v-model="lecturerName" required></v-text-field>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
 
-            <!-- Section 3: Processing -->
-            <v-card class="upload-section mx-4" outlined max-width="500" style="min-height: 200px;">
-                <v-card-title>Processing</v-card-title>
-                <v-card-text>
-                    <v-progress-linear
-                        v-if="uploading"
-                        :value="uploadProgress"
-                        height="20"
-                        color="primary"
-                    ></v-progress-linear>
-                    <v-alert v-if="processingMessage" type="info">{{ processingMessage }}</v-alert>
-                    <v-alert v-if="successMessage" type="success">{{ successMessage }}</v-alert>
-                </v-card-text>
-            </v-card>
+                <!-- Section 3: Processing -->
+                <v-col cols="12" md="4">
+                    <v-card class="upload-section" outlined>
+                        <v-card-title>Processing</v-card-title>
+                        <v-card-text>
+                            <v-progress-linear
+                                v-if="uploading"
+                                :value="uploadProgress"
+                                height="20"
+                                color="primary"
+                            ></v-progress-linear>
+                            <v-alert v-if="processingMessage" type="info">{{ processingMessage }}</v-alert>
+                            <v-alert v-if="successMessage" type="success">{{ successMessage }}</v-alert>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+
+
         </v-container>
-
-        <v-container class="d-flex justify-center mt-4">
-            <v-btn color="primary" @click="uploadAndSubmitFile">Submit</v-btn>
-            <v-btn color="secondary" @click="resetForm">Reset</v-btn>
+        <v-container class="fill-height">
+            <v-row class="d-flex justify-center align-center">
+                <v-btn color="primary" @click="uploadAndSubmitFile" style="margin-right: 20px">Submit</v-btn>
+                <v-btn color="secondary" @click="resetForm">Reset</v-btn>
+            </v-row>
         </v-container>
     </v-app>
 </template>
-
-
 
 <script>
 import axios from 'axios';
@@ -172,7 +181,7 @@ export default {
             // Clear the success message after 3 seconds
             setTimeout(() => {
                 this.successMessage = '';
-            }, 3000); // 3000 milliseconds = 3 seconds
+            }, 5000); // 5000 milliseconds = 5 seconds
         },
         goBack() {
             window.history.back();
@@ -194,19 +203,12 @@ export default {
     border: 2px solid #000;
     border-radius: 8px;
     padding: 20px;
-    min-height: 450px; /* Make sections taller for more readable form */
 }
 
 .fill-height {
     height: calc(100vh - 64px); /* Ensure it fills most of the screen */
 }
-.v-card {
-    min-height: 350px; /* Adjust to balance the sections */
-    width: 100%; /* Allow the card to take the full width within the column */
-}
-.v-btn {
-    margin: 0 10px;
-}
+
 .rounded-image {
     width: 40px;
     height: 40px;

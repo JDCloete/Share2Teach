@@ -18,12 +18,6 @@ class ModerationController extends Controller
         return Inertia::render('ModerationPage');
     }
 
-    public function getDocuments()
-    {
-        $documents = Document::all();
-        return response()->json($documents);
-    }
-
     /**
      * Show the form for creating a new resource.
      */

@@ -17,6 +17,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Str;
+use PhpOffice\PhpWord\Settings;
 use setasign\Fpdi\Fpdi; // For FPDI
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -88,6 +89,7 @@ class DocumentController extends Controller
     }
 
 
+
     public function upload(Request $request): JsonResponse
     {
         // Validate the uploaded file and metadata
@@ -124,12 +126,35 @@ class DocumentController extends Controller
         $customPath = 'Documents/' . $moduleCode . '/' . $category;
         $fileName = $originalName . '.' . $extension;
 
-        // Store the uploaded file temporarily
-        $uploadedFilePath = $file->storeAs('temp', $fileName);
+        // Convert docx to PDF if necessary
+        if ($extension === 'docx') {
+            $tempPath = $file->storeAs('temp', $fileName);
+
+            // Load the docx file
+            $phpWord = IOFactory::load(storage_path('app/' . $tempPath));
+            $pdfFileName = $originalName . '.pdf';
+            $pdfFilePath = storage_path('app/temp/' . $pdfFileName);
+
+            // Convert docx to PDF
+            $domPdfPath = base_path('vendor/dompdf/dompdf');
+            Settings::setPdfRendererPath($domPdfPath);
+            Settings::setPdfRendererName('DomPDF');
+
+            $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
+            $pdfWriter->save($pdfFilePath);
+
+            // Treat the file as a PDF for the next steps
+            $uploadedFilePath = $pdfFilePath;
+            $extension = 'pdf'; // Override extension to PDF since we converted it
+        } else {
+            // If not a .docx file, store it as usual
+            $uploadedFilePath = $file->storeAs('temp', $fileName);
+        }
 
         // Define the path to the existing document to prepend (e.g., a cover page)
         $existingDocumentPath = storage_path('app/public/cover.pdf'); // Adjust this path as needed
 
+        // If the file is a PDF (either originally or converted), proceed with watermarking
         if ($extension === 'pdf') {
             $pdf = new Fpdi();
 
@@ -138,14 +163,11 @@ class DocumentController extends Controller
             for ($pageNo = 1; $pageNo <= $existingPageCount; $pageNo++) {
                 $pdf->AddPage();
                 $templateId = $pdf->importPage($pageNo);
-
-                // Adjust position (x, y) and width to move the page left and up
                 $pdf->useTemplate($templateId, 0, 0, 210); // Adjust the width if necessary
             }
 
-
-            // Add the pages from the uploaded document
-            $uploadedPageCount = $pdf->setSourceFile(Storage::path($uploadedFilePath));
+            // Add the pages from the uploaded or converted document
+            $uploadedPageCount = $pdf->setSourceFile($uploadedFilePath);
             for ($pageNo = 1; $pageNo <= $uploadedPageCount; $pageNo++) {
                 $pdf->AddPage();
                 $templateId = $pdf->importPage($pageNo);
@@ -158,8 +180,8 @@ class DocumentController extends Controller
                 $pdf->Cell(0, 0, 'Property of S2T_Triple_Vision', 0, 0, 'C');
             }
 
-            // Save the merged and watermarked PDF to storage
-            $mergedFilePath = $customPath . '/' . $fileName;
+            // Save the merged and watermarked PDF to the final storage location
+            $mergedFilePath = $customPath . '/' . $originalName . '.pdf';
             Storage::disk('public')->put($mergedFilePath, $pdf->Output('S'));
 
             // Delete the original temporary uploaded file
@@ -169,6 +191,10 @@ class DocumentController extends Controller
             $mergedFilePath = $file->storeAs($customPath, $fileName, 'public');
         }
 
+        // Retrieve the user_id from the session
+        //$userId = $request->session()->get('user_id');
+        //, $userId
+
         // Use a transaction to insert into the database
         try {
             DB::transaction(function () use ($validatedData, $mergedFilePath, $fileSize, $moduleCode) {
@@ -176,7 +202,7 @@ class DocumentController extends Controller
                 $document = Document::create([
                     'document_name' => $validatedData['document_name'],
                     'storage_path' => $mergedFilePath,
-                    'user_id' => Auth::id(),
+                    //'user_id' => $userId, // Use user_id from session
                     'document_date_created' => Carbon::now(),
                     'category' => $validatedData['category'],
                     'academic_year' => $validatedData['academic_year'],
@@ -193,11 +219,11 @@ class DocumentController extends Controller
                     'size' => $fileSize,
                 ]);
             });
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => 'Error inserting document metadata: ' . $e->getMessage()], 500);
         }
 
-        return response()->json(['message' => 'File uploaded, merged with existing document, watermarked, and processed successfully!'], 200);
+        return response()->json(['message' => 'File uploaded, converted, watermarked, and processed successfully!'], 200);
     }
 
 
@@ -206,6 +232,26 @@ class DocumentController extends Controller
 
 
 
+    public function getDocumentsWithMetadata(): JsonResponse
+    {
+        try {
+            $documents = Document::with(['user', 'metadata'])
+                ->get()
+                ->map(function ($document) {
+                    return [
+                        'document_name' => $document->document_name,
+                        'uploaded_by' => $document->user ? $document->user->name . ' ' . $document->user->surname : 'Unknown', // Check if user exists
+                        'upload_date' => $document->metadata->upload_date,
+                        'type' => $document->metadata->type,
+                        'size' => $document->metadata->size,
+                    ];
+                });
+
+            return response()->json(['documents' => $documents], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
 
 
@@ -250,73 +296,6 @@ class DocumentController extends Controller
 //        ];
 //    }
 
-//    public function createZip($files): string
-//    {
-//        $zipPath = 'zip/' . Str::random() . '.zip';
-//        $publicPath = "$zipPath";
-//
-//        if (!is_dir(dirname($publicPath))) {
-//            Storage::disk('public')->makeDirectory(dirname($publicPath));
-//        }
-//
-//        $zipFile = Storage::disk('public')->path($publicPath);
-//
-//        $zip = new \ZipArchive();
-//
-//        if ($zip->open($zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === true) {
-//            $this->addFilesToZip($zip, $files);
-//        }
-//
-//        $zip->close();
-//
-//        return asset(Storage::disk('local')->url($zipPath));
-//    }
-//
-//    public function uploadAndConvert(Request $request): JsonResponse
-//    {
-//        // Validate the uploaded file
-//        $request->validate([
-//            'file' => 'required|file|mimes:docx,txt,png,jpg,pdf|max:5120', // Accept various file types
-//        ]);
-//
-//        // Get the uploaded file
-//        $file = $request->file('file');
-//        $originalName = $file->getClientOriginalName();
-//        $fileType = $file->getClientOriginalExtension();
-//
-//        // Define a unique filename for the converted PDF
-//        $pdfFileName = pathinfo($originalName, PATHINFO_FILENAME) . '-' . time() . '.pdf';
-//
-//        // Check file type and convert if needed
-//        if ($fileType == 'docx') {
-//            $pdfFilePath = $this->convertDocxToPdf($file, $pdfFileName);
-//        } else {
-//            // If it's already a PDF or another supported format, just move it
-//            $pdfFilePath = $file->storeAs('documents', $pdfFileName, 'public');
-//        }
-//
-//        // Save document info in the database (Document and Metadata tables)
-//        $document = new Document();
-//        $document->title = $originalName;
-//        $document->file_path = $pdfFilePath;
-//        $document->save();
-//
-//        // Add metadata (for example, upload date and file type)
-//        $metadata = new Metadata();
-//        $metadata->document_id = $document->id;
-//        $metadata->module_code = 'DOC'; // Example static field
-//        $metadata->category = $fileType;
-//        $metadata->academic_year = Carbon::now()->year;
-//        $metadata->lecturer_name = 'John Doe'; // Example static field
-//        $metadata->upload_date = Carbon::now();
-//        $metadata->type = $fileType;
-//        $metadata->size = $file->getSize();
-//        $metadata->save();
-//
-//        return response()->json(['message' => 'File uploaded and converted to PDF successfully']);
-//    }
-//
-//    // Convert .docx to PDF
 //
 //    public function addToFavourites(AddToFavouritesRequest $request): RedirectResponse
 //    {

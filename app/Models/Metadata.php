@@ -50,9 +50,9 @@ class Metadata extends Model
     }
 
     // Metadata BelongsTo one Document
-    public function metadata_belongs_to(): BelongsTo
+    public function document(): BelongsTo
     {
-        return $this->belongsTo(Document::class);
+        return $this->belongsTo(Document::class, 'document_id');
     }
 }
 
