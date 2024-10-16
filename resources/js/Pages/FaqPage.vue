@@ -1,6 +1,7 @@
 <template>
-    <div>
-        <v-toolbar color="primary" dark style="margin-bottom: 20px">
+    <div class="faq-page">
+        <!-- Toolbar -->
+        <v-toolbar color="primary" dark>
             <img
                 @click="goBack"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
@@ -12,21 +13,17 @@
             />
             <v-toolbar-title class="d-flex">Frequently Asked Questions</v-toolbar-title>
             <v-spacer></v-spacer>
-
-            <!-- Search Bar -->
-            <v-layout row align-center justify-center>
-                <v-text-field
-                    v-model="search"
-                    label="Search for Questions"
-                    prepend-inner-icon="mdi-magnify"
-                    clearable
-                    hide-details
-                    solo-inverted
-                    flat
-                    style="max-width: 450px; height: 60px; font-size: 5px; margin-left: -300px;"
-                ></v-text-field>
-            </v-layout>
-
+            <v-text-field
+                v-model="search"
+                label="Search for Questions"
+                prepend-inner-icon="mdi-magnify"
+                hide-details
+                solo-inverted
+                flat
+                class="centered-search-bar"
+                style="max-width: 450px;"
+            ></v-text-field>
+            <v-spacer></v-spacer>
             <v-btn text="" @click="navigateToRegisterPage">
                 <v-icon left class="mr-2 custom-icon">mdi-account-plus-outline</v-icon>
                 Register
@@ -37,70 +34,71 @@
             </v-btn>
         </v-toolbar>
 
-        <!-- FAQs List -->
-        <v-container>
-            <v-row justify="center">
-                <v-col cols="12" md="8">
-                    <v-list>
-                        <v-list-item
-                            v-for="(faq, index) in filteredFaqs"
-                            :key="index"
-                            @click="faq.showAnswer = !faq.showAnswer"
-                            class="faq-item"
-                        >
-                            <v-list-item-content>
-                                <v-list-item-title class="faq-question">
-                                    <strong>{{ faq.faq_question }}</strong>
-                                </v-list-item-title>
-                            </v-list-item-content>
+        <!-- About Us Header with Background Image -->
+        <div class="d-flex justify-center align-center header-background" style="height: 40vh; background-size: cover; background-position: center;">
+            <div class="mb-6" style="text-align: center;">
+                <h1 class="text-h1 custom-font" style="color: #ffffff;">
+                    Frequently Asked Questions
+                </h1>
+                <p class="text-h6" style="color: #ffffff;">
+                    Find the answers to your questions below.
+                </p>
+            </div>
+        </div>
 
-                            <!-- Answer Section with Transition -->
-                            <v-expand-transition>
-                                <v-list-item-content v-if="faq.showAnswer" class="faq-answer">
-                                    <v-list-item-subtitle>{{ faq.faq_answer }}</v-list-item-subtitle>
-                                </v-list-item-content>
-                            </v-expand-transition>
+        <!-- FAQs Section inside centered container -->
+        <div class="faq-container">
+            <div class="faq-content">
+                <div v-for="(faq, index) in filteredFaqs" :key="index" class="faq-item">
+                    <!-- Question and Answer -->
+                    <div class="faq-question-answer-group">
+                        <div class="faq-question">
+                            <span>{{ faq.faq_question }}</span>
+                        </div>
 
-                            <!-- Separator between FAQs -->
-                            <hr class="faq-separator">
-                        </v-list-item>
-                    </v-list>
-                </v-col>
-            </v-row>
-        </v-container>
+                        <!-- Answer -->
+                        <div class="faq-answer">
+                            <span>{{ faq.faq_answer }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Separator between FAQs -->
+                    <hr class="faq-separator" />
+                </div>
+            </div>
+        </div>
     </div>
 </template>
+
 <script>
 export default {
     name: 'FaqPage',
     data() {
         return {
-            faqs: [], // To store FAQs
-            search: '', // Search query
+            faqs: [],
+            search: '',
         };
     },
     computed: {
-        // Filter FAQs based on search query
         filteredFaqs() {
             return this.faqs.filter(faq => {
                 const question = faq.faq_question.toLowerCase();
                 const answer = faq.faq_answer.toLowerCase();
-                return question.includes(this.search.toLowerCase()) || answer.includes(this.search.toLowerCase());
+                return (
+                    question.includes(this.search.toLowerCase()) ||
+                    answer.includes(this.search.toLowerCase())
+                );
             });
         },
     },
     created() {
-        this.fetchFaqs(); // Fetch FAQs on component creation
+        this.fetchFaqs();
     },
     methods: {
-        // Fetch FAQs from the API
         async fetchFaqs() {
             try {
-                const response = await axios.get('/api/faq'); // Ensure this matches your API route
-                this.faqs = response.data.faqs.map(faq => ({
-                    ...faq,
-                    showAnswer: false // Initialize showAnswer property for toggling
-                }));
+                const response = await axios.get('/api/faq');
+                this.faqs = response.data.faqs;
             } catch (error) {
                 console.error('Error fetching FAQs:', error);
             }
@@ -117,6 +115,7 @@ export default {
     },
 };
 </script>
+
 <style scoped>
 /* Styling for the logo */
 .rounded-image {
@@ -134,41 +133,103 @@ export default {
 }
 
 /* Center the search bar within its container */
-.faq-search-bar {
+.centered-search-bar {
+    text-align: center;
     margin: 0 auto;
-    max-width: 100%;
 }
 
-/* Styling for FAQ questions */
-.faq-question {
-    font-size: 1.1rem;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+/* Heading styling */
+.faq-heading {
+    text-align: center;
+    font-size: 2.5rem;
+    font-family: 'Playfair Display', serif;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-decoration: underline;
+    color: #0b0b0b;
 }
 
-/* FAQ item hover effect */
-.faq-item {
-    cursor: pointer;
+/* Centering the container */
+.faq-container {
+    display: flex;
+    justify-content: center; /* Center the container */
     padding: 20px;
-    transition: background-color 0.3s ease;
-    border-bottom: 1px solid #eee;
 }
 
-.faq-item:hover {
-    background-color: #f9f9f9;
+/* Centering the FAQ content */
+.faq-content {
+    width: 80%; /* Width of the centered content */
 }
 
-/* Styling for FAQ answers */
+/* Grouping the Question and Answer */
+.faq-question-answer-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align the text to the left */
+}
+
+/* Styling for FAQ questions and answers */
+.faq-question {
+    display: flex;
+    font-size: 1.6rem; /* Question text size */
+    color: #4b0082;
+    margin-bottom: 10px;
+}
+
 .faq-answer {
-    font-size: 1rem;
-    padding: 10px 0;
-    color: #666;
+    display: flex;
+    font-size: 1.6rem;
+    color: grey; /* Change the answer color to grey */
+    margin-bottom: 10px;
 }
 
 /* Separator between FAQ items */
 .faq-separator {
     border: none;
     border-bottom: 1px solid #ddd;
-    margin: 10px 0;
+    margin: 20px 0;
 }
+
+/* Styling for the FAQ items */
+.faq-item {
+    padding: 10px 0;
+    width: 100%; /* Ensure the items span the container */
+}
+
+/* Parallax header background */
+.header-background {
+    position: relative; /* Ensures the overlay aligns properly */
+    background-image: url('https://wallpaperboat.com/wp-content/uploads/2020/10/23/57899/question-mark-23.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.header-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity for the darkening effect */
+    z-index: 1;
+}
+
+.header-background > div {
+    position: relative;
+    z-index: 2; /* Ensure the content stays above the overlay */
+}
+/* Heading styling for the FAQ section */
+.custom-font {
+    font-family: 'Playfair Display', serif; /* Elegant serif font */
+    font-size: 3rem; /* Increase font size */
+    font-weight: bold;
+    letter-spacing: 1.5px; /* Add spacing between letters */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+    color: #f8f8f8; /* Light color for better contrast on dark background */
+    margin-bottom: 15px;
+}
+
+
 </style>

@@ -18,7 +18,7 @@
                 <!-- Section 1: Upload -->
                 <v-col cols="12" md="4">
                     <v-card class="upload-section" outlined>
-                        <v-card-title>Upload</v-card-title>
+                        <v-card-title class="text-center">Upload</v-card-title>
                         <v-card-text>
                             <v-file-input
                                 label="Drag & Drop files"
@@ -35,11 +35,11 @@
                 <!-- Section 2: Details -->
                 <v-col cols="12" md="4">
                     <v-card class="details-section" outlined>
-                        <v-card-title>Details</v-card-title>
+                        <v-card-title class="text-center">Details</v-card-title>
                         <v-card-text>
                             <v-text-field label="Document Name" v-model="documentName" required></v-text-field>
                             <v-select
-                                label="Module Code"
+                                label="Subject"
                                 :items="['Mathematics', 'Business Studies', 'History', 'Geography', 'Life Science', 'Natural Science', 'English', 'Technology', 'Afrikaans', 'Life Skills', 'Computer Science']"
                                 v-model="moduleCode"
                                 required
@@ -69,7 +69,7 @@
                 <!-- Section 3: Processing -->
                 <v-col cols="12" md="4">
                     <v-card class="upload-section" outlined>
-                        <v-card-title>Processing</v-card-title>
+                        <v-card-title class="text-center">Processing</v-card-title>
                         <v-card-text>
                             <v-progress-linear
                                 v-if="uploading"
@@ -211,12 +211,14 @@ export default {
 
 <style scoped>
 .background-image {
-    background-image: url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     min-height: 100vh;
 }
+
 
 .upload-section, .details-section {
     border: 2px solid #000;

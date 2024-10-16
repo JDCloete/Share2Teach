@@ -1,6 +1,9 @@
 <template>
     <v-app class="background-image">
-        <v-toolbar color="primary" dark>
+        <div class="overlay"></div> <!-- Dark overlay -->
+
+
+        <v-toolbar color="primary" class="toolbar" style="position: relative; z-index: 2;">
             <img
                 @click="goToHomepage"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
@@ -23,12 +26,12 @@
 
         <v-container class="fill-height">
             <v-row class="d-flex justify-center align-center">
-                <v-col cols="12" md="4">
-                    <v-card class="upload-section details-section" outlined>
+                <v-col cols="12" md="6" lg="5">
+                    <v-card class="upload-section details-section blue-outline" outlined>
 
-                        <v-card-title>
-                            <v-icon left large class="mr-3">mdi-account</v-icon>
-                            Create Your Account
+                        <v-card-title class="d-flex justify-center align-center text-center" style="height: 100%; flex-direction: column;">
+                            <v-icon large class="mb-2">mdi-account</v-icon>
+                            <span>Create Your Account</span>
                         </v-card-title>
 
                         <v-divider class="mb-4"></v-divider>
@@ -188,10 +191,22 @@ export default {
     background-position: center;
     background-repeat: no-repeat;
     min-height: 100vh;
+    position: relative; /* Needed for the overlay */
 }
+
 .fill-height {
     height: calc(100vh - 64px); /* Ensure it fills most of the screen */
 }
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+    z-index: 1; /* Position overlay above the background but below other content */
+}
+
 .rounded-image {
     width: 40px;
     height: 40px;
@@ -202,5 +217,10 @@ export default {
     border: 2px solid #000;
     border-radius: 8px;
     padding: 20px;
+    position: relative; /* Needed to ensure the card content is above the overlay */
+    z-index: 1; /* Ensure card content is above the overlay */
+}
+.blue-outline {
+    border: 2px solid blue; /* Adjust the thickness and color as needed */
 }
 </style>

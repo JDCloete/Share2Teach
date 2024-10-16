@@ -1,12 +1,33 @@
 <template>
     <v-card class="background-color">
+
+        <v-toolbar color="primary" dark>
+            <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
+                alt="Logo"
+                class="mr-2 rounded-image"
+                width="30"
+                height="30"
+                style="object-fit: cover; margin-left: 15px;"
+            />
+            <v-toolbar-title>About Us</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn text @click="navigateToRegisterPage">
+                <v-icon left class="mr-2">mdi-account-plus-outline</v-icon>
+                Register
+            </v-btn>
+            <v-btn text @click="navigateToLoginPage">
+                <v-icon left class="mr-2">mdi-key</v-icon>
+                Login
+            </v-btn>
+        </v-toolbar>
         <!-- About Us Header with Background Image -->
         <div class="d-flex justify-center align-center header-background" style="height: 40vh; background-size: cover; background-position: center;">
             <div class="mb-6" style="text-align: center;">
-                <h1 class="text-h1 custom-font" style="color: #000000;">
+                <h1 class="text-h1 custom-font" style="color: #ffffff;">
                     About Us
                 </h1>
-                <p class="text-h6" style="color: #000000;">
+                <p class="text-h6" style="color: #ffffff;">
                     Share2Teach is a platform where you can share your knowledge and learn from others.
                 </p>
             </div>
@@ -146,10 +167,12 @@
                         By establishing this interconnected framework, we aim to facilitate the seamless exchange of innovative ideas, effective strategies, and diverse teaching materials among educators. This collaborative effort will create a vibrant and dynamic ecosystem in which educators can actively support one another, share their expertise, and collectively work toward elevating the educational experience for their students.
                     </p> <p class="paragraph-spacing text-h6.5">
                     In fostering such an environment, we aspire to cultivate a thriving learning community characterized by shared knowledge, mutual encouragement, and professional camaraderie. Ultimately, our goal is to contribute to the continuous advancement of education as a whole, ensuring that both educators and students benefit from the collective wisdom and resources available within this supportive network.
-                    </p>
+                </p>
                 </v-card-text>
             </v-card>
         </v-card>
+
+        <div class="separator"></div>
 
         <!-- Contact Us Section -->
         <v-card elevation="2" class="pa-6 my-6">
@@ -227,7 +250,23 @@
         </v-card>
     </v-card>
 </template>
+<script>
+import { Inertia } from '@inertiajs/inertia';
 
+export default {
+    methods: {
+        navigateToExplorePage() {
+            Inertia.visit('/explore');
+        },
+        navigateToRegisterPage() {
+            Inertia.visit('/register');
+        },
+        navigateToLoginPage() {
+            Inertia.visit('/login');
+        }
+    },
+};
+</script>
 
 <style scoped>
 .background-color {
@@ -279,11 +318,29 @@
 
 /* Parallax header background */
 .header-background {
-    background-image: url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg');
+    position: relative; /* Ensures the overlay aligns properly */
+    background-image: url('https://png.pngtree.com/background/20230527/original/pngtree-an-old-bookcase-in-a-library-picture-image_2760144.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* Fixed for parallax effect */
+    background-attachment: fixed;
 }
+
+.header-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity for the darkening effect */
+    z-index: 1;
+}
+
+.header-background > div {
+    position: relative;
+    z-index: 2; /* Ensure the content stays above the overlay */
+}
+
 
 .contact-card {
     width: 300px;
@@ -313,4 +370,14 @@
     transform: scale(1.05); /* Slightly increases the size on hover */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Adds a shadow effect on hover */
 }
+
+.separator {
+    background-color: #300b49; /* Light gray color */
+    height: 80px; /* Height of the block */
+    margin: 20px 0; /* Spacing above and below */
+    width: 100%; /* Full width */
+}
+
 </style>
+<script setup lang="ts">
+</script>

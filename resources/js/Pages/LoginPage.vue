@@ -45,11 +45,7 @@
                             required
                         ></v-text-field>
 
-                        <!-- Forgot Password Link -->
-                        <div class="d-flex justify-end mb-4">
-                            <a @click.prevent="navigateToResetPasswordPage" href="#" class="text-decoration-none text-blue">Forgot password?</a>
-                        </div>
-
+                       
                         <!-- Submit Button -->
                         <v-btn
                             color="primary"
@@ -140,9 +136,7 @@ export default {
         navigateToRegisterPage() {
             Inertia.visit('/register');
         },
-        navigateToResetPasswordPage() {
-            Inertia.visit('/reset-password'); // Adjust the route if needed
-        },
+
         goToHomepage() {
             Inertia.visit('/');
         },
@@ -152,12 +146,14 @@ export default {
 
 <style scoped>
 .background-image {
-    background-image: url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     min-height: 100vh;
 }
+
 .main-container {
     height: calc(100vh - 64px);
     display: flex;
@@ -178,4 +174,5 @@ export default {
 .wide-card {
     width: 420px; /* Adjust width as needed */
 }
+
 </style>

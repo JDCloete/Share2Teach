@@ -22,41 +22,48 @@
                 Login
             </v-btn>
         </v-toolbar>
-
+        <div class="d-flex justify-center align-center header-background" style="height: 40vh; background-size: cover; background-position: center;">
+            <div class="mb-2" style="text-align: center;">
+                <h1 class="text-h1 custom-font" style="color: #ffffff;">
+                    Open Educational Resources
+                </h1>
+            </div>
+        </div>
 
         <!-- Useful Links Section -->
         <v-card-text>
-            <v-container class="main-container" :style="{ backgroundColor: 'transparent' }">
-                <v-row>
-                    <v-col cols="12">
-                        <h3 style="margin-bottom: 10px"><u>Useful Resources for Students</u></h3>
-                        <v-list dense :style="{ backgroundColor: 'transparent' }">
-                            <v-list-item
-                                v-for="(resource, index) in resources"
-                                :key="index"
-                                @click="goToResource(resource.link)"
-                            >
-                                <!-- Wrap the image and content in a flex container -->
-                                <div style="display: flex; align-items: center;" >
-                                    <!-- Add Image of the Website to the Left -->
-                                    <v-img
-                                        :src="resource.image"
-                                        loading="lazy"
-                                        :alt="resource.name"
-                                        max-width="50"
-                                        class="mr-3"
-                                    ></v-img>
+            <v-col cols="12" style="text-align: center">
+                <h1 class="custom-heading"><u>Useful Resources for Students:</u></h1>
+            </v-col>
+            <v-container :style="{ maxWidth: '900px', margin: '0 auto' }">
+                <!--                <v-row>-->
+                <v-list dense :style="{ backgroundColor: 'transparent' }">
+                    <v-list-item
+                        v-for="(resource, index) in resources"
+                        :key="index"
+                        @click="goToResource(resource.link)"
+                    >
+                        <!-- Wrap the image and content in a flex container -->
+                        <div style="display: flex; align-items: center;" >
+                            <!-- Add Image of the Website to the Left -->
+                            <v-img
+                                :src="resource.image"
+                                loading="lazy"
+                                :alt="resource.name"
+                                max-width="50"
+                                class="mr-3"
+                            ></v-img>
 
-                                    <!-- Resource Name and Description -->
-                                    <v-list-item-content :style="{ backgroundColor: 'transparent' }">
-                                        <v-list-item-title>{{ resource.name }}</v-list-item-title>
-                                        <v-list-item-subtitle>{{ resource.description }}</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </div>
-                            </v-list-item>
-                        </v-list>
-                    </v-col>
-                </v-row>
+                            <!-- Resource Name and Description -->
+                            <v-list-item-content :style="{ backgroundColor: 'transparent' }">
+                                <v-list-item-title>{{ resource.name }}</v-list-item-title>
+                                <v-list-item-subtitle>{{ resource.description }}</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </div>
+                    </v-list-item>
+                </v-list>
+
+                <!--                </v-row>-->
 
             </v-container>
         </v-card-text>
@@ -66,10 +73,14 @@
             <v-container>
                 <v-row>
                     <v-col cols="12">
-                        <h3  style="margin-bottom: 20px"><u>Papers</u></h3>
-                        <v-btn color="primary" @click="goToPastPapers">
-                            Visit NWU's Past Papers Website
-                        </v-btn>
+                        <v-card-text>
+                            <h1 class="custom-heading" style="text-align: center; margin: 0;"><u>NWU Papers:</u></h1>
+                        </v-card-text>
+                        <div style="display: flex; justify-content: center; margin-top: 20px;">
+                            <v-btn color="primary" @click="goToPastPapers">
+                                Visit NWU's Past Papers Website
+                            </v-btn>
+                        </div>
                     </v-col>
                 </v-row>
             </v-container>
@@ -79,9 +90,12 @@
         <v-card-text>
             <v-container>
                 <v-row>
-                    <v-col cols="12">
-                        <h3 style="margin-bottom: 20px"><u>Our Sponsors</u></h3>
-                        <v-row>
+                    <v-col cols="12" class="text-center">
+                        <v-card-text>
+                            <h1 class="custom-heading" style="text-align: center; margin: 0;"><u>Our Sponsors:</u></h1>
+                        </v-card-text>
+
+                        <v-row justify="center">
                             <v-col
                                 v-for="(sponsor, index) in sponsors"
                                 :key="index"
@@ -111,9 +125,9 @@
                 <v-row>
                     <v-col cols="12">
                         <v-divider style="margin-bottom: 10px"></v-divider>
-                        <p>
+                        <h2 style="text-align: center; margin-bottom: 20px">
                             <strong><u>Disclaimer:</u></strong>
-                        </p>
+                        </h2>
 
                         <p style="margin-bottom: 10px;">
                             The resources listed here are
@@ -133,8 +147,6 @@
                             responsibility for any errors, omissions, or for the results obtained from
                             the use of this information.
                         </p>
-
-
                     </v-col>
                 </v-row>
             </v-container>
@@ -224,7 +236,7 @@ export default {
     overflow: hidden; /* Hide overflow */
 }
 .background-image {
-    background-image: url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg');
+
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -238,5 +250,41 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.header-background {
+    position: relative; /* Ensures the overlay aligns properly */
+    background-image: url('https://s1.1zoom.me/b6065/44/Apples_Colored_background_Book_Pencils_530559_1920x1080.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.header-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the opacity for the darkening effect */
+    z-index: 1;
+}
+
+.header-background > div {
+    position: relative;
+    z-index: 2; /* Ensure the content stays above the overlay */
+}
+.custom-font {
+    font-family: 'Playfair Display', serif; /* Elegant serif font */
+    font-size: 3rem; /* Increase font size */
+    font-weight: bold;
+    letter-spacing: 1.5px; /* Add spacing between letters */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle shadow */
+    color: #f8f8f8; /* Light color for better contrast on dark background */
+    margin-bottom: 15px;
+}
+.custom-heading {
+    font-family: 'Montserrat', sans-serif; /* Modern and clean look */
+    margin-bottom: 10px;
 }
 </style>
