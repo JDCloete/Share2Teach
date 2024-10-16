@@ -12,11 +12,11 @@
             />
             <v-toolbar-title>Welcome!</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn text @click="navigateToRegisterPage">
+            <v-btn text="" @click="navigateToRegisterPage">
                 <v-icon left class="mr-2">mdi-account-plus-outline</v-icon>
                 Register
             </v-btn>
-            <v-btn text @click="navigateToLoginPage">
+            <v-btn text="" @click="navigateToLoginPage">
                 <v-icon left class="mr-2">mdi-key</v-icon>
                 Login
             </v-btn>

@@ -48,7 +48,7 @@
                                     outlined
                                     dense
                                     required
-                                    class="mb-3"
+                                    class="mb-2"
                                 ></v-text-field>
 
                                 <!-- Surname Field -->
@@ -61,7 +61,7 @@
                                     outlined
                                     dense
                                     required
-                                    class="mb-3"
+                                    class="mb-2"
                                 ></v-text-field>
 
                                 <!-- Email Field -->

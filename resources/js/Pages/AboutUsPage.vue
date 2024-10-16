@@ -3,6 +3,7 @@
 
         <v-toolbar color="primary" dark>
             <img
+                @click="goToHomepage"
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
                 alt="Logo"
                 class="mr-2 rounded-image"
@@ -12,11 +13,11 @@
             />
             <v-toolbar-title>About Us</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn text @click="navigateToRegisterPage">
+            <v-btn text="" @click="navigateToRegisterPage">
                 <v-icon left class="mr-2">mdi-account-plus-outline</v-icon>
                 Register
             </v-btn>
-            <v-btn text @click="navigateToLoginPage">
+            <v-btn text="" @click="navigateToLoginPage">
                 <v-icon left class="mr-2">mdi-key</v-icon>
                 Login
             </v-btn>
@@ -255,8 +256,8 @@ import { Inertia } from '@inertiajs/inertia';
 
 export default {
     methods: {
-        navigateToExplorePage() {
-            Inertia.visit('/explore');
+        goToHomepage() {
+            this.$inertia.visit('/explore');
         },
         navigateToRegisterPage() {
             Inertia.visit('/register');
@@ -300,6 +301,13 @@ export default {
     font-family: 'Merriweather', serif;
     font-size: 2.5rem;
     color: #4A4A4A;
+}
+.rounded-image {
+    width: 40px; /* Ensure width is set */
+    height: 40px; /* Ensure height is set */
+    border-radius: 50%; /* Make the image round */
+    object-fit: cover; /* Maintain aspect ratio */
+    overflow: hidden; /* Hide overflow */
 }
 
 .text-h4 {
