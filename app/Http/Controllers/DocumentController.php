@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Models\Metadata;
+use App\Models\Report;
+use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -27,10 +29,9 @@ class DocumentController extends Controller
     public function index(Request $request): Response
     {
         return Inertia::render('ExplorePage', [
-            'role_id' => (int) $request->query('role_id'), // Cast to integer
+            'role_id' => (int)$request->query('role_id'), // Cast to integer
         ]);
     }
-
 
 
     public function readAll(): JsonResponse
@@ -81,6 +82,100 @@ class DocumentController extends Controller
         return response()->json(['message' => 'document deleted successfully'], 200);
     }
 
+    public function updateReportedDocument(Request $request, Report $report): JsonResponse
+    {
+        $validatedData = $request->validate([
+            'action_taken' => 'required|string|in:approved',
+        ]);
+
+        $report->action_taken = $validatedData['action_taken'];
+        $report->moderator_id = 2; // Get authenticated user ID
+        $report->save();
+
+        return response()->json(['message' => 'Report action updated successfully', 'report' => $report], 200);
+    }
+
+
+    public function deleteReportedDocument(Report $report): JsonResponse
+    {
+        try {
+            $report->delete(); // Delete the report
+            return response()->json(['message' => 'Report deleted successfully'], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error deleting the report'], 500);
+        }
+    }
+
+    // In DocumentController.php or appropriate controller
+    // In DocumentController.php or appropriate controller
+    public function updateUserToEducator(Request $request, $user_id): JsonResponse
+    {
+        try {
+            // Validate the request input
+            $validated = $request->validate([
+                'role_id' => 'required|integer',
+                'action_taken' => 'required|string|in:approved', // Ensure action_taken is required and is a string
+            ]);
+
+            // Fetch the user by ID
+            $user = User::findOrFail($user_id);
+
+            // Update the user's role
+            $user->role_id = $request->input('role_id');
+
+            // Optionally update other fields
+            if ($request->has('is_approved')) {
+                $user->is_approved = $request->input('is_approved');
+            }
+
+            // Save the updated user
+            $user->save();
+
+            return response()->json(['message' => 'User role updated successfully'], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function updateUserToModerator(Request $request, Report $report): JsonResponse
+    {
+        $validatedData = $request->validate([
+            'action_taken' => 'required|string|in:approved',
+        ]);
+
+        $report->action_taken = $validatedData['action_taken'];
+        $report->moderator_id = 2; // Get authenticated user ID
+        $report->save();
+
+        return response()->json(['message' => 'Report action updated successfully', 'report' => $report], 200);
+    }
+
+    public function updateUserToAdmin(Request $request, Report $report): JsonResponse
+    {
+        $validatedData = $request->validate([
+            'action_taken' => 'required|string|in:approved',
+        ]);
+
+        $report->action_taken = $validatedData['action_taken'];
+        $report->moderator_id = 2; // Get authenticated user ID
+        $report->save();
+
+        return response()->json(['message' => 'Report action updated successfully', 'report' => $report], 200);
+    }
+
+
+    public function deleteUser(Report $report): JsonResponse
+    {
+        try {
+            $report->delete(); // Delete the report
+            return response()->json(['message' => 'Report deleted successfully'], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error deleting the report'], 500);
+        }
+    }
+
+
     public function download($id): BinaryFileResponse|JsonResponse
     {
         $document = Document::find($id);
@@ -92,7 +187,6 @@ class DocumentController extends Controller
             return response()->json(['message' => 'File not found'], 404);
         }
     }
-
 
 
     public function upload(Request $request): JsonResponse
@@ -232,12 +326,6 @@ class DocumentController extends Controller
     }
 
 
-
-
-
-
-
-
     public function getDocumentsWithMetadata(): JsonResponse
     {
         try {
@@ -259,19 +347,51 @@ class DocumentController extends Controller
         }
     }
 
+    public function getReportedDocuments(): JsonResponse
+    {
+        try {
+            // Fetch reported documents along with related document and user data
+            $reports = Report::with(['document.user'])
+                ->get()
+                ->map(function ($report) {
+                    return [
+                        'report_id' => $report->id, // Include report_id
+                        'document_id' => $report->document_id,
+                        'document_name' => $report->document ? $report->document->document_name : 'Unknown',
+                        'uploaded_by' => $report->document->user ?
+                            $report->document->user->name . ' ' . $report->document->user->surname : 'Unknown',
+                        'report_reason' => $report->report_reason,
+                    ];
+                });
+
+            return response()->json(['reported_documents' => $reports], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
 
+    public function getRolesWithUsers(): JsonResponse
+    {
+        try {
+            // Eager load the 'role' relationship on the User model
+            $users = User::with('role') // Assuming 'role' is the relationship on the User model
+            ->get()
+                ->map(function ($user) {
+                    return [
+                        'user_id' => $user->id, // Return the user ID
+                        'user_name' => $user->name, // Get the user's name
+                        'user_surname' => $user->surname, // Get the user's surname
+                        'role_name' => $user->role ? $user->role->role_name : 'Unknown', // Get role_name from the role if it exists
+                    ];
+                });
 
-
-
-
-
-
-
-
-
-
-
+            return response()->json(['users' => $users], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+}
 
 
 
@@ -301,78 +421,6 @@ class DocumentController extends Controller
 //            'filename' => $filename
 //        ];
 //    }
-
-//
-//    public function addToFavourites(AddToFavouritesRequest $request): RedirectResponse
-//    {
-//        $data = $request->validated();
-//
-//        $id = $data['id'];
-//        $file = Document::find($id);
-//        $user_id = Auth::id();
-//
-//        $starredFile = Starred::query()
-//            ->where('file_id', $file->id)
-//            ->where('user_id', $user_id)
-//            ->first();
-//
-//        if ($starredFile) {
-//            $starredFile->delete();
-//        } else {
-//            Starred::create([
-//                'file_id' => $file->id,
-//                'user_id' => $user_id,
-//                'created_at' => Carbon::now(),
-//                'updated_at' => Carbon::now(),
-//            ]);
-//        }
-//
-//        return redirect()->back();
-//    }
-
-//    protected function convertDocxToPdf($file, $pdfFileName): string
-//    {
-//        $phpWord = IOFactory::load($file->getPathName());
-//
-//        $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
-//        $pdfFilePath = 'documents/' . $pdfFileName;
-//        Storage::put('public/' . $pdfFilePath, $pdfWriter->save());
-//
-//        return $pdfFilePath;
-//    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\ContributorsController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\ModerateReportedController;
 use App\Http\Controllers\ModerationController;
 use App\Http\Controllers\OERController;
 use App\Http\Controllers\UserController;
@@ -41,12 +42,15 @@ Route::post('/register', [UserController::class, 'store'])->name('register'); //
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 
 
-
 // Display the Document Moderation Page
 Route::get('/moderation', [ModerationController::class, 'index'])->name('pages.moderation');
 
+// Display the Document Moderation Page
+Route::get('/moderate-reported', [ModerateReportedController::class, 'index'])->name('pages.moderate');
+
+
 // Display the User Moderation Page
-Route::get('/moderate-users', [UserModerationController::class, 'index'])->name('pages.moderation');
+Route::get('/moderate-users', [UserModerationController::class, 'index'])->name('pages.user.moderation');
 
 
 

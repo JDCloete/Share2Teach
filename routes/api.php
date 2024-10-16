@@ -31,6 +31,28 @@ Route::post('/register', [UserController::class, 'store']);
 // Populating the moderation page with documents
 Route::get('/documents', [DocumentController::class, 'getDocumentsWithMetadata']);
 
+Route::patch('/documents/{document}', [DocumentController::class, 'update']);
+Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocument']);
+
+// Populating the moderation page with documents
+Route::get('/reported-documents', [DocumentController::class, 'getReportedDocuments']);
+
+
+Route::patch('/reported-documents/{report}', [DocumentController::class, 'updateReportedDocument']);
+Route::delete('/reported-documents/{report}', [DocumentController::class, 'deleteReportedDocument']);
+
+
+
+//User Routes
+Route::get('/users', [DocumentController::class, 'getRolesWithUsers']);
+
+Route::patch('/users/{user}', [DocumentController::class, 'updateUserToEducator']);
+Route::patch('/users/{user}', [DocumentController::class, 'updateUserToModerator']);
+Route::patch('/users/{user}', [DocumentController::class, 'updateUserToAdmin']);
+Route::delete('/users/{user}', [DocumentController::class, 'deleteUser']);
+
+
+
 
 // Forgot Password Routes
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->name('password.forgot');
@@ -81,11 +103,9 @@ Route::post('/upload-documents', [DocumentController::class, 'upload']);
 
 
 //Route::get('/documents', [DocumentController::class, 'readAll']);
+//Route::get('/documents/{document}', [DocumentController::class, 'readSingle']);
 
 
-Route::get('/documents/{document}', [DocumentController::class, 'readSingle']);
-Route::patch('/documents/{document}', [DocumentController::class, 'update']);
-Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocument']);
 
 
 // ALLES TOT HIER WERK
@@ -98,12 +118,10 @@ Route::delete('/ratings/{rating}', [RatingController::class, 'delete']);
 Route::patch('/ratings/{rating}', [RatingController::class, 'update']);
 
 
-//User Routes
-Route::get('/users', [UserController::class, 'getUsers']);
-Route::get('/users/{user}', [UserController::class, 'readSingle']);
-Route::post('/users', [UserController::class, 'store']);
-Route::patch('/users/{user}', [UserController::class, 'update']);
-Route::delete('/users/{user}', [UserController::class, 'deleteUser']);
+//
+//Route::get('/users/{user}', [UserController::class, 'readSingle']);
+//Route::post('/users', [UserController::class, 'store']);
+
 
 //Metadata Route
 Route::post('/metadata', [MetadataController::class, 'store']);

@@ -1,151 +1,174 @@
 <template>
-    <AppClean :app-bar-header="appBarHeader">
-        <student-users-data-table
-            :student-users="studentUsers"
-            @add-user="openStudentDialog"
-            @edit-user="openEditDialog"
-            @delete-user="openDeleteDialog"
-        ></student-users-data-table>
+    <v-toolbar color="primary" dark>
+        <img
+            @click="goBack"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv6vyFZbiqMYZ5njBX94kjv3u0bq_QyUvQCIB0Qj9rhlI5ExI26FAlmU4c30jUUgTgFQQ&usqp=CAU"
+            alt="Go to Homepage"
+            class="mr-2 rounded-image"
+            width="30"
+            height="30"
+            style="object-fit: cover; margin-left: 15px; cursor: pointer;"
+        />
+        <v-toolbar-title class="d-flex">Moderate Users</v-toolbar-title>
+    </v-toolbar>
+    <v-container style="padding: 50px">
+        <data-table-explorer-baseline :action-button="false" :search-enabled="false">
+            <template v-slot:toolbar-title>Escalate User Privileges</template>
+            <template v-slot:library-items>
+                <v-table>
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Surname</th>
+                        <th>Role</th>
+                        <th>Educator</th>
+                        <th>Moderator</th>
+                        <th>Admin</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="user in users" :key="user.id">
+                            <td>{{ user.user_name }}</td>
+                            <td>{{ user.user_surname }}</td>
+                            <td>{{ user.role_name }}</td>
 
-        <student-form-dialog
-            v-if="showStudentDialog"
-            :loading="loading"
-            :student="selectedStudent"
-            :isUpdate="isUpdate"
-            @saveStudent="saveStudent"
-            @editStudent="editStudent"
-            @closeDialog="closeStudentDialog"
-        ></student-form-dialog>
-
-        <delete-student-dialog
-            v-if="showDeleteDialog"
-            :loading="loading"
-            :student="selectedStudent"
-            @deleteStudentClicked="deleteStudent"
-            @dialogClosed="closeDeleteDialog"
-        ></delete-student-dialog>
-    </AppClean>
+                            <td>
+                                <v-btn
+                                    type="icon"
+                                    variant="flat"
+                                    size="small"
+                                    elevation="0"
+                                    @click="makeEducator(user)"
+                                >
+                                    <v-icon>mdi-account-minus</v-icon>
+                                </v-btn>
+                            </td>
+                            <td>
+                                <v-btn
+                                    type="icon"
+                                    variant="flat"
+                                    size="small"
+                                    elevation="0"
+                                    @click="makeModerator(user)"
+                                >
+                                    <v-icon>mdi-account-plus</v-icon>
+                                </v-btn>
+                            </td>
+                            <td>
+                                <v-btn
+                                    type="icon"
+                                    variant="flat"
+                                    size="small"
+                                    elevation="0"
+                                    @click="makeAdmin(user)"
+                                >
+                                    <v-icon>mdi-account-multiple-plus</v-icon>
+                                </v-btn>
+                            </td>
+                            <td>
+                                <v-btn
+                                    type="icon"
+                                    variant="flat"
+                                    size="small"
+                                    elevation="0"
+                                    @click="deleteUser(user)"
+                                >
+                                    <v-icon>mdi-account-remove</v-icon>
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </tbody>
+                </v-table>
+            </template>
+        </data-table-explorer-baseline>
+    </v-container>
 </template>
 
 <script>
 import axios from 'axios';
-import AppClean from "@/Layouts/AppClean.vue";
-import StudentUsersDataTable from "@/Components//StudentUsersDataTable.vue";
-import StudentFormDialog from "@/Components/StudentFormDialog.vue";
-import DeleteStudentDialog from "@/Components/DeleteStudentDialog.vue";
+import DataTableExplorerBaseline from '../Components/BaselineDataTable.vue';
 
 export default {
     name: 'ModerateUserPage',
-    components: {
-        AppClean,
-        StudentUsersDataTable,
-        StudentFormDialog,
-        DeleteStudentDialog
-    },
-    props: {
-        appBarHeader: {
-            type: String,
-            required: false,
-            default: 'Manage Students',
-        },
-        studentUsers: {
-            type: Array,
-            required: true,
-            default: () => [],
-        }
-    },
+    components: { DataTableExplorerBaseline },
     data() {
         return {
-            isUpdate: false,
-            showStudentDialog: false,
-            showDeleteDialog: false,
-            loading: false,
-            selectedStudent: {
-                first_name: '',
-                last_name: '',
-                email: '',
-                studentNumber: '',
-            }
+            users: [], // Holds the original fetched users
+            filteredUsers: [], // Filtered users after search
+            search: '', // Search term for filtering users
         };
     },
+    created() {
+        this.fetchUsersWithRoles();
+    },
     methods: {
-        async fetchStudents() {
-            this.loading = true;
+        async fetchUsersWithRoles() {
             try {
-                const response = await axios.get('/api/users'); // Adjust endpoint as necessary
-                this.studentUsers = response.data; // Assuming response is an array of student users
+                const response = await axios.get('/api/users'); // Adjust the route as per your API
+                this.users = response.data.users;
             } catch (error) {
-                console.error(error);
-            } finally {
-                this.loading = false;
+                console.error('Error fetching users with roles:', error);
             }
         },
-        openStudentDialog() {
-            this.isUpdate = false;
-            this.selectedStudent = { first_name: '', last_name: '', email: '', studentNumber: '' };
-            this.showStudentDialog = true;
+        goBack() {
+            window.history.back();
         },
-        openEditDialog(student) {
-            this.isUpdate = true;
-            this.selectedStudent = { ...student }; // Clone the student object
-            this.showStudentDialog = true;
-        },
-        openDeleteDialog(student) {
-            this.selectedStudent = student;
-            this.showDeleteDialog = true;
-        },
-        async saveStudent(student) {
-            this.loading = true;
+        async makeEducator(user) {
+            if (!user.user_id) {
+                console.error('Error: user ID is undefined or missing.');
+                return;
+            }
+
             try {
-                const response = await axios.post('/api/create/user', student);
-                this.studentUsers.push(response.data.student); // Assuming the response contains the new student
+                const response = await axios.patch(`/api/users/${user.user_id}`, {
+                    role_id: 1, // Setting the role to 'educator'
+                    action_taken: 'approved' // Replace with the valid action, e.g., 'approved' or any valid option
+                });
+                console.log('User role updated to educator:', response.data);
+                window.location.reload(); // Reload the page after the update
             } catch (error) {
-                console.error(error);
-            } finally {
-                this.loading = false;
-                this.closeStudentDialog();
+                console.error('Error updating the user role:', error.response?.data || error.message);
             }
         },
-        async editStudent(student) {
-            this.loading = true;
+        async makeModerator(user) {
             try {
-                const response = await axios.patch(`/api/edit/user/${student.id}`, student);
-                const index = this.studentUsers.findIndex(s => s.id === student.id);
-                if (index !== -1) {
-                    this.$set(this.studentUsers, index, response.data.student); // Update existing student
-                }
+                const response = await axios.patch(`api/users/${user.id}`, {
+                    is_approved: true,
+                });
+                window.location.reload();
             } catch (error) {
-                console.error(error);
-            } finally {
-                this.loading = false;
-                this.closeStudentDialog();
+                console.error('Error updating the user:', error.response?.data || error.message);
             }
         },
-        async deleteStudent(student) {
-            this.loading = true;
+        async makeAdmin(user) {
             try {
-                await axios.delete(`/api/delete/user/${student.id}`);
-                this.studentUsers = this.studentUsers.filter(u => u.id !== student.id);
+                const response = await axios.patch(`api/users/${user.id}`, {
+                    is_approved: true,
+                });
+                window.location.reload();
             } catch (error) {
-                console.error(error);
-            } finally {
-                this.loading = false;
-                this.closeDeleteDialog();
+                console.error('Error updating the user:', error.response?.data || error.message);
             }
         },
-        closeStudentDialog() {
-            this.showStudentDialog = false;
-        },
-        closeDeleteDialog() {
-            this.showDeleteDialog = false;
+        async deleteUser(user) {
+            try {
+                const response = await axios.delete(`api/users/${user.id}`);
+                window.location.reload();
+            } catch (error) {
+                console.error('Error deleting the user:', error.response?.data || error.message);
+            }
         }
     },
-    mounted() {
-        this.fetchStudents(); // Fetch the initial list of students
-    }
-}
+};
 </script>
 
-<style scoped>
-/* Add any specific styles you need for this page */
+<style>
+.rounded-image {
+    width: 40px; /* Ensure width is set */
+    height: 40px; /* Ensure height is set */
+    border-radius: 50%; /* Make the image round */
+    object-fit: cover; /* Maintain aspect ratio */
+    overflow: hidden; /* Hide overflow */
+}
 </style>

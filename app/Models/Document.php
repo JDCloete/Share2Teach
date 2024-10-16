@@ -91,9 +91,14 @@ class Document extends Model
     }
 
     // Document is_reported by many Users --> BelongsToMany
-    public function is_reported(): BelongsToMany
+    public function report(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'reports');
+    }
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Report::class);
     }
 
     // Document is_shared by many Users --> BelongsToMany

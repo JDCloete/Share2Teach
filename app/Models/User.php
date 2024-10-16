@@ -67,7 +67,7 @@ class User extends Authenticatable
     // User BelongsTo a role
     public function role(): BelongsTo
     {
-        return $this->belongsTo(Role::class, 'role_id');
+        return $this->belongsTo(Role::class, 'role_id'); // 'role_id' should match your foreign key in the users table
     }
 
 
@@ -90,10 +90,15 @@ class User extends Authenticatable
         return $this->belongsToMany(Document::class, 'downloads');
     }
 
-    // User reports many documents --> BelongsToMany
-    public function reports(): BelongsToMany
+    public function documents(): HasMany
     {
-        return $this->belongsToMany(Document::class, 'reports');
+        return $this->hasMany(Document::class);
+    }
+
+    // User reports many documents --> BelongsToMany
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Document::class);
     }
 
     // User shares many documents --> BelongsToMany

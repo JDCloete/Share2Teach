@@ -94,26 +94,57 @@
                     </v-list-item-content>
                 </v-list-item>
 
+                <!-- Tooltip for OER -->
+                <v-tooltip text="Moderate Newly Uploaded Documents">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item
+                            class="centered-list-item outlined-item"
+                            v-if="roleId === 2 || roleId === 3"
+                            @click="goToModerateDocuments"
+                            v-bind="props"
+                        >
+                            <v-list-item-content>
+                                <v-list-item-title class="text-center">Moderate Documents</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                </v-tooltip>
 
-                <v-list-item
-                    class="centered-list-item outlined-item"
-                    v-if="roleId === 2 || roleId === 3"
-                    @click="goToModerateDocuments"
-                >
-                    <v-list-item-content>
-                        <v-list-item-title class="text-center">Moderate Documents</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
 
-                <v-list-item
-                    class="centered-list-item outlined-item"
-                    v-if="roleId === 2 || roleId === 3"
-                    @click="goToModerateUsers"
-                >
-                    <v-list-item-content>
-                        <v-list-item-title class="text-center">Moderate Users</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                <!-- Tooltip for OER -->
+                <v-tooltip text="Moderate Reported Documents">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item
+                            class="centered-list-item outlined-item"
+                            v-if="roleId === 2 || roleId === 3"
+                            @click="goToModerateReported"
+                            v-bind="props"
+                        >
+                            <v-list-item-content>
+                                <v-list-item-title class="text-center">Moderate Reported</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                </v-tooltip>
+
+
+                <!-- Tooltip for OER -->
+                <v-tooltip text="Change The Access Levels Of Users">
+                    <template v-slot:activator="{ props }">
+                        <v-list-item
+                            class="centered-list-item outlined-item"
+                            v-if="roleId === 3"
+                            @click="goToModerateUsers"
+                            v-bind="props"
+                        >
+                            <v-list-item-content>
+                                <v-list-item-title class="text-center">Moderate Users</v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </template>
+                </v-tooltip>
+
+
 
                 <v-list-item
                     class="centered-list-item outlined-item"
@@ -180,6 +211,9 @@ export default {
         },
         goToModerateDocuments() {
             this.$inertia.visit('/moderation');
+        },
+        goToModerateReported() {
+            this.$inertia.visit('/moderate-reported');
         },
         goToModerateUsers() {
             this.$inertia.visit('/moderate-users');// Should not show a page but a list of users favourite documents
