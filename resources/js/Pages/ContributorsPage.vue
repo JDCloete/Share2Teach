@@ -147,9 +147,27 @@ export default {
         async fetchUsers() {
             try {
                 const response = await axios.get('/api/users');
-                this.users = response.data;
+                // Map the API response to the expected structure
+                this.users = response.data.users.map(user => ({
+                    id: user.user_id, // Update to match your expected id format
+                    name: user.user_name,
+                    surname: user.user_surname,
+                    role_id: this.getRoleId(user.role_name) // Assuming you need role_id
+                }));
             } catch (error) {
                 console.error('Error fetching users:', error);
+            }
+        },
+        getRoleId(roleName) {
+            switch (roleName) {
+                case 'Admin':
+                    return 2;
+                case 'Moderator':
+                    return 3;
+                case 'Educator':
+                    return 1;
+                default:
+                    return null; // Or handle accordingly
             }
         },
         // Polling function to fetch users every 20 seconds

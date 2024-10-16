@@ -175,7 +175,7 @@
         <v-container style="height: calc(100vh - 64px); margin-left: 220px;  margin-top: 1px;">
             <data-table-explorer-baseline :action-button="true">
 
-<!--                <template v-slot:toolbar-title>Newly Uploaded Documents</template>-->
+                <!--                <template v-slot:toolbar-title>Newly Uploaded Documents</template>-->
                 <template v-slot:library-items>
                     <v-table>
                         <thead>
