@@ -13,29 +13,35 @@
     </v-toolbar>
     <v-container style="padding: 50px">
         <data-table-explorer-baseline :action-button="false" :search-enabled="false">
+
+
             <template v-slot:toolbar-title>Reported Documents</template>
             <template v-slot:library-items>
                 <v-table>
                     <thead>
                     <tr>
-                        <th>Reported By</th>
                         <th>Document Name</th>
-                        <th>Report Reason</th>
-                        <th>Actions</th>
+                        <th>Uploaded By</th>
+                        <th>Uploaded Date</th>
+                        <th>Type</th>
+                        <th>Size (KB)</th>
+                        <th>Accept | Reject</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="document in filteredDocuments" :key="document.document_id">
-                        <td>{{ document.uploaded_by }}</td>
+                    <tr v-for="document in filteredDocuments" :key="document.id">
                         <td>{{ document.document_name }}</td>
-                        <td>{{ document.report_reason }}</td>
+                        <td>{{ document.user.name + ' ' + document.user.surname }}</td>
+                        <td>{{ formatDate(document.created_at) }}</td>
+                        <td>{{ document.metadata.type }}</td>
+                        <td>{{ (document.metadata.size / 1000).toFixed(2) }}</td>
                         <td>
                             <v-btn
                                 type="icon"
                                 variant="flat"
                                 size="small"
                                 elevation="0"
-                                @click="editDocument(document)"
+                                @click="updateReportedVue(document)"
                             >
                                 <v-icon>mdi-check</v-icon>
                             </v-btn>
@@ -44,13 +50,12 @@
                                 variant="flat"
                                 size="small"
                                 elevation="0"
-                                @click="deleteDocument(document)"
+                                @click="deleteReportedVue(document)"
                             >
                                 <v-icon>mdi-close</v-icon>
                             </v-btn>
                         </td>
                     </tr>
-
                     </tbody>
                 </v-table>
             </template>
@@ -65,72 +70,82 @@ import DataTableExplorerBaseline from '../Components/BaselineDataTable.vue';
 export default {
     name: 'ModerateReportedPage',
     components: { DataTableExplorerBaseline },
+    props: {
+        filteredDocuments: {
+            required: true,
+        }
+    },
     data() {
         return {
-            documents: [], // Holds the original fetched documents
-            filteredDocuments: [], // Initialize as an empty array
-            search: '', // Search term for filtering documents
+            documents: [],
+            search: '',
+            headers: [
+                { text: 'Document Name', value: 'document_name' },
+                { text: 'Uploaded By', value: 'uploaded_by' },
+                { text: 'Upload Date', value: 'upload_date' },
+                { text: 'Type', value: 'type' },
+                { text: 'Size (KB)', value: 'size' },
+                { text: 'Actions', value: 'actions', sortable: false },
+            ],
         };
     },
+    computed: {
+        filterDocuments() {
+            if (!this.search) {
+                this.filteredDocuments = this.documents;
+                return;
+            }
+            const searchTerm = this.search.toLowerCase();
+            return this.documents.filter(document =>
+                document.document_name.toLowerCase().includes(searchTerm) ||
+                document.uploaded_by.toLowerCase().includes(searchTerm) ||
+                document.type.toLowerCase().includes(searchTerm)
+            );
+        }
+    },
     created() {
-        this.fetchDocuments(); // Fetch documents on component creation
+        //this.fetchDocuments(); // Uncomment to fetch documents on component creation
+    },
+    watch: {
+        search(newSearch) {
+            this.filterDocuments();
+        }
     },
     methods: {
         async fetchDocuments() {
             try {
-                const response = await axios.get('/api/reported-documents');
-
-                // Ensure that report_id is part of the documents fetched
-                this.documents = response.data.reported_documents.map(doc => ({
-                    ...doc,
-                    report_id: doc.report_id || doc.id // Ensure report_id is present
-                }));
-
+                const response = await axios.get('/api/documents');
+                this.documents = response.data.documents;
                 this.filteredDocuments = this.documents;
             } catch (error) {
-                console.error('Error fetching reported documents:', error);
+                console.error('Error fetching documents:', error);
+            }
+        },
+        formatDate(date) {
+            if (!date) return 'Unknown'; // Fallback for missing dates
+            return new Date(date).toISOString().split('T')[0]; // Format date as YYYY-MM-DD
+        },
+        async updateReportedVue(document) {
+            try {
+                const response = await axios.patch(`api/reported-documents/${document.id}`, {
+                    is_approved: true,
+                });
+                window.location.reload();
+            } catch (error) {
+                console.error('Error updating the document:', error.response?.data || error.message);
+            }
+        },
+        async deleteReportedVue(document) {
+            try {
+                const response = await axios.delete(`api/reported-documents/${document.id}`);
+                window.location.reload();
+            } catch (error) {
+                console.error('Error deleting the document:', error.response?.data || error.message);
             }
         },
         goBack() {
             window.history.back();
         },
-        async editDocument(document) {
-            try {
-                console.log('Document being edited:', document); // Log document to check if it contains the correct data
-
-                // Step 1: Patch the document (approve it)
-                const response = await axios.patch(`/api/reported-documents/${document.report_id}`, {
-                    action_taken: 'approved', // Ensure you're updating the report action
-                });
-                console.log('Update response:', response.data); // Log the response
-
-                // Step 2: Call deleteDocument function to delete the report after approval
-                await this.deleteDocument(document);
-
-                window.location.reload(); // Reload the page after the update
-            } catch (error) {
-                console.error('Error updating the report:', error.response?.data || error.message); // Improved error logging
-            }
-        },
-
-        async deleteDocument(document) {
-            console.log('Document being deleted:', document); // Ensure report_id exists
-            if (!document.report_id) {
-                console.error('Error: report_id is undefined or missing in the document');
-                return;
-            }
-
-            try {
-                const response = await axios.delete(`/api/reported-documents/${document.report_id}`); // Use report_id
-                console.log('Delete response:', response.data); // Log the response
-                window.location.reload();
-            } catch (error) {
-                console.error('Error deleting the report:', error.response?.data || error.message);
-            }
-        }
-
-
-
     },
 };
 </script>

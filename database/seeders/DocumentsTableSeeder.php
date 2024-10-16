@@ -16,7 +16,7 @@ class DocumentsTableSeeder extends Seeder
                 'storage_path' => '/storage/documents/project_report.pdf',  // Nullable field
                 'user_id' => 1,  // Assuming user with ID 1 uploaded the document
                 'moderator_id' => 3,  // Assuming moderator with ID 3 reviewed it
-                'is_reviewed' => true,
+                'is_reviewed' => false,
                 'document_rating_average' => 4.75,
                 'watermark_info' => 'Confidential',
                 'key' => 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
@@ -40,7 +40,7 @@ class DocumentsTableSeeder extends Seeder
                 'storage_path' => '/storage/documents/user_guide.pdf',
                 'user_id' => 3,
                 'moderator_id' => 2,
-                'is_reviewed' => true,
+                'is_reviewed' => false,
                 'document_rating_average' => 3.50,
                 'watermark_info' => 'Property of S2T_Triple_Vision',
                 'key' => 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0',
@@ -52,7 +52,7 @@ class DocumentsTableSeeder extends Seeder
                 'storage_path' => '/storage/documents/user_guide.pdf',
                 'user_id' => 3,
                 'moderator_id' => 2,
-                'is_reviewed' => true,
+                'is_reviewed' => false,
                 'document_rating_average' => 3.50,
                 'watermark_info' => 'Property of S2T_Triple_Vision',
                 'key' => 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0',
@@ -64,7 +64,7 @@ class DocumentsTableSeeder extends Seeder
                 'storage_path' => '/storage/documents/user_guide.pdf',
                 'user_id' => 3,
                 'moderator_id' => 2,
-                'is_reviewed' => true,
+                'is_reviewed' => false,
                 'document_rating_average' => 3.50,
                 'watermark_info' => 'Property of S2T_Triple_Vision',
                 'key' => 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0',

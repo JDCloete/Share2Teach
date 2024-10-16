@@ -35,11 +35,24 @@ Route::patch('/documents/{document}', [DocumentController::class, 'update']);
 Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocument']);
 
 // Populating the moderation page with documents
-Route::get('/reported-documents', [DocumentController::class, 'getReportedDocuments']);
+Route::get('/reported-documents', [DocumentController::class, 'getDocumentsWithMetadata']);
+//Route::get('/reported-documents', [DocumentController::class, 'getReportedDocuments']);
+
+Route::patch('/documents/{document}', [DocumentController::class, 'updateReported']);
+Route::delete('/documents/{document}', [DocumentController::class, 'deleteReported']);
+
+//Route::patch('/reported-documents/{report}', [DocumentController::class, 'updateReportedDocument']);
+//Route::delete('/reported-documents/{report}', [DocumentController::class, 'deleteReportedDocument']);
 
 
-Route::patch('/reported-documents/{report}', [DocumentController::class, 'updateReportedDocument']);
-Route::delete('/reported-documents/{report}', [DocumentController::class, 'deleteReportedDocument']);
+// Populating the moderation page with documents
+Route::get('/documents/display', [DocumentController::class, 'getDocumentsWithRatings']);
+
+// Rate document & Report document
+Route::patch('/documents/rate/{rate}', [DocumentController::class, 'rate']);
+Route::patch('/documents/report/{report}', [DocumentController::class, 'report']);
+
+
 
 
 

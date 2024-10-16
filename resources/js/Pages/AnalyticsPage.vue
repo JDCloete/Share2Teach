@@ -18,23 +18,43 @@
         </v-toolbar>
 
         <div>
-
+            <div class="d-flex align-center justify-center" style="margin-top: 20px;">
+                <h1>User Registration Trends</h1>
+            </div>
             <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
                 <canvas id="combinedUserChart" width="1200" height="600"></canvas>
             </div>
+
             <hr style="border-top: 1px solid #000; margin: 20px 0;">
+
+            <div class="d-flex align-center justify-center" style="margin-top: 20px;">
+                <h1>Document Download Trends</h1>
+            </div>
+            <h1 style="margin-left: 550px; margin-top: 20px"></h1>
             <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
                 <canvas id="combinedDownloadsChart" width="1200" height="600"></canvas>
             </div>
+
             <hr style="border-top: 1px solid #000; margin: 20px 0;">
+
+            <div class="d-flex align-center justify-center" style="margin-top: 20px;">
+                <h1>Document Flow Analysis</h1>
+            </div>
             <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
                 <canvas id="combinedDocumentsChart" width="1200" height="600"></canvas>
             </div>
+
             <hr style="border-top: 1px solid #000; margin: 20px 0;">
+
+            <div class="d-flex align-center justify-center" style="margin-top: 20px;">
+                <h1>Reported Documents  Statistics</h1>
+            </div>
             <div id="chart-container" style="width: 50%; height: 400px; margin: 0 auto; overflow: visible;">
                 <canvas id="reportedDocumentsChart" width="1200" height="600"></canvas>
             </div>
+
             <hr style="border-top: 1px solid #000; margin: 20px 0;">
+
         </div>
     </v-app>
 
@@ -81,6 +101,8 @@ export default {
             if (charts.combinedChart) {
                 charts.combinedChart.destroy();
             }
+
+
 
             charts.combinedChart = new Chart(ctx, {
                 type: 'bar',
@@ -136,7 +158,7 @@ export default {
                     },
                     plugins: {
                         legend: {
-                            position: 'right', // This will move the labels to the left side of the chart
+                            position: 'bottom', // This will move the labels to the left side of the chart
                             labels: {
                                 boxWidth: 20, // Adjust the box size
                                 padding: 20, // Space between label items
@@ -231,7 +253,7 @@ export default {
                     },
                     plugins: {
                         legend: {
-                            position: 'right', // This will move the labels to the left side of the chart
+                            position: 'bottom', // This will move the labels to the left side of the chart
                             labels: {
                                 boxWidth: 20, // Adjust the box size
                                 padding: 20, // Space between label items
@@ -324,7 +346,7 @@ export default {
                     },
                     plugins: {
                         legend: {
-                            position: 'right', // This will move the labels to the left side of the chart
+                            position: 'bottom', // This will move the labels to the left side of the chart
                             labels: {
                                 boxWidth: 20, // Adjust the box size
                                 padding: 20, // Space between label items
@@ -408,7 +430,7 @@ export default {
                     },
                     plugins: {
                         legend: {
-                            position: 'right', // This will move the labels to the left side of the chart
+                            position: 'bottom', // This will move the labels to the left side of the chart
                             labels: {
                                 boxWidth: 20, // Adjust the box size
                                 padding: 20, // Space between label items
@@ -463,6 +485,6 @@ canvas {
     overflow: hidden; /* Hide overflow */
 }
 .custom-background {
-    background-color: rgba(141, 145, 141, 0.25);
+    background-color: rgba(138, 143, 138, 0.25);
 }
 </style>

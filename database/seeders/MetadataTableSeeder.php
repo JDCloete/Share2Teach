@@ -19,7 +19,7 @@ class MetadataTableSeeder extends Seeder
                 'lecturer_name' => 'Dr. Alice Smith',
                 'upload_date' => Carbon::now(),
                 'type' => 'pdf',
-                'size' => 204800, // File size in bytes (200 KB)
+                'size' => 12275, // File size in bytes (200 KB)
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -31,7 +31,7 @@ class MetadataTableSeeder extends Seeder
                 'lecturer_name' => 'Prof. Bob Johnson',
                 'upload_date' => Carbon::now(),
                 'type' => 'pdf',
-                'size' => 512000, // File size in bytes (500 KB)
+                'size' => 16275, // File size in bytes (500 KB)
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -43,7 +43,7 @@ class MetadataTableSeeder extends Seeder
                 'lecturer_name' => 'Dr. Charlie Brown',
                 'upload_date' => Carbon::now(),
                 'type' => 'pdf',
-                'size' => 1048576, // File size in bytes (1 MB)
+                'size' => 22275, // File size in bytes (1 MB)
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -55,7 +55,7 @@ class MetadataTableSeeder extends Seeder
                 'lecturer_name' => 'Dr. Dana White',
                 'upload_date' => now(),
                 'type' => 'pdf',
-                'size' => 307200, // File size in bytes (300 KB)
+                'size' => 24275, // File size in bytes (300 KB)
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -67,7 +67,7 @@ class MetadataTableSeeder extends Seeder
                 'lecturer_name' => 'Prof. Eva Green',
                 'upload_date' => Carbon::now(),
                 'type' => 'pdf',
-                'size' => 256000, // File size in bytes (250 KB)
+                'size' => 11275, // File size in bytes (250 KB)
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

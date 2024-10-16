@@ -16,16 +16,30 @@ class ModerateReportedController extends Controller
 
     public function index(Request $request): Response
     {
-        // Load documents that have been reported along with the associated user
-        $documents = Document::with(['user', 'report'])
-            ->whereHas('report') // Only include documents that have at least one report
+        // Load only documents that have not been reviewed, along with the associated user and metadata
+        $documents = Document::with('user', 'metadata')
+            ->where('is_reviewed', false) // Fetch only non-reviewed documents
             ->get();
 
-        // Render the view and pass the filtered documents along with their user data
         return Inertia::render('ModerateReportedPage', [
-            'filteredDocuments' => $documents,
+            'role_id' => (int) $request->query('role_id'), // Cast to integer
+            'filteredDocuments' => $documents
         ]);
     }
+
+
+//    public function index(Request $request): Response
+//    {
+//        // Load documents that have been reported along with the associated user
+//        $documents = Document::with(['user', 'report'])
+//            ->whereHas('report') // Only include documents that have at least one report
+//            ->get();
+//
+//        // Render the view and pass the filtered documents along with their user data
+//        return Inertia::render('ModerateReportedPage', [
+//            'filteredDocuments' => $documents,
+//        ]);
+//    }
 
 
     /**

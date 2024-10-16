@@ -28,8 +28,17 @@ class DocumentController extends Controller
 
     public function index(Request $request): Response
     {
+        // Load documents along with the associated user
+        $documents = Document::with('user', 'metadata')->get();
+
+        //filter documents to only ones that are not reviewed
+        $documents = $documents->filter(function ($document) {
+            return $document->is_reviewed;
+        });
+
         return Inertia::render('ExplorePage', [
             'role_id' => (int)$request->query('role_id'), // Cast to integer
+            'filteredDocuments' => $documents
         ]);
     }
 
@@ -82,6 +91,27 @@ class DocumentController extends Controller
         return response()->json(['message' => 'document deleted successfully'], 200);
     }
 
+    public function updateReported(Request $request, Document $document): JsonResponse
+    {
+        $validatedData = $request->validate([
+            'is_approved' => 'required'
+        ]);
+
+        if ($validatedData['is_approved'] === true) {
+            $validatedData['moderator_id'] = 1; // Get authenticated user ID
+            $validatedData['is_reviewed'] = true; // true ?!?
+        }
+
+        $document->update($validatedData);
+        return response()->json(['message' => 'document updated successfully', 'document' => $document], 200);
+    }
+
+    public function deleteReported(Request $request, Document $document): JsonResponse
+    {
+        $document->delete();
+        return response()->json(['message' => 'document deleted successfully'], 200);
+    }
+
     public function updateReportedDocument(Request $request, Report $report): JsonResponse
     {
         $validatedData = $request->validate([
@@ -106,35 +136,74 @@ class DocumentController extends Controller
         }
     }
 
-    // In DocumentController.php or appropriate controller
-    // In DocumentController.php or appropriate controller
-    public function updateUserToEducator(Request $request, $user_id): JsonResponse
+    ///
+    /// Rate document & Report document
+    public function rate(Request $request, $id): JsonResponse
     {
-        try {
-            // Validate the request input
-            $validated = $request->validate([
-                'role_id' => 'required|integer',
-                'action_taken' => 'required|string|in:approved', // Ensure action_taken is required and is a string
-            ]);
+        // Validate incoming request data
+        $request->validate([
+            'is_approved' => 'required|boolean',
+            'document_rating_average' => 'required|numeric', // Ensure rating is passed
+        ]);
 
-            // Fetch the user by ID
-            $user = User::findOrFail($user_id);
+        $document = Document::findOrFail($id);
 
-            // Update the user's role
-            $user->role_id = $request->input('role_id');
+        // Check if the approval is true and get the rating from request
+        if ($request->input('is_approved') === true) {
+            $document->moderator_id = 1; // Assign moderator ID
 
-            // Optionally update other fields
-            if ($request->has('is_approved')) {
-                $user->is_approved = $request->input('is_approved');
+            $newRating = $request->input('document_rating_average'); // Get the rating from request
+
+            // Calculate the new average rating
+            if ($document->document_rating_average) {
+                $document_rating_average = ($document->document_rating_average + $newRating) / 2;
+            } else {
+                $document_rating_average = $newRating; // If no previous rating, just set to new rating
             }
 
-            // Save the updated user
-            $user->save();
-
-            return response()->json(['message' => 'User role updated successfully'], 200);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            $document->document_rating_average = $document_rating_average; // Update rating
         }
+
+        // Save the updated document
+        $document->save();
+
+        return response()->json(['message' => 'Document rated successfully'], 200);
+    }
+
+
+
+
+
+
+    public function report(Request $request, Document $document): JsonResponse
+    {
+        $validatedData = $request->validate([
+            'is_approved' => 'required'
+        ]);
+
+        if ($validatedData['is_approved'] === true) {
+            $validatedData['moderator_id'] = 1; // Get authenticated user ID
+            $validatedData['is_reviewed'] = false;
+        }
+
+        $document->update($validatedData);
+        return response()->json(['message' => 'document reported successfully', 'document' => $document], 200);
+    }
+
+
+    // In DocumentController.php or appropriate controller
+    public function updateUserToEducator(Request $request, Document $document): JsonResponse
+    {
+        $validatedData = $request->validate([
+            'is_approved' => 'required|boolean'
+        ]);
+
+        if ($validatedData['is_approved']) {
+            $validatedData['role_id'] = 1;
+        }
+
+        $document->update($validatedData);
+        return response()->json(['message' => 'Document updated successfully', 'document' => $document], 200);
     }
 
 
@@ -328,6 +397,27 @@ class DocumentController extends Controller
 
     public function getDocumentsWithMetadata(): JsonResponse
     {
+        try{
+            $documents = Document::with(['user', 'metadata'])
+                ->get()
+                ->map(function ($document) {
+                    return [
+                        'document_name' => $document->document_name,
+                        'uploaded_by' => $document->user ? $document->user->name . ' ' . $document->user->surname : 'Unknown', // Check if user exists
+                        'upload_date' => $document->metadata->upload_date,
+                        'type' => $document->metadata->type,
+                        'size' => $document->metadata->size,
+                    ];
+                });
+
+            return response()->json(['documents' => $documents], 200);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getDocumentsWithRatings(): JsonResponse
+    {
         try {
             $documents = Document::with(['user', 'metadata'])
                 ->get()
@@ -338,6 +428,7 @@ class DocumentController extends Controller
                         'upload_date' => $document->metadata->upload_date,
                         'type' => $document->metadata->type,
                         'size' => $document->metadata->size,
+                        'document_rating_average' => $document->document_rating_average,
                     ];
                 });
 
