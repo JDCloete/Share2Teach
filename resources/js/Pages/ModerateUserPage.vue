@@ -1,5 +1,5 @@
 <template>
-    <v-app class="background-image">
+    <div>
         <v-toolbar color="primary" dark>
             <img
                 @click="goBack"
@@ -12,8 +12,10 @@
             />
             <v-toolbar-title class="d-flex">Moderate Users</v-toolbar-title>
         </v-toolbar>
-        <v-container style="width: 1200px; height: 600px; padding: 50px;">
-            <data-table-explorer-baseline :action-button="false" :search-enabled="false">
+        <v-container style="padding: 50px">
+            <div v-if="loading">Loading...</div>
+            <div v-else-if="error">Error: {{ error }}</div>
+            <data-table-explorer-baseline v-else :action-button="false" :search-enabled="false">
                 <template v-slot:toolbar-title>Escalate User Privileges</template>
                 <template v-slot:library-items>
                     <v-table>
@@ -29,14 +31,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="user in users" :key="user.id">
+                        <tr v-for="user in users" :key="user.user_id">
                             <td>{{ user.user_name }}</td>
                             <td>{{ user.user_surname }}</td>
                             <td>{{ user.role_name }}</td>
-
                             <td>
                                 <v-btn
-                                    type="icon"
+                                    type="button"
                                     variant="flat"
                                     size="small"
                                     elevation="0"
@@ -47,7 +48,7 @@
                             </td>
                             <td>
                                 <v-btn
-                                    type="icon"
+                                    type="button"
                                     variant="flat"
                                     size="small"
                                     elevation="0"
@@ -58,7 +59,7 @@
                             </td>
                             <td>
                                 <v-btn
-                                    type="icon"
+                                    type="button"
                                     variant="flat"
                                     size="small"
                                     elevation="0"
@@ -69,7 +70,7 @@
                             </td>
                             <td>
                                 <v-btn
-                                    type="icon"
+                                    type="button"
                                     variant="flat"
                                     size="small"
                                     elevation="0"
@@ -84,8 +85,7 @@
                 </template>
             </data-table-explorer-baseline>
         </v-container>
-    </v-app>
-
+    </div>
 </template>
 
 <script>
@@ -97,9 +97,11 @@ export default {
     components: { DataTableExplorerBaseline },
     data() {
         return {
-            users: [], // Holds the original fetched users
-            filteredUsers: [], // Filtered users after search
-            search: '', // Search term for filtering users
+            users: [],
+            filteredUsers: [],
+            search: '',
+            loading: true,
+            error: null,
         };
     },
     created() {
@@ -107,72 +109,86 @@ export default {
     },
     methods: {
         async fetchUsersWithRoles() {
+            this.loading = true;
+            this.error = null;
             try {
-                const response = await axios.get('/api/users'); // Adjust the route as per your API
-                this.users = response.data.users;
+                const response = await axios.get('/api/users');
+                this.users = response.data.users; // Ensure the structure matches your API
+                console.log('Fetched users:', this.users);
             } catch (error) {
                 console.error('Error fetching users with roles:', error);
+                this.error = 'Failed to fetch users. Please try again.';
+            } finally {
+                this.loading = false;
             }
         },
         goBack() {
             window.history.back();
         },
         async makeEducator(user) {
-                try {
-                    const response = await axios.patch(`api/users/${user.id}`, {
-                        is_approved: true,
-                    });
-                    window.location.reload();
-                } catch (error) {
-                    console.error('Error updating the user:', error.response?.data || error.message);
-                }
-            },
+            await this.updateUserRole(user.user_id, 1);
+        },
         async makeModerator(user) {
-            try {
-                const response = await axios.patch(`api/users/${user.id}`, {
-                    is_approved: true,
-                });
-                window.location.reload();
-            } catch (error) {
-                console.error('Error updating the user:', error.response?.data || error.message);
-            }
+            await this.updateUserRole(user.user_id, 3);
         },
         async makeAdmin(user) {
+            await this.updateUserRole(user.user_id, 2);
+        },
+        async updateUserRole(userId, newRoleId) {
+            const payload = { role_id: newRoleId };
+            console.log('Updating user role for user ID:', userId, 'with payload:', payload);
+
             try {
-                const response = await axios.patch(`api/users/${user.id}`, {
-                    is_approved: true,
+                const response = await axios.patch(`/api/users/${userId}/update`, payload);
+                console.log('Response after updating user role:', response.data);
+                await this.fetchUsersWithRoles();
+
+
+                // Check if response contains the updated user data if needed
+                this.$notify({
+                    title: 'Success',
+                    message: 'User role updated successfully!',
+                    type: 'success'
                 });
-                window.location.reload();
+
+                // Fetch updated user list without reloading the page
+                await this.fetchUsersWithRoles(); // Fetch updated user data
             } catch (error) {
-                console.error('Error updating the user:', error.response?.data || error.message);
+                console.error('Error updating user role:', error.response ? error.response.data : error);
+                this.$notify({
+                    title: 'Error',
+                    message: error.response?.data.message || 'An error occurred while updating the user role.',
+                    type: 'error'
+                });
             }
         },
         async deleteUser(user) {
+            if (!user.user_id) {
+                console.error('Error: user ID is undefined or missing.');
+                return;
+            }
+
             try {
-                const response = await axios.delete(`api/users/${user.id}`);
-                window.location.reload();
+                const response = await axios.delete(`/api/users/${user.user_id}`);
+                if (response.status === 200) {
+                    console.log('User deleted successfully:', response.data);
+                    this.users = this.users.filter(u => u.user_id !== user.user_id);
+                }
             } catch (error) {
                 console.error('Error deleting the user:', error.response?.data || error.message);
             }
-        }
+        },
     },
 };
 </script>
 
+
 <style>
 .rounded-image {
-    width: 40px; /* Ensure width is set */
-    height: 40px; /* Ensure height is set */
-    border-radius: 50%; /* Make the image round */
-    object-fit: cover; /* Maintain aspect ratio */
-    overflow: hidden; /* Hide overflow */
-}
-.background-image {
-    background-image: url('https://as2.ftcdn.net/v2/jpg/03/57/05/61/1000_F_357056172_AOxoyKV4D20Bsw17SvkzcMfWSOLTIGzJ.jpg'); /* Replace with your image URL */
-    /*background-image: url('https://lh4.googleusercontent.com/ySrY2iqkZd_57_JpSOz84tx69Lbr4ydtwCv6CTJ_uM1vktNbJCcCPGlYKi_QHLfiTRAPonOMxXyQgRAMdkKzkUI=w16383'); /* Replace with your image URL */
-    background-size: cover; /* Cover the entire page */
-    background-position: center; /* Center the background image */
-    background-repeat: no-repeat; /* Prevent repeating the background image */
-    min-height: 100vh; /* Ensure the background covers the full viewport height */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    overflow: hidden;
 }
 </style>

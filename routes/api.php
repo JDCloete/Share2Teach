@@ -164,3 +164,6 @@ Route::post('/downloads', [DownloadsController::class, 'store']);
 //Shared Routes
 Route::get('/share', [ShareController::class, 'readAll']);
 Route::post('/share', [ShareController::class, 'store']);
+
+
+Route::patch('users/{user}/update', [UserController::class, 'update']);
