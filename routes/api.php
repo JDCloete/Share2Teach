@@ -38,11 +38,14 @@ Route::delete('/documents/{document}', [DocumentController::class, 'deleteDocume
 Route::get('/reported-documents', [DocumentController::class, 'getDocumentsWithMetadata']);
 //Route::get('/reported-documents', [DocumentController::class, 'getReportedDocuments']);
 
-Route::patch('/documents/{document}', [DocumentController::class, 'updateReported']);
-Route::delete('/documents/{document}', [DocumentController::class, 'deleteReported']);
+Route::patch('/reported-documents/{report}', [DocumentController::class, 'updateReportedDocument']);
+Route::delete('/reported-documents/{report}', [DocumentController::class, 'deleteReportedDocument']);
 
-//Route::patch('/reported-documents/{report}', [DocumentController::class, 'updateReportedDocument']);
-//Route::delete('/reported-documents/{report}', [DocumentController::class, 'deleteReportedDocument']);
+
+//Route::patch('/documents/{document}', [DocumentController::class, 'updateReported']);
+//Route::delete('/documents/{document}', [DocumentController::class, 'deleteReported']);
+
+
 
 
 // Populating the moderation page with documents

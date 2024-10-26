@@ -18,7 +18,7 @@
 
                 <template v-slot:toolbar-title>Newly Uploaded Documents</template>
                 <template v-slot:library-items>
-                    <v-table>
+                    <v-table style="width: 100%; height: 300px;">
                         <thead>
                         <tr>
                             <th>Document Name</th>

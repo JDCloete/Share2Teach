@@ -136,9 +136,10 @@ export default {
             }
         },
         async deleteReportedVue(document) {
+            console.log('Deleting document associated with report ID:', document.id); // Check what is being passed
             try {
                 const response = await axios.delete(`api/reported-documents/${document.id}`);
-                window.location.reload();
+                window.location.reload(); // Reload the page after deletion
             } catch (error) {
                 console.error('Error deleting the document:', error.response?.data || error.message);
             }

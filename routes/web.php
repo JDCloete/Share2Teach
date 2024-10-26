@@ -53,6 +53,8 @@ Route::get('/moderate-reported', [ModerateReportedController::class, 'index'])->
 Route::get('/moderate-users', [UserModerationController::class, 'index'])->name('pages.user.moderation');
 
 
+// VIEW DOCUMENTS
+Route::get('/documents/{id}/url', [DocumentController::class, 'getDocumentUrl']);
 
 
 

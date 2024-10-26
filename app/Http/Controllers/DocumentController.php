@@ -9,6 +9,7 @@ use App\Models\Report;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -112,29 +113,50 @@ class DocumentController extends Controller
         return response()->json(['message' => 'document deleted successfully'], 200);
     }
 
-    public function updateReportedDocument(Request $request, Report $report): JsonResponse
+    public function updateReportedDocument(Request $request, $id): JsonResponse
     {
-        $validatedData = $request->validate([
-            'action_taken' => 'required|string|in:approved',
+        // Validate incoming request data
+        $request->validate([
+            'is_approved' => 'required|boolean',
         ]);
 
-        $report->action_taken = $validatedData['action_taken'];
-        $report->moderator_id = 2; // Get authenticated user ID
-        $report->save();
+        $document = Document::findOrFail($id);
 
-        return response()->json(['message' => 'Report action updated successfully', 'report' => $report], 200);
+        // Check if the approval is true
+        if ($request->input('is_approved') === true) {
+            $document->moderator_id = 1; // Assign moderator ID
+            $document->is_reviewed = true; // Set is_reviewed to false
+        }
+
+        // Save the updated document
+        $document->save();
+
+        return response()->json(['message' => 'Document reported successfully', 'document' => $document], 200);
     }
 
 
-    public function deleteReportedDocument(Report $report): JsonResponse
+    public function deleteReportedDocument($id): JsonResponse
     {
         try {
-            $report->delete(); // Delete the report
-            return response()->json(['message' => 'Report deleted successfully'], 200);
+            // Find the document by ID
+            $document = Document::findOrFail($id);
+
+            // Delete the document
+            $document->delete();
+
+            // Return a success response
+            return response()->json(['message' => 'Document deleted successfully'], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['error' => 'Document not found'], 404);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Error deleting the report'], 500);
+            return response()->json(['error' => 'Error deleting the document'], 500);
         }
     }
+
+
+
+
+
 
     ///
     /// Rate document & Report document
@@ -175,20 +197,27 @@ class DocumentController extends Controller
 
 
 
-    public function report(Request $request, Document $document): JsonResponse
+    public function report(Request $request, $id): JsonResponse
     {
-        $validatedData = $request->validate([
-            'is_approved' => 'required'
+        // Validate incoming request data
+        $request->validate([
+            'is_approved' => 'required|boolean',
         ]);
 
-        if ($validatedData['is_approved'] === true) {
-            $validatedData['moderator_id'] = 1; // Get authenticated user ID
-            $validatedData['is_reviewed'] = false;
+        $document = Document::findOrFail($id);
+
+        // Check if the approval is true
+        if ($request->input('is_approved') === true) {
+            $document->moderator_id = 1; // Assign moderator ID
+            $document->is_reviewed = false; // Set is_reviewed to false
         }
 
-        $document->update($validatedData);
-        return response()->json(['message' => 'document reported successfully', 'document' => $document], 200);
+        // Save the updated document
+        $document->save();
+
+        return response()->json(['message' => 'Document reported successfully', 'document' => $document], 200);
     }
+
 
 
     // In DocumentController.php or appropriate controller
@@ -395,6 +424,21 @@ class DocumentController extends Controller
     }
 
 
+    public function getDocumentUrl($id)
+    {
+        $document = Document::findOrFail($id);
+
+        // Remove any leading slash from `storage_path` and avoid double slashes
+        $storagePath = ltrim($document->storage_path, '/');
+        $url = asset("storage/$storagePath"); // Properly format the URL with a single `/storage` prefix
+
+        return response()->json(['url' => $url]);
+    }
+
+
+
+
+
     public function getDocumentsWithMetadata(): JsonResponse
     {
         try{
@@ -513,77 +557,3 @@ class DocumentController extends Controller
 //        ];
 //    }
 
-
-
-
-
-
-
-
-    /*
-    public function index()
-    {
-        $documents = Document::all(); // Fetch all documents
-        return view('documents.index', compact('documents')); // Return view with documents
-    }
-
-
-    public function create()
-    {
-        return view('documents.create'); // Return the view with the upload form
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'document_name' => 'required|string|max:255',
-            'file' => 'required|file|mimes:pdf,doc,docx,jpg,png|max:2048',
-        ]);
-
-        // Store the file and create a document record
-        $path = $request->file('file')->store('documents');
-
-        Document::create([
-            'document_name' => $request->document_name, // Use the correct property name
-            'file_path' => $path,
-        ]);
-
-        return redirect()->route('documents.index')->with('success', 'Document uploaded successfully!');
-    }
-
-
-    public function edit($id)
-    {
-        $document = Document::findOrFail($id); // Find the document by ID
-        return view('documents.edit', compact('document')); // Return the edit view with the document
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'document_name' => 'required|string|max:255',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,jpg,png|max:2048',
-        ]);
-
-        $document = Document::findOrFail($id); // Find the document by ID
-        $document->document_name = $request->document_name; // Update the document name
-
-        // Check if a new file is uploaded
-        if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('documents'); // Store the new file
-            $document->file_path = $path; // Update the file path
-        }
-
-        $document->save(); // Save the changes
-        return redirect()->route('documents.index')->with('success', 'Document updated successfully!');
-    }
-
-    public function destroy($id)
-    {
-        $document = Document::findOrFail($id); // Find the document by ID
-        $document->delete(); // Delete the document
-
-        return redirect()->route('documents.index')->with('success', 'Document deleted successfully!');
-    }
-}
-*/

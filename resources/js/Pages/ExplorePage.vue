@@ -185,9 +185,10 @@
                             <th>Uploaded Date</th>
                             <th>Type</th>
                             <th>Size (KB)</th>
-                            <th>Document Rating Average</th>
+                            <th>Avg Rating</th>
                             <th>Rate</th>
                             <th>Report</th>
+                            <th>View</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -256,6 +257,17 @@
                                     <v-icon>mdi-exclamation</v-icon>
                                 </v-btn>
                             </td>
+                            <td>
+                                <v-btn
+                                    type="icon"
+                                    variant="flat"
+                                    size="small"
+                                    elevation="0"
+                                    @click="viewDocument(document)"
+                                >
+                                    <v-icon>mdi-eye</v-icon>
+                                </v-btn>
+                            </td>
                         </tr>
                         </tbody>
                     </v-table>
@@ -280,6 +292,9 @@ export default {
         filteredDocuments: {
             required: true,
         }
+    },
+    mounted() {
+        this.fetchDocuments();
     },
     data() {
         return {
@@ -352,6 +367,16 @@ export default {
             } catch (error) {
                 console.error('Error updating the document:', error.response?.data || error.message);
             }
+        },
+        viewDocument(document) {
+            axios.get(`/documents/${document.id}/url`)
+                .then(response => {
+                    const documentUrl = response.data.url;
+                    window.open(documentUrl, '_blank');
+                })
+                .catch(error => {
+                    console.error("Error fetching document URL:", error);
+                });
         },
         goToHomepage() {
             this.$inertia.visit('/');
