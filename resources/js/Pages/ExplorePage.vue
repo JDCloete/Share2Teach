@@ -287,7 +287,7 @@ export default {
     props: {
         role_id: {
             type: [String, Number], // Accept both string and number
-            required: true // Make this optional
+            required: false // Make this optional
         },
         filteredDocuments: {
             required: true,
@@ -295,7 +295,6 @@ export default {
     },
     mounted() {
         this.fetchDocuments();
-        console.log('User Role ID:', this.role_id);
     },
     data() {
         return {
