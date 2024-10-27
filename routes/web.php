@@ -34,8 +34,9 @@ Route::get('/faq', [FaqController::class, 'index'])->name('pages.faq');
 
 
 // Show the register page (Inertia)
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [UserController::class, 'store'])->name('register'); // Make sure this route is present
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.show');
+Route::post('/register', [UserController::class, 'store'])->name('register.store');
+
 
 
 // Show the login page (Inertia)

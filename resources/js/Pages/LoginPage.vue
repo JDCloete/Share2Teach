@@ -45,7 +45,7 @@
                             required
                         ></v-text-field>
 
-                       
+
                         <!-- Submit Button -->
                         <v-btn
                             color="primary"
@@ -116,8 +116,8 @@ export default {
                 });
 
                 if (response.data.success) {
-                    const userRoleId = response.data.user.role_id; // Get role_id from response
-                    this.navigateToExplorePage(userRoleId); // Pass role_id to navigate
+                    const userRoleId = response.data.user.role_id;
+                    this.navigateToExplorePage(userRoleId); // Pass role_id directly as a prop
                 } else {
                     this.showError('Invalid credentials, please try again.');
                 }
@@ -126,8 +126,10 @@ export default {
             }
         },
         navigateToExplorePage(roleId) {
-            // Navigate to the explore page with the role_id as a query parameter
-            Inertia.visit(`/explore?role_id=${roleId}`);
+            // Use `{ preserveState: true }` if you want the state to persist
+            Inertia.visit('/explore', {
+                data: { role_id: roleId },
+            });
         },
         showError(message) {
             this.errorMessage = message;

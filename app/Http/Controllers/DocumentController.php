@@ -289,111 +289,112 @@ class DocumentController extends Controller
 
     public function upload(Request $request): JsonResponse
     {
-        // Validate the uploaded file and metadata
-        $validatedData = $request->validate([
-            'file' => 'required|mimes:pdf,doc,docx|max:2048',
-            'document_name' => 'required|string|max:255',
-            'module_code' => 'required|string|max:100',
-            'category' => 'required|string|max:255',
-            'academic_year' => 'required|integer',
-            'lecturer_name' => 'required|string|max:255',
-        ]);
-
-        $originalName = $request->document_name;
-        $moduleCode = $request->input('module_code');
-        $category = $request->input('category');
-
-        // Check for existing documents with the same criteria
-        $existingDocument = Document::where('document_name', $originalName)
-            ->join('metadata', 'documents.id', '=', 'metadata.document_id')
-            ->where('metadata.module_code', $moduleCode)
-            ->where('metadata.category', $category)
-            ->first();
-
-        if ($existingDocument) {
-            return response()->json(['message' => 'This document already exists in the database.'], 409);
-        }
-
-        // Proceed with the file upload since no duplicate was found
-        $file = $request->file('file');
-        $extension = $file->getClientOriginalExtension();
-        $fileSize = $file->getSize();
-
-        // Custom path for file storage
-        $customPath = 'Documents/' . $moduleCode . '/' . $category;
-        $fileName = $originalName . '.' . $extension;
-
-        // Convert docx to PDF if necessary
-        if ($extension === 'docx') {
-            // Store the file in the 'temp' directory within 'storage/app'
-            $tempPath = $file->storeAs('temp', $fileName);
-
-            // Use the storage_path() to get the full path of the uploaded file
-            $fullTempPath = storage_path('app/' . $tempPath);
-
-            // Load the docx file using the correct full path
-            $phpWord = IOFactory::load($fullTempPath);
-            $pdfFileName = $originalName . '.pdf';
-            $pdfFilePath = storage_path('app/temp/' . $pdfFileName);
-
-            // Convert docx to PDF
-            $domPdfPath = base_path('vendor/dompdf/dompdf');
-            Settings::setPdfRendererPath($domPdfPath);
-            Settings::setPdfRendererName('DomPDF');
-
-            $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
-            $pdfWriter->save($pdfFilePath);
-
-            // Treat the file as a PDF for the next steps
-            $uploadedFilePath = $pdfFilePath;
-            $extension = 'pdf'; // Override extension to PDF since we converted it
-        } else {
-            // If not a .docx file, store it as usual
-            $uploadedFilePath = storage_path('app/' . $file->storeAs('temp', $fileName));
-        }
-
-        // Define the path to the existing document to prepend (e.g., a cover page)
-        $existingDocumentPath = storage_path('app/public/cover.pdf'); // Adjust this path as needed
-
-        // If the file is a PDF (either originally or converted), proceed with watermarking
-        if ($extension === 'pdf') {
-            $pdf = new Fpdi();
-
-            // Prepend the existing document (cover page) to the uploaded document
-            $existingPageCount = $pdf->setSourceFile($existingDocumentPath);
-            for ($pageNo = 1; $pageNo <= $existingPageCount; $pageNo++) {
-                $pdf->AddPage();
-                $templateId = $pdf->importPage($pageNo);
-                $pdf->useTemplate($templateId, 0, 0, 210); // Adjust the width if necessary
-            }
-
-            // Add the pages from the uploaded or converted document
-            $uploadedPageCount = $pdf->setSourceFile($uploadedFilePath);
-            for ($pageNo = 1; $pageNo <= $uploadedPageCount; $pageNo++) {
-                $pdf->AddPage();
-                $templateId = $pdf->importPage($pageNo);
-                $pdf->useTemplate($templateId, 10, 10, 200);
-
-                // Add the watermark on each page
-                $pdf->SetFont('Helvetica', 'B', 10);
-                $pdf->SetTextColor(255, 0, 0); // Red color
-                $pdf->SetXY(10, 275); // Position for the watermark
-                $pdf->Cell(0, 0, 'Property of S2T_Triple_Vision', 0, 0, 'C');
-            }
-
-            // Save the merged and watermarked PDF to the final storage location
-            $mergedFilePath = $customPath . '/' . $originalName . '.pdf';
-            Storage::disk('public')->put($mergedFilePath, $pdf->Output('S'));
-
-            // Delete the original temporary uploaded file
-            Storage::delete($uploadedFilePath);
-        } else {
-            // For non-PDF files, store without merging or watermarking
-            $mergedFilePath = $file->storeAs($customPath, $fileName, 'public');
-        }
-
-        // Use a transaction to insert into the database
         try {
+            // Validate the uploaded file and metadata
+            $validatedData = $request->validate([
+                'file' => 'required|mimes:pdf,doc,docx|max:2048',
+                'document_name' => 'required|string|max:255',
+                'module_code' => 'required|string|max:100',
+                'category' => 'required|string|max:255',
+                'academic_year' => 'required|integer',
+                'lecturer_name' => 'required|string|max:255',
+            ]);
+
+            $originalName = $request->document_name;
+            $moduleCode = $request->input('module_code');
+            $category = $request->input('category');
+
+            // Check for existing documents with the same criteria
+            $existingDocument = Document::where('document_name', $originalName)
+                ->join('metadata', 'documents.id', '=', 'metadata.document_id')
+                ->where('metadata.module_code', $moduleCode)
+                ->where('metadata.category', $category)
+                ->first();
+
+            if ($existingDocument) {
+                return response()->json(['message' => 'This document already exists in the database.'], 409);
+            }
+
+            // Proceed with the file upload since no duplicate was found
+            $file = $request->file('file');
+            $extension = $file->getClientOriginalExtension();
+            $fileSize = $file->getSize();
+
+            // Custom path for file storage
+            $customPath = 'Documents/' . $moduleCode . '/' . $category;
+            $fileName = $originalName . '.' . $extension;
+
+            // Convert docx to PDF if necessary
+            if ($extension === 'docx') {
+                // Store the file in the 'temp' directory within 'storage/app'
+                $tempPath = $file->storeAs('temp', $fileName);
+
+                // Use the storage_path() to get the full path of the uploaded file
+                $fullTempPath = storage_path('app/' . $tempPath);
+
+                // Load the docx file using the correct full path
+                $phpWord = IOFactory::load($fullTempPath);
+                $pdfFileName = $originalName . '.pdf';
+                $pdfFilePath = storage_path('app/temp/' . $pdfFileName);
+
+                // Convert docx to PDF
+                $domPdfPath = base_path('vendor/dompdf/dompdf');
+                Settings::setPdfRendererPath($domPdfPath);
+                Settings::setPdfRendererName('DomPDF');
+
+                $pdfWriter = IOFactory::createWriter($phpWord, 'PDF');
+                $pdfWriter->save($pdfFilePath);
+
+                // Treat the file as a PDF for the next steps
+                $uploadedFilePath = $pdfFilePath;
+                $extension = 'pdf'; // Override extension to PDF since we converted it
+            } else {
+                // If not a .docx file, store it as usual
+                $uploadedFilePath = storage_path('app/' . $file->storeAs('temp', $fileName));
+            }
+
+            // Define the path to the existing document to prepend (e.g., a cover page)
+            $existingDocumentPath = storage_path('app/public/cover.pdf'); // Adjust this path as needed
+
+            // If the file is a PDF (either originally or converted), proceed with watermarking
+            if ($extension === 'pdf') {
+                $pdf = new Fpdi();
+
+                // Prepend the existing document (cover page) to the uploaded document
+                $existingPageCount = $pdf->setSourceFile($existingDocumentPath);
+                for ($pageNo = 1; $pageNo <= $existingPageCount; $pageNo++) {
+                    $pdf->AddPage();
+                    $templateId = $pdf->importPage($pageNo);
+                    $pdf->useTemplate($templateId, 0, 0, 210); // Adjust the width if necessary
+                }
+
+                // Add the pages from the uploaded or converted document
+                $uploadedPageCount = $pdf->setSourceFile($uploadedFilePath);
+                for ($pageNo = 1; $pageNo <= $uploadedPageCount; $pageNo++) {
+                    $pdf->AddPage();
+                    $templateId = $pdf->importPage($pageNo);
+                    $pdf->useTemplate($templateId, 10, 10, 200);
+
+                    // Add the watermark on each page
+                    $pdf->SetFont('Helvetica', 'B', 10);
+                    $pdf->SetTextColor(255, 0, 0); // Red color
+                    $pdf->SetXY(10, 275); // Position for the watermark
+                    $pdf->Cell(0, 0, 'Property of S2T_Triple_Vision', 0, 0, 'C');
+                }
+
+                // Save the merged and watermarked PDF to the final storage location
+                $mergedFilePath = $customPath . '/' . $originalName . '.pdf';
+                Storage::disk('public')->put($mergedFilePath, $pdf->Output('S'));
+
+                // Delete the original temporary uploaded file
+                Storage::delete($uploadedFilePath);
+            } else {
+                // For non-PDF files, store without merging or watermarking
+                $mergedFilePath = $file->storeAs($customPath, $fileName, 'public');
+            }
+
+            // Use a transaction to insert into the database
+
             DB::transaction(function () use ($validatedData, $mergedFilePath, $fileSize, $moduleCode) {
                 // Save document information
                 $document = Document::create([
