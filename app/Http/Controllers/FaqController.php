@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\FAQ;
+use App\Models\Faq as FAQ;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
